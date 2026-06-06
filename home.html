@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Tags by Category with Examples</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>HTML Tags by Category</h1>
+  <p class="description">Complete reference with individual examples for each tag.</p>
+
+  <h2>Document and Metadata</h2>
+  
+  <h3>&lt;html&gt; — Root Element</h3>
+  <p  class="description">Wraps all HTML content. Example:</p>
+  <pre>&lt;html lang="en"&gt;
+  &lt;head&gt;...&lt;/head&gt;
+  &lt;body&gt;...&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+  <h3>&lt;head&gt; — Metadata Container</h3>
+  <p  class="description">Contains title, meta tags, and links. Example:</p>
+  <pre>&lt;head&gt;
+  &lt;title&gt;Page Title&lt;/title&gt;
+  &lt;meta charset="UTF-8"&gt;
+&lt;/head&gt;</pre>
+
+  <h3>&lt;title&gt; — Browser Tab Title</h3>
+  <p id="unique">Sets the page title in browser tab. Example:</p>
+  <div>
+    <p style="color: chocolate;">Look at the browser tab to see the title.</p>
+  </div>
+
+  <h3>&lt;meta charset&gt; — Character Encoding</h3>
+  <p>Ensures special characters display correctly. Example:</p>
+  <pre>&lt;meta charset="UTF-8"&gt;</pre>
+
+  <h3>&lt;meta viewport&gt; — Responsive Design</h3>
+  <p>Makes pages work on mobile devices. Example:</p>
+  <pre>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</pre>
+
+  <h3>&lt;meta name&gt; — Page Description</h3>
+  <p>Adds page description for search engines. Example:</p>
+  <pre>&lt;meta name="description" content="My website about web development"&gt;</pre>
+
+  <h3>&lt;link&gt; — External Resources</h3>
+  <p>Links stylesheets, icons, and other resources. Example:</p>
+  <pre>&lt;link rel="stylesheet" href="style.css"&gt;
+&lt;link rel="icon" href="favicon.ico"&gt;</pre>
+
+  <h3>&lt;style&gt; — Embedded CSS</h3>
+  <p>Embeds CSS directly in HTML. Example:</p>
+  <pre>&lt;style&gt;
+  body { background-color: lightblue; }
+  p { color: darkblue; }
+&lt;/style&gt;</pre>
+
+  <h3>&lt;script&gt; — JavaScript Code</h3>
+  <p>Adds interactivity with JavaScript. Example:</p>
+  <pre>&lt;script&gt;
+  console.log('Page loaded!');
+  document.getElementById('btn').onclick = function() {
+    alert('Button clicked!');
+  }
+&lt;/script&gt;</pre>
+
+  <h3>&lt;base&gt; — Base URL</h3>
+  <p>Sets base URL for all relative links. Example:</p>
+  <pre>&lt;base href="https://example.com/"&gt;</pre>
+
+  <h3>&lt;noscript&gt; — No JavaScript Fallback</h3>
+  <p>Shows message if JavaScript is disabled. Example:</p>
+  <pre>&lt;noscript&gt;
+  Please enable JavaScript to use this website.
+&lt;/noscript&gt;</pre>
+
+  <hr>
+  <h2>Page Structure</h2>
+
+  <h3>&lt;body&gt; — Main Visible Content</h3>
+  <p>Contains all visible page content. Example:</p>
+  <div style="border: 1px solid gray; padding: 10px;">
+    <p>All visible content goes here.</p>
+  </div>
+
+  <h3>&lt;header&gt; — Page or Section Header</h3>
+  <p>Typically contains logo, site title, navigation. Example:</p>
+  <div style="background-color: #333; color: white; padding: 20px;">
+    <h1>My Website</h1>
+    <p>Welcome to the header section</p>
+  </div>
+
+  <h3>&lt;nav&gt; — Navigation Menu</h3>
+  <p>Contains navigation links. Example:</p>
+  <nav style="background-color: #ddd; padding: 10px;">
+    <a href="home.html">Home</a> | 
+    <a href="about.html">About</a> | 
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <h3>&lt;main&gt; — Primary Content</h3>
+  <p>Wraps the main content area. Example:</p>
+  <main style="border: 1px solid blue; padding: 15px;">
+    <h2>Main Article</h2>
+    <p>This is the primary content of the page.</p>
+  </main>
+
+  <h3>&lt;section&gt; — Thematic Content Grouping</h3>
+  <p>Groups related content together. Example:</p>
+  <section style="border: 1px solid green; padding: 10px; margin: 10px 0;">
+    <h3>Section Title</h3>
+    <p>This content is grouped in a section.</p>
+  </section>
+
+  <h3>&lt;article&gt; — Independent Content Block</h3>
+  <p>Represents self-contained content like blog posts. Example:</p>
+  <article style="border: 1px solid orange; padding: 10px; margin: 10px 0;">
+    <h3>Blog Post Title</h3>
+    <p>Posted on June 6, 2026</p>
+    <p>This article stands alone and can be reused elsewhere.</p>
+  </article>
+
+  <h3>&lt;aside&gt; — Sidebar or Related Content</h3>
+  <p>Typically used for sidebars and related links. Example:</p>
+  <aside style="background-color: #f0f0f0; padding: 10px; margin: 10px 0;">
+    <h4>Related Links</h4>
+    <ul>
+      <li><a href="#">Related Article 1</a></li>
+      <li><a href="#">Related Article 2</a></li>
+    </ul>
+  </aside>
+
+  <h3>&lt;figure&gt; — Self-Contained Content with Caption</h3>
+  <p>Groups images or diagrams with captions. Example:</p>
+  <figure style="border: 1px solid purple; padding: 10px; width: 200px;">
+    <img src="https://via.placeholder.com/150" alt="Example">
+    <figcaption>Figure 1: A sample image</figcaption>
+  </figure>
+
+  <h3>&lt;figcaption&gt; — Figure Caption</h3>
+  <p>Provides caption for figure. Example:</p>
+  <pre>&lt;figure&gt;
+  &lt;img src="photo.jpg" alt="My Photo"&gt;
+  &lt;figcaption&gt;This is my photo from 2026&lt;/figcaption&gt;
+&lt;/figure&gt;</pre>
+
+  <h3>&lt;footer&gt; — Page or Section Footer</h3>
+  <p>Contains copyright, links, contact info. Example:</p>
+  <footer style="background-color: #333; color: white; padding: 20px; margin-top: 20px;">
+    <p>&copy; 2026 My Company. All rights reserved.</p>
+    <p><a href="privacy.html" style="color: white;">Privacy Policy</a></p>
+  </footer>
+
+  <h3>&lt;details&gt; — Collapsible Content</h3>
+  <p>Creates expandable disclosure widget. Example:</p>
+  <details style="border: 1px solid gray; padding: 10px; margin: 10px 0;">
+    <summary>Click to expand</summary>
+    <p>This content is hidden until you click the summary.</p>
+  </details>
+
+  <h3>&lt;summary&gt; — Collapsible Header</h3>
+  <p>Shows header for details element. Example:</p>
+  <pre>&lt;details&gt;
+  &lt;summary&gt;More Information&lt;/summary&gt;
+  &lt;p&gt;Hidden content appears here&lt;/p&gt;
+&lt;/details&gt;</pre>
+
+  <h3>&lt;dialog&gt; — Modal Dialog</h3>
+  <p>Creates dialog boxes. Example:</p>
+  <pre>&lt;dialog open&gt;
+  &lt;p&gt;This is a dialog box&lt;/p&gt;
+  &lt;button&gt;Close&lt;/button&gt;
+&lt;/dialog&gt;</pre>
+
+  <h3>&lt;template&gt; — Content Template</h3>
+  <p>Stores HTML for reuse with JavaScript. Example:</p>
+  <pre>&lt;template id="card"&gt;
+  &lt;div class="card"&gt;
+    &lt;h3&gt;&lt;/h3&gt;
+    &lt;p&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+
+  <hr>
+  <h2>Text and Content</h2>
+
+  <h3>&lt;h1&gt; to &lt;h6&gt; — Headings</h3>
+  <p>Organize content hierarchy. Examples:</p>
+  <h1>This is H1 - Main Title</h1>
+  <h2>This is H2 - Section Title</h2>
+  <h3>This is H3 - Subsection Title</h3>
+  <h4>This is H4 - Minor Heading</h4>
+  <h5>This is H5 - Even Smaller</h5>
+  <h6>This is H6 - Smallest Heading</h6>
+
+  <h3>&lt;p&gt; — Paragraph</h3>
+  <p>Wraps text paragraphs. Example:</p>
+  <p>This is a paragraph of text. It can contain multiple sentences and spans multiple lines. The paragraph tag automatically adds space above and below.</p>
+
+  <h3>&lt;strong&gt; — Important Text</h3>
+  <p>Emphasizes important words with bold. Example:</p>
+  <p>This is <strong>very important</strong> information.</p>
+
+  <h3>&lt;em&gt; — Emphasized Text</h3>
+  <p>Emphasizes text with italic. Example:</p>
+  <p>This is <em>emphasized</em> text.</p>
+
+  <h3>&lt;b&gt; — Bold Text</h3>
+  <p>Makes text bold (non-semantic). Example:</p>
+  <p>This is <b>bold</b> text for style only.</p>
+
+  <h3>&lt;i&gt; — Italic Text</h3>
+  <p>Makes text italic (non-semantic). Example:</p>
+  <p>This is <i>italic</i> text for style only.</p>
+
+  <h3>&lt;u&gt; — Underlined Text</h3>
+  <p>Underlines text. Example:</p>
+  <p>This is <u>underlined</u> text.</p>
+
+  <h3>&lt;s&gt; — Strikethrough Text</h3>
+  <p>Adds strikethrough. Example:</p>
+  <p>This is <s>old price $50</s> now $25.</p>
+
+  <h3>&lt;mark&gt; — Highlighted Text</h3>
+  <p>Highlights text in yellow. Example:</p>
+  <p>This is <mark>highlighted</mark> text.</p>
+
+  <h3>&lt;small&gt; — Small Text</h3>
+  <p>Makes text smaller. Example:</p>
+  <p>Normal text <small>and smaller text</small></p>
+
+  <h3>&lt;code&gt; — Code Snippet</h3>
+  <p>Displays code inline. Example:</p>
+  <p>Use the function <code>console.log()</code> to debug.</p>
+
+  <h3>&lt;pre&gt; — Preformatted Text</h3>
+  <p>Preserves spacing and line breaks. Example:</p>
+  <pre>Line 1
+    Line 2 with spaces
+      Line 3 indented</pre>
+
+  <h3>&lt;blockquote&gt; — Block Quotation</h3>
+  <p>Quotes longer passages. Example:</p>
+  <blockquote style="border-left: 4px solid #ccc; padding-left: 15px; margin: 10px 0;">
+    "The only way to do great work is to love what you do." - Steve Jobs
+  </blockquote>
+
+  <h3>&lt;q&gt; — Inline Quotation</h3>
+  <p>Short quotes within text. Example:</p>
+  <p>He said, <q>This is important</q> yesterday.</p>
+
+  <h3>&lt;abbr&gt; — Abbreviation</h3>
+  <p>Shows full text on hover. Example:</p>
+  <p>The <abbr title="HyperText Markup Language">HTML</abbr> is used for web pages.</p>
+
+  <h3>&lt;cite&gt; — Citation</h3>
+  <p>References sources. Example:</p>
+  <p><cite>Web Development 101</cite> by Jane Doe is a great book.</p>
+
+  <h3>&lt;address&gt; — Contact Information</h3>
+  <p>Shows contact details. Example:</p>
+  <address>
+    Contact us:<br>
+    Email: info@example.com<br>
+    Phone: (555) 123-4567
+  </address>
+
+  <h3>&lt;time&gt; — Date/Time</h3>
+  <p>Marks dates and times. Example:</p>
+  <p>The event is on <time datetime="2026-06-15">June 15, 2026</time>.</p>
+
+  <h3>&lt;kbd&gt; — Keyboard Input</h3>
+  <p>Shows keyboard keys. Example:</p>
+  <p>Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy.</p>
+
+  <h3>&lt;samp&gt; — Sample Output</h3>
+  <p>Displays program output. Example:</p>
+  <p>The command returned: <samp>success</samp></p>
+
+  <h3>&lt;var&gt; — Variable Name</h3>
+  <p>Shows variable names. Example:</p>
+  <p>Set <var>x</var> = 10 in your code.</p>
+
+  <h3>&lt;sub&gt; — Subscript</h3>
+  <p>Text below the line. Example:</p>
+  <p>Water is H<sub>2</sub>O.</p>
+
+  <h3>&lt;sup&gt; — Superscript</h3>
+  <p>Text above the line. Example:</p>
+  <p>Einstein's famous equation: E=mc<sup>2</sup></p>
+
+  <h3>&lt;span&gt; — Inline Container</h3>
+  <p>Groups inline content for styling. Example:</p>
+  <p>This is <span style="color: red;">red text</span> in a paragraph.</p>
+
+  <h3>&lt;div&gt; — Block Container</h3>
+  <p>Groups block content. Example:</p>
+  <div style="background-color: lightblue; padding: 10px; margin: 10px 0;">
+    <p>This content is grouped in a div block.</p>
+    <p>It can contain multiple elements.</p>
+  </div>
+
+  <h3>&lt;br&gt; — Line Break</h3>
+  <p>Creates line break. Example:</p>
+  <p>Line 1<br>Line 2<br>Line 3</p>
+
+  <h3>&lt;hr&gt; — Horizontal Rule</h3>
+  <p>Creates visual separator. Example:</p>
+  <p>Content above</p>
+  <hr>
+  <p>Content below</p>
+
+  <h3>&lt;wbr&gt; — Word Break Opportunity</h3>
+  <p>Suggests where text can break. Example:</p>
+  <p>VeryLongWordThatCanBreak<wbr>AtThisPoint</p>
+
+  <h3>&lt;bdi&gt; — Bidirectional Isolation</h3>
+  <p>Handles mixed text directions. Example:</p>
+  <p>User <bdi>مرحبا</bdi> said hello.</p>
+
+  <h3>&lt;bdo&gt; — Bidirectional Override</h3>
+  <p>Changes text direction. Example:</p>
+  <p>Normal text <bdo dir="rtl">reversed text</bdo> mixed.</p>
+
+  <hr>
+  <h2>Lists</h2>
+
+  <h3>&lt;ul&gt; — Unordered List</h3>
+  <p>Creates bulleted list. Example:</p>
+  <ul>
+    <li>First item</li>
+    <li>Second item</li>
+    <li>Third item</li>
+  </ul>
+
+  <h3>&lt;ol&gt; — Ordered List</h3>
+  <p>Creates numbered list. Example:</p>
+  <ol>
+    <li>First step</li>
+    <li>Second step</li>
+    <li>Third step</li>
+  </ol>
+
+  <h3>&lt;li&gt; — List Item</h3>
+  <p>Individual item in list. Example:</p>
+  <ul>
+    <li>This is a list item</li>
+  </ul>
+
+  <h3>&lt;dl&gt; — Description List</h3>
+  <p>Creates term-definition pairs. Example:</p>
+  <dl>
+    <dt>HTML</dt>
+    <dd>HyperText Markup Language used for web pages</dd>
+    <dt>CSS</dt>
+    <dd>Cascading Style Sheets for styling</dd>
+  </dl>
+
+  <h3>&lt;dt&gt; — Definition Term</h3>
+  <p>Term in description list. Example:</p>
+  <pre>&lt;dl&gt;
+  &lt;dt&gt;Term&lt;/dt&gt;
+  &lt;dd&gt;Definition of the term&lt;/dd&gt;
+&lt;/dl&gt;</pre>
+
+  <h3>&lt;dd&gt; — Definition Description</h3>
+  <p>Definition for a term. Example:</p>
+  <pre>&lt;dl&gt;
+  &lt;dt&gt;Web&lt;/dt&gt;
+  &lt;dd&gt;A network of interconnected documents&lt;/dd&gt;
+&lt;/dl&gt;</pre>
+
+  <h3>&lt;menu&gt; — Menu List</h3>
+  <p>Creates menu items. Example:</p>
+  <menu>
+    <li>File</li>
+    <li>Edit</li>
+    <li>View</li>
+  </menu>
+
+  <hr>
+  <h2>Links and Media</h2>
+
+  <h3>&lt;a&gt; — Hyperlink</h3>
+  <p>Creates clickable links. Examples:</p>
+  <p><a href="https://example.com">External link</a></p>
+  <p><a href="page.html">Internal link</a></p>
+  <p><a href="mailto:email@example.com">Email link</a></p>
+  <p><a href="tel:+1234567890">Phone link</a></p>
+
+  <h3>&lt;img&gt; — Image</h3>
+  <p>Displays images. Example:</p>
+  <img src="https://via.placeholder.com/150" alt="Placeholder image">
+
+  <h3>&lt;picture&gt; — Responsive Image</h3>
+  <p>Serves different images for different screens. Example:</p>
+  <pre>&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" srcset="small.jpg"&gt;
+  &lt;img src="large.jpg" alt="Image"&gt;
+&lt;/picture&gt;</pre>
+
+  <h3>&lt;video&gt; — Video Content</h3>
+  <p>Embeds video files. Example:</p>
+  <video width="200" controls>
+    <source src="movie.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+
+  <h3>&lt;audio&gt; — Audio Content</h3>
+  <p>Embeds audio files. Example:</p>
+  <audio controls>
+    <source src="audio.mp3" type="audio/mpeg">
+    Your browser does not support HTML5 audio.
+  </audio>
+
+  <h3>&lt;source&gt; — Media Source</h3>
+  <p>Specifies media file for video/audio. Example:</p>
+  <pre>&lt;video controls&gt;
+  &lt;source src="movie.mp4" type="video/mp4"&gt;
+  &lt;source src="movie.webm" type="video/webm"&gt;
+&lt;/video&gt;</pre>
+
+  <h3>&lt;track&gt; — Text Track</h3>
+  <p>Adds captions or subtitles. Example:</p>
+  <pre>&lt;video controls&gt;
+  &lt;track src="subtitles.vtt" kind="subtitles"&gt;
+&lt;/video&gt;</pre>
+
+  <h3>&lt;iframe&gt; — Embedded Frame</h3>
+  <p>Embeds external web pages. Example:</p>
+  <pre>&lt;iframe src="https://example.com" width="400" height="300"&gt;&lt;/iframe&gt;</pre>
+
+  <h3>&lt;canvas&gt; — Drawing Surface</h3>
+  <p>Container for graphics drawn with JavaScript. Example:</p>
+  <canvas id="canvas" width="200" height="100" style="border: 1px solid black;"></canvas>
+
+  <h3>&lt;svg&gt; — Scalable Vector Graphics</h3>
+  <p>Creates vector graphics. Example:</p>
+  <svg width="100" height="100">
+    <circle cx="50" cy="50" r="40" fill="blue"></circle>
+  </svg>
+
+  <h3>&lt;embed&gt; — External Content</h3>
+  <p>Embeds external applications. Example:</p>
+  <pre>&lt;embed src="document.pdf" type="application/pdf" width="600" height="400"&gt;</pre>
+
+  <h3>&lt;object&gt; — External Object</h3>
+  <p>Embeds objects like plugins. Example:</p>
+  <pre>&lt;object data="animation.swf" type="application/x-shockwave-flash"&gt;&lt;/object&gt;</pre>
+
+  <h3>&lt;param&gt; — Object Parameter</h3>
+  <p>Parameter for object element. Example:</p>
+  <pre>&lt;object data="video.swf"&gt;
+  &lt;param name="autoplay" value="true"&gt;
+&lt;/object&gt;</pre>
+
+  <h3>&lt;map&gt; — Image Map</h3>
+  <p>Creates clickable areas on image. Example:</p>
+  <pre>&lt;img src="image.jpg" usemap="#map"&gt;
+&lt;map name="map"&gt;
+  &lt;area shape="rect" coords="0,0,100,100" href="link1.html"&gt;
+&lt;/map&gt;</pre>
+
+  <h3>&lt;area&gt; — Map Clickable Area</h3>
+  <p>Clickable region in image map. Example:</p>
+  <pre>&lt;area shape="circle" coords="50,50,30" href="page.html"&gt;</pre>
+
+  <hr>
+  <h2>Tables</h2>
+
+  <h3>&lt;table&gt; — Table Container</h3>
+  <p>Creates data table. Example:</p>
+  <table border="1">
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>City</th>
+    </tr>
+    <tr>
+      <td>John</td>
+      <td>25</td>
+      <td>New York</td>
+    </tr>
+    <tr>
+      <td>Jane</td>
+      <td>28</td>
+      <td>Boston</td>
+    </tr>
+  </table>
+
+  <h3>&lt;thead&gt; — Table Header Section</h3>
+  <p>Groups header rows. Example:</p>
+  <pre>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Header 1&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+&lt;/table&gt;</pre>
+
+  <h3>&lt;tbody&gt; — Table Body Section</h3>
+  <p>Groups data rows. Example:</p>
+  <pre>&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Data 1&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+
+  <h3>&lt;tfoot&gt; — Table Footer Section</h3>
+  <p>Groups footer rows. Example:</p>
+  <pre>&lt;table&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;&lt;td&gt;Total&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;</pre>
+
+  <h3>&lt;tr&gt; — Table Row</h3>
+  <p>Creates table row. Example:</p>
+  <table border="1">
+    <tr>
+      <td>Cell 1</td>
+      <td>Cell 2</td>
+    </tr>
+  </table>
+
+  <h3>&lt;th&gt; — Table Header Cell</h3>
+  <p>Header cell in table. Example:</p>
+  <table border="1">
+    <tr>
+      <th>Header Cell</th>
+      <td>Data Cell</td>
+    </tr>
+  </table>
+
+  <h3>&lt;td&gt; — Table Data Cell</h3>
+  <p>Data cell in table. Example:</p>
+  <table border="1">
+    <tr>
+      <td>Data 1</td>
+      <td>Data 2</td>
+    </tr>
+  </table>
+
+  <h3>&lt;caption&gt; — Table Caption</h3>
+  <p>Title for table. Example:</p>
+  <table border="1">
+    <caption>Employee Data</caption>
+    <tr>
+      <th>Name</th>
+      <th>Position</th>
+    </tr>
+  </table>
+
+  <h3>&lt;col&gt; — Column Definition</h3>
+  <p>Defines column properties. Example:</p>
+  <pre>&lt;colgroup&gt;
+  &lt;col span="2" style="background-color: yellow"&gt;
+&lt;/colgroup&gt;</pre>
+
+  <h3>&lt;colgroup&gt; — Column Group</h3>
+  <p>Groups columns for styling. Example:</p>
+  <pre>&lt;table&gt;
+  &lt;colgroup&gt;
+    &lt;col style="background-color: #f0f0f0"&gt;
+  &lt;/colgroup&gt;
+&lt;/table&gt;</pre>
+
+  <hr>
+  <h2>Forms and Input</h2>
+
+  <h3>&lt;form&gt; — Form Container</h3>
+  <p>Wraps form elements. Example:</p>
+  <form>
+    <label>Name: <input type="text"></label>
+    <button>Submit</button>
+  </form>
+
+  <h3>&lt;label&gt; — Form Label</h3>
+  <p>Associates text with form control. Example:</p>
+  <label>Email: <input type="email"></label>
+
+  <h3>&lt;input type="text"&gt; — Text Input</h3>
+  <p>Single-line text field. Example:</p>
+  <input type="text" placeholder="Enter text">
+
+  <h3>&lt;input type="email"&gt; — Email Input</h3>
+  <p>Email field with validation. Example:</p>
+  <input type="email" placeholder="user@example.com">
+
+  <h3>&lt;input type="password"&gt; — Password Input</h3>
+  <p>Hidden text field. Example:</p>
+  <input type="password" placeholder="Enter password">
+
+  <h3>&lt;input type="checkbox"&gt; — Checkbox</h3>
+  <p>Multiple choice selection. Examples:</p>
+  <label><input type="checkbox"> Option 1</label>
+  <label><input type="checkbox"> Option 2</label>
+
+  <h3>&lt;input type="radio"&gt; — Radio Button</h3>
+  <p>Single choice from group. Examples:</p>
+  <label><input type="radio" name="choice"> Choice 1</label>
+  <label><input type="radio" name="choice"> Choice 2</label>
+
+  <h3>&lt;input type="button"&gt; — Button Input</h3>
+  <p>Clickable button. Example:</p>
+  <input type="button" value="Click Me">
+
+  <h3>&lt;input type="submit"&gt; — Submit Button</h3>
+  <p>Submits form. Example:</p>
+  <form>
+    <input type="submit" value="Submit Form">
+  </form>
+
+  <h3>&lt;input type="reset"&gt; — Reset Button</h3>
+  <p>Clears form. Example:</p>
+  <input type="reset" value="Reset">
+
+  <h3>&lt;input type="file"&gt; — File Upload</h3>
+  <p>Select file to upload. Example:</p>
+  <input type="file">
+
+  <h3>&lt;input type="date"&gt; — Date Picker</h3>
+  <p>Select date. Example:</p>
+  <input type="date">
+
+  <h3>&lt;input type="color"&gt; — Color Picker</h3>
+  <p>Choose color. Example:</p>
+  <input type="color">
+
+  <h3>&lt;input type="range"&gt; — Slider</h3>
+  <p>Slide to select value. Example:</p>
+  <input type="range" min="0" max="100">
+
+  <h3>&lt;textarea&gt; — Multi-line Text</h3>
+  <p>Multiple lines of text input. Example:</p>
+  <textarea rows="4" cols="40" placeholder="Enter multiple lines of text..."></textarea>
+
+  <h3>&lt;select&gt; — Dropdown Menu</h3>
+  <p>Choose from list. Example:</p>
+  <select>
+    <option>Select an option</option>
+    <option>Option 1</option>
+    <option>Option 2</option>
+  </select>
+
+  <h3>&lt;option&gt; — Dropdown Option</h3>
+  <p>Item in dropdown. Example:</p>
+  <pre>&lt;select&gt;
+  &lt;option&gt;Choice 1&lt;/option&gt;
+  &lt;option&gt;Choice 2&lt;/option&gt;
+&lt;/select&gt;</pre>
+
+  <h3>&lt;optgroup&gt; — Option Group</h3>
+  <p>Groups options in dropdown. Example:</p>
+  <select>
+    <optgroup label="Fruits">
+      <option>Apple</option>
+      <option>Banana</option>
+    </optgroup>
+    <optgroup label="Vegetables">
+      <option>Carrot</option>
+      <option>Broccoli</option>
+    </optgroup>
+  </select>
+
+  <h3>&lt;button&gt; — Clickable Button</h3>
+  <p>Interactive button element. Example:</p>
+  <button>Click Me!</button>
+  <button type="submit">Submit</button>
+  <button type="reset">Reset</button>
+
+  <h3>&lt;fieldset&gt; — Group Form Controls</h3>
+  <p>Groups related form fields. Example:</p>
+  <fieldset>
+    <legend>Personal Information</legend>
+    <label>Name: <input type="text"></label>
+    <label>Email: <input type="email"></label>
+  </fieldset>
+
+  <h3>&lt;legend&gt; — Fieldset Caption</h3>
+  <p>Title for fieldset. Example:</p>
+  <pre>&lt;fieldset&gt;
+  &lt;legend&gt;Contact Details&lt;/legend&gt;
+  ...
+&lt;/fieldset&gt;</pre>
+
+  <h3>&lt;datalist&gt; — Predefined Options</h3>
+  <p>Autocomplete options for input. Example:</p>
+  <input list="browsers">
+  <datalist id="browsers">
+    <option value="Chrome">
+    <option value="Firefox">
+    <option value="Safari">
+  </datalist>
+
+  <h3>&lt;output&gt; — Calculation Result</h3>
+  <p>Displays calculation result. Example:</p>
+  <p>Result: <output>42</output></p>
+
+  <h3>&lt;progress&gt; — Progress Bar</h3>
+  <p>Shows progress of task. Examples:</p>
+  <p>50% complete: <progress value="50" max="100"></progress></p>
+  <p>75% complete: <progress value="75" max="100"></progress></p>
+
+  <h3>&lt;meter&gt; — Scalar Measurement</h3>
+  <p>Shows gauge or measurement. Examples:</p>
+  <p>Temperature: <meter value="6" min="0" max="10"></meter></p>
+  <p>Storage: <meter value="8" min="0" max="10"></meter></p>
+
+  <hr>
+  <h2>Interactive and Special Elements</h2>
+
+  <h3>&lt;details&gt; — Expandable Content</h3>
+  <p>Collapsible disclosure widget. Example:</p>
+  <details style="border: 1px solid gray; padding: 10px; margin: 10px 0;">
+    <summary>Click to expand FAQ</summary>
+    <p><strong>Q: How does it work?</strong></p>
+    <p>A: Click the summary to show or hide content.</p>
+  </details>
+
+  <h3>&lt;summary&gt; — Details Summary</h3>
+  <p>Header for expandable content. Example:</p>
+  <pre>&lt;details&gt;
+  &lt;summary&gt;More Information&lt;/summary&gt;
+  &lt;p&gt;Detailed content here&lt;/p&gt;
+&lt;/details&gt;</pre>
+
+  <h3>&lt;slot&gt; — Web Component Placeholder</h3>
+  <p>Placeholder for Shadow DOM content. Example:</p>
+  <pre>&lt;template&gt;
+  &lt;slot name="title"&gt;&lt;/slot&gt;
+&lt;/template&gt;</pre>
+
+  <h3>&lt;template&gt; — HTML Template</h3>
+  <p>Reusable HTML fragment. Example:</p>
+  <template id="card-template">
+    <div class="card">
+      <h3></h3>
+      <p></p>
+    </div>
+  </template>
+  <p>Template defined above (hidden by default).</p>
+<style>
+  h3 {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    color: #17d50d;
+  }
+</style>
+</body>
+</html>
