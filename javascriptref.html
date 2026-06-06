@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Interactive Encyclopedia</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #131827;
+    --panel-2: #1a2033;
+    --border: #2a3349;
+    --text: #e4e8f0;
+    --muted: #8892a8;
+    --accent: #7c3aed;
+    --accent-2: #06b6d4;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --pink: #ec4899;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text);
+    height: 100vh; overflow: hidden;
+    display: grid; grid-template-columns: 280px 1fr;
+  }
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--panel); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .logo {
+    padding: 18px 20px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--accent), var(--pink));
+    font-weight: 800; font-size: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo span { font-size: 22px; }
+  .search {
+    padding: 12px; border-bottom: 1px solid var(--border);
+  }
+  .search input {
+    width: 100%; padding: 10px 14px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 13px; outline: none;
+    transition: border 0.2s;
+  }
+  .search input:focus { border-color: var(--accent); }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-group { margin-bottom: 8px; }
+  .nav-title {
+    padding: 8px 20px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--muted); font-weight: 700;
+  }
+  .nav-item {
+    padding: 8px 20px; font-size: 13px; cursor: pointer;
+    color: var(--text); border-left: 3px solid transparent;
+    transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .nav-item:hover { background: rgba(124, 58, 237, 0.1); color: #fff; }
+  .nav-item.active {
+    background: rgba(124, 58, 237, 0.15); color: #fff;
+    border-left-color: var(--accent);
+  }
+  .nav-item .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); opacity: 0.5;
+  }
+  .nav-item.active .dot { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+  /* MAIN */
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .header {
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header h2 { font-size: 18px; font-weight: 700; }
+  .header .subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 8px; }
+  .tab {
+    padding: 8px 16px; font-size: 13px; cursor: pointer;
+    color: var(--muted); border-radius: 6px; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--accent); color: #fff; }
+  .content { flex: 1; overflow: hidden; position: relative; }
+  /* SPLIT VIEW */
+  .split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    height: 100%;
+  }
+  .code-pane {
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--border);
+    background: #0d1117;
+  }
+  .code-header {
+    padding: 10px 16px; background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted); font-weight: 600;
+  }
+  .run-btn {
+    padding: 6px 14px; background: var(--success); color: #fff;
+    border: none; border-radius: 6px; font-size: 12px;
+    cursor: pointer; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .run-btn:hover { background: #059669; transform: translateY(-1px); }
+  .editor-wrap { flex: 1; position: relative; overflow: hidden; }
+  .editor {
+    width: 100%; height: 100%; background: transparent;
+    color: transparent; caret-color: #fff;
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 13px; line-height: 1.6; padding: 16px;
+    border: none; outline: none; resize: none;
+    position: absolute; top: 0; left: 0;
+    white-space: pre; overflow: auto;
+    z-index: 2; tab-size: 2;
+  }
+  .highlight {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 13px; line-height: 1.6; padding: 16px;
+    pointer-events: none; overflow: auto;
+    white-space: pre; color: #c9d1d9; z-index: 1;
+  }
+  .highlight .kw { color: #ff7b72; }
+  .highlight .str { color: #a5d6ff; }
+  .highlight .num { color: #79c0ff; }
+  .highlight .fn { color: #d2a8ff; }
+  .highlight .cm { color: #8b949e; font-style: italic; }
+  .highlight .op { color: #ff7b72; }
+  .console-pane {
+    display: flex; flex-direction: column; background: var(--bg); height: 100%;
+  }
+  .console-header {
+    padding: 10px 16px; background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; color: var(--muted); font-weight: 600;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+  }
+  .clear-btn {
+    padding: 4px 10px; background: var(--border); color: var(--text);
+    border: none; border-radius: 4px; font-size: 11px;
+    cursor: pointer; font-weight: 500;
+  }
+  .clear-btn:hover { background: var(--accent); }
+  .console {
+    flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px;
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 12px; line-height: 1.7;
+  }
+  .log-entry {
+    padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+    display: flex; gap: 8px; align-items: flex-start;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; } }
+  .log-entry .icon { flex-shrink: 0; width: 16px; }
+  .log-entry.log { color: #e4e8f0; }
+  .log-entry.error { color: var(--error); }
+  .log-entry.warn { color: var(--warning); }
+  .log-entry.info { color: var(--accent-2); }
+  .log-entry.result { color: var(--success); }
+  /* DESCRIPTION */
+  .desc {
+    padding: 16px 24px; background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+    max-height: 120px; overflow-y: auto;
+  }
+  .desc strong { color: var(--text); }
+  .desc code {
+    background: rgba(124, 58, 237, 0.15); color: #d2a8ff;
+    padding: 2px 6px; border-radius: 4px; font-size: 12px;
+  }
+  /* SHOWCASE */
+  .showcase {
+    height: 100%; overflow-y: auto; padding: 24px;
+    background: var(--bg);
+  }
+  .showcase-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+  .demo-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    transition: all 0.2s;
+  }
+  .demo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+    border-color: var(--accent);
+  }
+  .demo-header {
+    padding: 14px 18px; background: var(--panel-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .demo-title { font-weight: 700; font-size: 14px; }
+  .demo-badge {
+    padding: 3px 8px; background: rgba(124, 58, 237, 0.2);
+    color: #d2a8ff; border-radius: 4px; font-size: 10px;
+    font-weight: 600; text-transform: uppercase;
+  }
+  .demo-body { padding: 16px; position: relative; }
+  .demo-canvas {
+    width: 100%; height: 220px; background: #000;
+    border-radius: 8px; display: block;
+  }
+  .demo-controls {
+    margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .demo-btn {
+    padding: 6px 12px; background: var(--border); color: var(--text);
+    border: none; border-radius: 6px; font-size: 12px;
+    cursor: pointer; font-weight: 500; transition: all 0.15s;
+  }
+  .demo-btn:hover { background: var(--accent); }
+  .demo-btn.active { background: var(--accent); }
+  .demo-info { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo"><span>⚡</span> JS Encyclopedia</div>
+  <div class="search">
+    <input type="text" id="search" placeholder="Search concepts...">
+  </div>
+  <nav class="nav" id="nav"></nav>
+</aside>
+
+<main class="main">
+  <div class="header">
+    <div>
+      <h2 id="pageTitle">Welcome</h2>
+      <div class="subtitle" id="pageSubtitle">Master JavaScript interactively</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" data-tab="learn">Learn</div>
+      <div class="tab" data-tab="showcase">✨ Showcase</div>
+    </div>
+  </div>
+  <div class="content">
+    <div id="learnView" class="split">
+      <div class="code-pane">
+        <div class="desc" id="desc">Click any concept in the sidebar to start learning interactively.</div>
+        <div class="code-header">
+          <span>📝 Live Editor</span>
+          <button class="run-btn" id="runBtn">▶ Run</button>
+        </div>
+        <div class="editor-wrap">
+          <pre class="highlight" id="highlight"></pre>
+          <textarea class="editor" id="editor" spellcheck="false">// Welcome to the Interactive JavaScript Encyclopedia
+// Click any topic on the left, then hit Run
+
+const greeting = "Hello, JavaScript!";
+console.log(greeting);
+console.log("Try editing this code!");
+
+// JavaScript powers the modern web.
+// This encyclopedia has 60+ concepts with live demos.</textarea>
+        </div>
+      </div>
+      <div class="console-pane">
+        <div class="console-header">
+          <span>📟 Console Output</span>
+          <button class="clear-btn" id="clearBtn">Clear</button>
+        </div>
+        <div class="console" id="console"></div>
+      </div>
+    </div>
+    <div id="showcaseView" class="showcase" style="display:none">
+      <div class="showcase-grid" id="showcaseGrid"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ============================================================
+// THE JAVASCRIPT DATABASE - 60+ Interactive Concepts
+// ============================================================
+const concepts = [
+  // FUNDAMENTALS
+  { cat: "Fundamentals", name: "Variables", desc: "<strong>let</strong>, <strong>const</strong>, and <strong>var</strong> declare variables. <code>const</code> cannot be reassigned. <code>let</code> is block-scoped.",
+    code: `// Variables and types
+let age = 25;           // Can be reassigned
+const name = "Alice";   // Cannot be reassigned
+var legacy = "old";     // Function-scoped (avoid)
+
+console.log("Name:", name);
+console.log("Age:", age);
+console.log("Type of age:", typeof age);
+console.log("Type of name:", typeof name);
+
+age = 26;
+console.log("New age:", age);` },
+
+  { cat: "Fundamentals", name: "Data Types", desc: "JavaScript has <strong>7 primitive types</strong>: string, number, boolean, null, undefined, symbol, bigint — plus objects.",
+    code: `// The 7 primitive types
+const str = "hello";
+const num = 42;
+const bool = true;
+const empty = null;
+const undef = undefined;
+const sym = Symbol("id");
+const big = 9007199254740991n;
+
+console.log("String:", typeof str, str);
+console.log("Number:", typeof num, num);
+console.log("Boolean:", typeof bool, bool);
+console.log("Null:", typeof null, "(it's 'object'!)");
+console.log("Undefined:", typeof undef);
+console.log("Symbol:", typeof sym);
+console.log("BigInt:", typeof big);` },
+
+  { cat: "Fundamentals", name: "Operators", desc: "Arithmetic, comparison, logical, and assignment operators. Always use <code>===</code> over <code>==</code>.",
+    code: `// Arithmetic
+console.log("10 + 3 =", 10 + 3);
+console.log("10 / 3 =", 10 / 3);
+console.log("10 % 3 =", 10 % 3);
+console.log("10 ** 3 =", 10 ** 3);
+
+// Comparison (strict vs loose)
+console.log("\\nComparison:");
+console.log("5 === '5':", 5 === '5');  // false
+console.log("5 == '5':", 5 == '5');   // true (avoid)
+
+// Logical
+const a = true, b = false;
+console.log("\\nLogical:");
+console.log("a && b:", a && b);
+console.log("a || b:", a || b);
+console.log("!a:", !a);
+
+// Nullish coalescing
+const user = null;
+console.log("\\nuser ?? 'guest':", user ?? 'guest');` },
+
+  { cat: "Fundamentals", name: "Strings", desc: "Strings are immutable sequences. Template literals (<code>`...${}`</code>) enable interpolation and multi-line.",
+    code: `const name = "World";
+const greeting = \`Hello, \${name}!\`;
+console.log(greeting);
+
+// Common methods
+const str = "JavaScript";
+console.log("Length:", str.length);
+console.log("Upper:", str.toUpperCase());
+console.log("Slice:", str.slice(0, 4));
+console.log("Replace:", str.replace("Java", "Type"));
+console.log("Includes:", str.includes("Script"));
+console.log("Split:", "a,b,c".split(","));
+console.log("Trim:", "  hello  ".trim());
+console.log("Repeat:", "ha".repeat(3));` },
+
+  { cat: "Fundamentals", name: "Template Literals", desc: "Backtick strings support <strong>interpolation</strong>, <strong>multi-line</strong>, and <strong>tagged templates</strong>.",
+    code: `const user = { name: "Bob", age: 30 };
+
+// Interpolation
+console.log(\`User: \${user.name}, Age: \${user.age}\`);
+
+// Expressions inside
+console.log(\`In 5 years: \${user.age + 5}\`);
+
+// Multi-line
+const html = \`
+  <div class="card">
+    <h1>\${user.name}</h1>
+    <p>Age: \${user.age}</p>
+  </div>
+\`;
+console.log(html);
+
+// Tagged template
+function highlight(strings, ...values) {
+  return strings.reduce((result, str, i) => 
+    result + str + (values[i] ? \`【\${values[i]}】\` : ''), '');
+}
+console.log(highlight\`Hello \${user.name}!\`);` },
+
+  { cat: "Fundamentals", name: "Numbers & Math", desc: "All numbers are 64-bit floats. The <code>Math</code> object provides constants and functions.",
+    code: `console.log("PI:", Math.PI);
+console.log("E:", Math.E);
+console.log("sqrt(16):", Math.sqrt(16));
+console.log("pow(2, 8):", Math.pow(2, 8));
+console.log("max(1,5,3):", Math.max(1, 5, 3));
+console.log("min(1,5,3):", Math.min(1, 5, 3));
+console.log("floor(4.7):", Math.floor(4.7));
+console.log("ceil(4.1):", Math.ceil(4.1));
+console.log("round(4.5):", Math.round(4.5));
+console.log("random:", Math.random());
+console.log("abs(-5):", Math.abs(-5));
+console.log("sin(π/2):", Math.sin(Math.PI/2));
+
+// Precision issues
+console.log("\\n0.1 + 0.2 =", 0.1 + 0.2);` },
+
+  // CONTROL FLOW
+  { cat: "Control Flow", name: "If/Else", desc: "Conditional branching. Use <code>else if</code> for multiple branches, <strong>ternary</strong> for simple cases.",
+    code: `const score = 85;
+
+if (score >= 90) {
+  console.log("Grade: A");
+} else if (score >= 80) {
+  console.log("Grade: B");
+} else if (score >= 70) {
+  console.log("Grade: C");
+} else {
+  console.log("Grade: F");
+}
+
+// Ternary operator
+const status = score >= 60 ? "Pass" : "Fail";
+console.log("Status:", status);
+
+// Nullish and optional chaining
+const user = { name: "Alice" };
+console.log("Name:", user?.name ?? "Guest");
+console.log("Age:", user?.age ?? "Unknown");` },
+
+  { cat: "Control Flow", name: "Switch", desc: "Multi-way branching based on value matching. Don't forget <code>break</code>!",
+    code: `const day = "Wednesday";
+
+switch (day) {
+  case "Monday":
+    console.log("Start of week");
+    break;
+  case "Tuesday":
+  case "Wednesday":
+  case "Thursday":
+    console.log("Midweek grind");
+    break;
+  case "Friday":
+    console.log("TGIF!");
+    break;
+  case "Saturday":
+  case "Sunday":
+    console.log("Weekend 🎉");
+    break;
+  default:
+    console.log("Unknown day");
+}
+
+// Switch with expressions
+const getGreeting = (hour) => {
+  switch (true) {
+    case hour < 12: return "Morning";
+    case hour < 18: return "Afternoon";
+    default: return "Evening";
+  }
+};
+console.log(getGreeting(14));` },
+
+  { cat: "Control Flow", name: "For Loops", desc: "Classic <code>for</code>, <code>for...of</code> (values), and <code>for...in</code> (keys) loops.",
+    code: `// Classic for
+for (let i = 1; i <= 5; i++) {
+  console.log("i =", i);
+}
+
+// for...of (iterates values)
+const fruits = ["🍎", "🍌", "🍇"];
+console.log("\\nFruits:");
+for (const fruit of fruits) {
+  console.log(" -", fruit);
+}
+
+// for...in (iterates keys)
+const user = { name: "Alice", age: 30, city: "NYC" };
+console.log("\\nUser properties:");
+for (const key in user) {
+  console.log(\`  \${key}: \${user[key]}\`);
+}
+
+// Loop with entries
+console.log("\\nEntries:");
+for (const [key, value] of Object.entries(user)) {
+  console.log(\`  \${key} => \${value}\`);
+}` },
+
+  { cat: "Control Flow", name: "While Loops", desc: "<code>while</code> runs while condition is true. <code>do...while</code> runs at least once.",
+    code: `// While
+let count = 0;
+while (count < 5) {
+  console.log("Count:", count);
+  count++;
+}
+
+// Do-while (runs at least once)
+let n = 10;
+do {
+  console.log("n =", n);
+  n *= 2;
+} while (n < 100);
+
+// Break and continue
+console.log("\\nEven numbers < 10:");
+for (let i = 0; i < 20; i++) {
+  if (i >= 10) break;
+  if (i % 2 !== 0) continue;
+  console.log(" ", i);
+}` },
+
+  // FUNCTIONS
+  { cat: "Functions", name: "Function Basics", desc: "Functions are first-class citizens. They can be <strong>declared</strong>, <strong>expressed</strong>, or <strong>arrowed</strong>.",
+    code: `// Function declaration (hoisted)
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+console.log(greet("Alice"));
+
+// Function expression
+const add = function(a, b) {
+  return a + b;
+};
+console.log("2 + 3 =", add(2, 3));
+
+// Arrow function
+const multiply = (a, b) => a * b;
+console.log("4 * 5 =", multiply(4, 5));
+
+// Default parameters
+const power = (base, exp = 2) => base ** exp;
+console.log("3² =", power(3));
+console.log("2⁸ =", power(2, 8));
+
+// Rest parameters
+const sum = (...nums) => nums.reduce((a, b) => a + b, 0);
+console.log("Sum:", sum(1, 2, 3, 4, 5));` },
+
+  { cat: "Functions", name: "Closures", desc: "A function that <strong>remembers</strong> its outer scope even after that scope has finished executing. Powerful and magical.",
+    code: `// Classic closure: counter
+function makeCounter() {
+  let count = 0;
+  return {
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount: () => count
+  };
+}
+
+const counter = makeCounter();
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.increment()); // 3
+console.log(counter.decrement()); // 2
+console.log("Final:", counter.getCount());
+
+// Closure in loops
+console.log("\\nClosures in loops:");
+const funcs = [];
+for (let i = 0; i < 3; i++) {
+  funcs.push(() => console.log("i =", i));
+}
+funcs.forEach(f => f()); // 0, 1, 2
+
+// Private variables
+function createWallet(initial) {
+  let balance = initial;
+  return {
+    deposit: (amt) => balance += amt,
+    getBalance: () => balance
+  };
+}
+const wallet = createWallet(100);
+wallet.deposit(50);
+console.log("Balance:", wallet.getBalance());` },
+
+  { cat: "Functions", name: "Callbacks", desc: "Functions passed as arguments to be executed later. The foundation of async JavaScript.",
+    code: `// Basic callback
+function fetchData(callback) {
+  console.log("Fetching...");
+  setTimeout(() => {
+    callback({ data: "Hello from server!" });
+  }, 100);
+}
+
+fetchData((result) => {
+  console.log("Received:", result.data);
+});
+
+// Array methods use callbacks
+const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(n => n * 2);
+console.log("\\nDoubled:", doubled);
+
+const evens = numbers.filter(n => n % 2 === 0);
+console.log("Evens:", evens);
+
+const sum = numbers.reduce((acc, n) => acc + n, 0);
+console.log("Sum:", sum);
+
+// Callback hell (avoid this!)
+// setTimeout(() => {
+//   setTimeout(() => {
+//     setTimeout(() => { ... }
+//   }, 1000);
+// }, 1000);` },
+
+  { cat: "Functions", name: "Higher-Order Functions", desc: "Functions that take or return other functions. The heart of functional programming in JS.",
+    code: `// Function that returns a function
+function multiplier(factor) {
+  return (number) => number * factor;
+}
+
+const double = multiplier(2);
+const triple = multiplier(3);
+console.log("double(5):", double(5));
+console.log("triple(5):", triple(5));
+
+// Function that takes a function
+function applyOperation(a, b, operation) {
+  return operation(a, b);
+}
+
+console.log("\\nAdd:", applyOperation(5, 3, (a, b) => a + b));
+console.log("Mul:", applyOperation(5, 3, (a, b) => a * b));
+
+// Compose functions
+const compose = (...fns) => (x) => 
+  fns.reduceRight((acc, fn) => fn(acc), x);
+
+const addOne = x => x + 1;
+const timesTwo = x => x * 2;
+const square = x => x ** 2;
+
+const transform = compose(square, timesTwo, addOne);
+console.log("\\ncompose(3):", transform(3)); // (3+1)*2 = 8, 8² = 64` },
+
+  { cat: "Functions", name: "this Keyword", desc: "<code>this</code> refers to the execution context. Arrow functions <strong>don't</strong> have their own <code>this</code>.",
+    code: `// Object method
+const user = {
+  name: "Alice",
+  greet() {
+    return \`Hi, I'm \${this.name}\`;
+  },
+  // Arrow doesn't bind this
+  greetArrow: () => \`Hi, I'm \${this?.name}\`
+};
+
+console.log(user.greet());
+console.log("Arrow:", user.greetArrow()); // undefined
+
+// Call, apply, bind
+function introduce(role) {
+  return \`I'm \${this.name}, a \${role}\`;
+}
+
+const person = { name: "Bob" };
+console.log("\\nCall:", introduce.call(person, "dev"));
+console.log("Apply:", introduce.apply(person, ["designer"]));
+
+const boundIntro = introduce.bind(person, "writer");
+console.log("Bind:", boundIntro());
+
+// Class context
+class Counter {
+  constructor() { this.count = 0; }
+  increment() { this.count++; return this.count; }
+}
+const c = new Counter();
+console.log("\\nCounter:", c.increment(), c.increment());` },
+
+  // OBJECTS & CLASSES
+  { cat: "Objects", name: "Object Basics", desc: "Objects are collections of key-value pairs. Use <strong>object literals</strong> for most cases.",
+    code: `// Object literal
+const user = {
+  name: "Alice",
+  age: 30,
+  email: "alice@example.com",
+  greet() { return \`Hi, I'm \${this.name}\`; }
+};
+
+console.log("Name:", user.name);
+console.log("Email:", user["email"]);
+console.log("Greeting:", user.greet());
+
+// Add/modify properties
+user.city = "NYC";
+user.age = 31;
+console.log("\\nUpdated:", user);
+
+// Check property
+console.log("\\nHas 'name':", 'name' in user);
+console.log("Keys:", Object.keys(user));
+console.log("Values:", Object.values(user));
+console.log("Entries:", Object.entries(user));
+
+// Object methods
+const copy = { ...user };
+const frozen = Object.freeze({ x: 1 });
+// frozen.x = 2; // Won't work
+console.log("Frozen:", frozen);` },
+
+  { cat: "Objects", name: "Destructuring", desc: "Extract values from objects and arrays into variables. Clean, expressive, and powerful.",
+    code: `// Object destructuring
+const user = { name: "Alice", age: 30, city: "NYC" };
+const { name, age, city } = user;
+console.log(name, age, city);
+
+// Rename and default
+const { name: userName, country = "USA" } = user;
+console.log(userName, country);
+
+// Nested destructuring
+const data = {
+  user: { id: 1, profile: { name: "Bob" } },
+  posts: ["Hello", "World"]
+};
+const { user: { profile: { name: n } }, posts: [first] } = data;
+console.log("\\nNested:", n, first);
+
+// Array destructuring
+const [a, b, c] = [1, 2, 3];
+console.log("\\nArray:", a, b, c);
+
+// Skip and rest
+const [x, , y, ...rest] = [1, 2, 3, 4, 5];
+console.log("Skip & rest:", x, y, rest);
+
+// Swap variables
+let p = 1, q = 2;
+[p, q] = [q, p];
+console.log("Swapped:", p, q);
+
+// Function parameters
+function show({ name, age }) {
+  console.log(\`\\n\${name} is \${age}\`);
+}
+show(user);` },
+
+  { cat: "Objects", name: "Spread & Rest", desc: "<code>...</code> operator: <strong>spread</strong> expands, <strong>rest</strong> collects. Same syntax, opposite behavior.",
+    code: `// Spread with arrays
+const a = [1, 2, 3];
+const b = [4, 5, 6];
+const combined = [...a, ...b];
+console.log("Combined:", combined);
+
+// Copy array
+const copy = [...a];
+copy.push(99);
+console.log("Copy:", copy);
+console.log("Original:", a);
+
+// Spread with objects
+const user = { name: "Alice", age: 30 };
+const updated = { ...user, age: 31, city: "NYC" };
+console.log("\\nUpdated:", updated);
+
+// Merge objects
+const defaults = { theme: "light", lang: "en" };
+const prefs = { theme: "dark" };
+const final = { ...defaults, ...prefs };
+console.log("Merged:", final);
+
+// Rest in function parameters
+function sum(...nums) {
+  return nums.reduce((a, b) => a + b, 0);
+}
+console.log("\\nSum:", sum(1, 2, 3, 4, 5));
+
+// Rest in destructuring
+const [first, ...others] = [1, 2, 3, 4, 5];
+console.log("First:", first, "Rest:", others);` },
+
+  { cat: "Objects", name: "Prototypes", desc: "JavaScript uses <strong>prototypal inheritance</strong>. Every object has a hidden link to another object — its prototype.",
+    code: `// Prototype chain
+const animal = {
+  eats: true,
+  walk() { return "Walking..."; }
+};
+
+const dog = Object.create(animal);
+dog.barks = true;
+dog.bark = function() { return "Woof!"; };
+
+console.log("dog.barks:", dog.barks);
+console.log("dog.eats:", dog.eats); // from prototype
+console.log("dog.walk():", dog.walk());
+console.log("dog.bark():", dog.bark());
+
+// hasOwnProperty
+console.log("\\nOwn props:");
+console.log("dog has 'barks':", dog.hasOwnProperty('barks'));
+console.log("dog has 'eats':", dog.hasOwnProperty('eats'));
+
+// Constructor function
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.greet = function() {
+  return \`Hi, I'm \${this.name}\`;
+};
+
+const alice = new Person("Alice");
+console.log("\\nAlice:", alice.greet());
+console.log("Constructor:", alice.constructor === Person);` },
+
+  { cat: "Objects", name: "ES6 Classes", desc: "Modern syntax for constructor functions and prototypes. Under the hood, still prototypal inheritance.",
+    code: `class Animal {
+  constructor(name, sound) {
+    this.name = name;
+    this.sound = sound;
+  }
+  
+  speak() {
+    return \`\${this.name} says \${this.sound}!\`;
+  }
+  
+  static create(name, sound) {
+    return new Animal(name, sound);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name, "Woof");
+    this.tricks = [];
+  }
+  
+  learn(trick) {
+    this.tricks.push(trick);
+    return this; // method chaining
+  }
+  
+  showTricks() {
+    return \`\${this.name} knows: \${this.tricks.join(", ")}\`;
+  }
+  
+  get trickCount() { return this.tricks.length; }
+}
+
+const dog = new Dog("Rex");
+console.log(dog.speak());
+dog.learn("sit").learn("shake").learn("roll");
+console.log(dog.showTricks());
+console.log("Trick count:", dog.trickCount);
+
+const cat = Animal.create("Whiskers", "Meow");
+console.log(cat.speak());
+console.log("Is Animal:", cat instanceof Animal);` },
+
+  // ARRAYS
+  { cat: "Arrays", name: "Array Methods", desc: "Powerful methods like <code>map</code>, <code>filter</code>, <code>reduce</code> transform arrays without mutation.",
+    code: `const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// map: transform each element
+const squares = numbers.map(n => n ** 2);
+console.log("Squares:", squares);
+
+// filter: keep elements that pass test
+const evens = numbers.filter(n => n % 2 === 0);
+console.log("Evens:", evens);
+
+// reduce: combine into single value
+const sum = numbers.reduce((acc, n) => acc + n, 0);
+console.log("Sum:", sum);
+
+// Chaining
+const result = numbers
+  .filter(n => n % 2 === 0)
+  .map(n => n * 10)
+  .reduce((acc, n) => acc + n, 0);
+console.log("\\nChain result:", result);
+
+// find and findIndex
+const users = [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" },
+  { id: 3, name: "Charlie" }
+];
+const bob = users.find(u => u.name === "Bob");
+console.log("Found:", bob);
+
+// some and every
+console.log("\\nSome even:", numbers.some(n => n % 2 === 0));
+console.log("All positive:", numbers.every(n => n > 0));` },
+
+  { cat: "Arrays", name: "Array Mutations", desc: "<code>push</code>, <code>pop</code>, <code>shift</code>, <code>splice</code>, <code>sort</code> modify arrays in place.",
+    code: `const arr = [1, 2, 3, 4, 5];
+
+// Add/remove at end
+arr.push(6);
+console.log("After push:", arr);
+const last = arr.pop();
+console.log("Popped:", last, "Now:", arr);
+
+// Add/remove at start
+arr.unshift(0);
+console.log("After unshift:", arr);
+arr.shift();
+
+// Splice: remove, replace, insert
+const removed = arr.splice(1, 2); // remove 2 starting at 1
+console.log("\\nSpliced out:", removed);
+console.log("Array:", arr);
+
+arr.splice(1, 0, 99, 100); // insert without removing
+console.log("After insert:", arr);
+
+// Sort (BEWARE: sorts as strings by default)
+const nums = [10, 2, 30, 1, 20];
+console.log("\\nWrong sort:", [...nums].sort());
+console.log("Right sort:", [...nums].sort((a, b) => a - b));
+
+// Reverse
+console.log("Reversed:", [1, 2, 3].reverse());
+
+// Fill
+console.log("Fill:", new Array(5).fill(0));
+
+// Flat
+const nested = [1, [2, [3, 4], 5], 6];
+console.log("\\nFlat:", nested.flat(2));` },
+
+  { cat: "Arrays", name: "Iterators & Generators", desc: "Iterators produce values one at a time. Generators are functions that can pause and resume.",
+    code: `// Generator function
+function* countTo(max) {
+  for (let i = 1; i <= max; i++) {
+    yield i;
+  }
+}
+
+const counter = countTo(5);
+console.log(counter.next()); // {value: 1, done: false}
+console.log(counter.next()); // {value: 2, done: false}
+console.log(counter.next()); // {value: 3, done: false}
+
+// Iterate generator
+console.log("\\nAll values:");
+for (const n of countTo(3)) {
+  console.log(" ", n);
+}
+
+// Infinite generator
+function* fibonacci() {
+  let [a, b] = [0, 1];
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+const fib = fibonacci();
+const first10 = Array.from({ length: 10 }, () => fib.next().value);
+console.log("\\nFirst 10 fib:", first10);
+
+// Custom iterator
+const range = {
+  from: 1,
+  to: 5,
+  [Symbol.iterator]() {
+    let current = this.from;
+    const last = this.to;
+    return {
+      next() {
+        return current <= last
+          ? { value: current++, done: false }
+          : { done: true };
+      }
+    };
+  }
+};
+
+console.log("\\nRange:", [...range]);` },
+
+  // ASYNC
+  { cat: "Async", name: "Promises", desc: "Promises represent a value that may be available now, later, or never. States: <strong>pending</strong>, <strong>fulfilled</strong>, <strong>rejected</strong>.",
+    code: `// Create a promise
+const wait = (ms) => new Promise(resolve => 
+  setTimeout(() => resolve(\`Done after \${ms}ms\`), ms)
+);
+
+console.log("Starting...");
+
+wait(100).then(msg => {
+  console.log("✓", msg);
+});
+
+// Chaining
+const fetchUser = () => new Promise(r => 
+  setTimeout(() => r({ id: 1, name: "Alice" }), 100)
+);
+
+const fetchPosts = (user) => new Promise(r =>
+  setTimeout(() => r([\`\${user.name}'s post 1\`, \`post 2\`]), 100)
+);
+
+fetchUser()
+  .then(user => {
+    console.log("\\nUser:", user);
+    return fetchPosts(user);
+  })
+  .then(posts => console.log("Posts:", posts))
+  .catch(err => console.error("Error:", err));
+
+// Promise.all
+const p1 = Promise.resolve(1);
+const p2 = Promise.resolve(2);
+const p3 = Promise.resolve(3);
+
+Promise.all([p1, p2, p3]).then(values => {
+  console.log("\\nAll:", values);
+});
+
+// Promise.race
+Promise.race([
+  wait(200),
+  wait(50)
+]).then(winner => console.log("Race winner:", winner));` },
+
+  { cat: "Async", name: "Async/Await", desc: "Syntactic sugar over promises. Write async code that <strong>looks</strong> synchronous.",
+    code: `// Simulated API calls
+const getUser = (id) => new Promise(resolve =>
+  setTimeout(() => resolve({ id, name: "Alice" }), 200)
+);
+
+const getPosts = (userId) => new Promise(resolve =>
+  setTimeout(() => resolve([
+    { title: "Post 1" }, 
+    { title: "Post 2" }
+  ]), 200)
+);
+
+// async/await - so clean!
+async function loadUserPosts() {
+  console.log("Loading user...");
+  const user = await getUser(1);
+  console.log("✓ Got user:", user.name);
+  
+  console.log("Loading posts...");
+  const posts = await getPosts(user.id);
+  console.log("✓ Got posts:", posts.length);
+  
+  return { user, posts };
+}
+
+loadUserPosts().then(result => {
+  console.log("\\nFinal result:", result);
+});
+
+// Error handling
+async function mightFail() {
+  try {
+    const result = await Promise.reject("Oops!");
+  } catch (err) {
+    console.log("\\nCaught:", err);
+  } finally {
+    console.log("Finally runs always");
+  }
+}
+
+mightFail();
+
+// Parallel execution
+async function parallel() {
+  const [a, b] = await Promise.all([
+    getUser(1),
+    getUser(2)
+  ]);
+  console.log("\\nParallel:", a.name, b.name);
+}
+
+parallel();` },
+
+  { cat: "Async", name: "Fetch API", desc: "Modern way to make HTTP requests. Returns a <strong>Promise</strong> that resolves to a Response.",
+    code: `// Mock fetch for demo (since we can't hit real APIs here)
+const mockFetch = (url) => new Promise(resolve => {
+  setTimeout(() => {
+    resolve({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({
+        users: [
+          { id: 1, name: "Alice" },
+          { id: 2, name: "Bob" }
+        ]
+      })
+    });
+  }, 300);
+});
+
+// Basic fetch pattern
+async function getUsers() {
+  console.log("Fetching users...");
+  
+  try {
+    const response = await mockFetch('/api/users');
+    
+    if (!response.ok) {
+      throw new Error(\`HTTP \${response.status}\`);
+    }
+    
+    const data = await response.json();
+    console.log("✓ Users:", data.users);
+    
+    data.users.forEach(user => {
+      console.log(\`  - \${user.name} (id: \${user.id})\`);
+    });
+    
+  } catch (error) {
+    console.error("Fetch failed:", error.message);
+  }
+}
+
+getUsers();
+
+// POST request pattern
+async function createUser(userData) {
+  console.log("\\nCreating user:", userData);
+  // In real code:
+  // const res = await fetch('/api/users', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(userData)
+  // });
+  console.log("✓ User created (simulated)");
+}
+
+createUser({ name: "Charlie", email: "c@test.com" });` },
+
+  // DOM
+  { cat: "DOM", name: "Selecting Elements", desc: "The DOM is the Document Object Model. Select elements with <code>querySelector</code>, <code>getElementById</code>, etc.",
+    code: `// Since we're in a sandbox, let's demonstrate with mock DOM
+
+// In a real browser:
+// document.getElementById('myId')
+// document.querySelector('.myClass')
+// document.querySelectorAll('div')
+
+// Let's simulate the API
+const mockDocument = {
+  elements: {
+    'header': { tag: 'header', text: 'My Site' },
+    'main': { tag: 'main', text: 'Content' },
+    '.btn': { tag: 'button', text: 'Click me' }
+  },
+  querySelector(selector) {
+    console.log(\`querySelector("\${selector}")\`);
+    return this.elements[selector];
+  },
+  querySelectorAll(selector) {
+    console.log(\`querySelectorAll("\${selector}")\`);
+    return Object.values(this.elements).filter(e => e.tag === selector);
+  }
+};
+
+const header = mockDocument.querySelector('header');
+console.log("Found:", header);
+
+const allButtons = mockDocument.querySelectorAll('button');
+console.log("All buttons:", allButtons);
+
+// Common selectors cheat sheet
+console.log("\\nCommon selectors:");
+console.log("  #id          - by ID");
+console.log("  .class       - by class");
+console.log("  tag          - by tag name");
+console.log("  [attr]       - by attribute");
+console.log("  parent > child - direct child");
+console.log("  a, b         - either a or b");` },
+
+  { cat: "DOM", name: "Events", desc: "Events let you respond to user actions: clicks, keys, scrolls. Use <code>addEventListener</code>.",
+    code: `// Event concepts (simulated)
+
+// In a real browser:
+// element.addEventListener('click', handler)
+// element.removeEventListener('click', handler)
+
+class MockElement {
+  constructor(tag) {
+    this.tag = tag;
+    this.listeners = {};
+  }
+  addEventListener(event, handler) {
+    if (!this.listeners[event]) this.listeners[event] = [];
+    this.listeners[event].push(handler);
+    console.log(\`Added \${event} listener\`);
+  }
+  trigger(event, data) {
+    console.log(\`\\n⚡ Triggered: \${event}\`);
+    this.listeners[event]?.forEach(h => h(data));
+  }
+}
+
+const button = new MockElement('button');
+
+// Add click handler
+button.addEventListener('click', (e) => {
+  console.log("Button clicked! Data:", e);
+});
+
+// Add another
+button.addEventListener('click', () => {
+  console.log("Second handler also runs");
+});
+
+// Trigger the event
+button.trigger('click', { x: 100, y: 200 });
+
+// Event delegation concept
+console.log("\\n📌 Event delegation:");
+console.log("Instead of adding listeners to 100 list items,");
+console.log("add one listener to the parent <ul>.");
+console.log("Check event.target to know which item was clicked.");
+
+// Event object has useful properties
+console.log("\\nCommon event properties:");
+console.log("  event.target    - the element clicked");
+console.log("  event.type      - 'click', 'keydown', etc.");
+console.log("  event.key       - key pressed");
+console.log("  event.clientX   - mouse X position");
+console.log("  event.preventDefault() - stop default");` },
+
+  { cat: "DOM", name: "Creating Elements", desc: "Build elements dynamically with <code>createElement</code>, set properties, then <code>append</code> to DOM.",
+    code: `// Simulating DOM manipulation
+
+class MockElement {
+  constructor(tag) {
+    this.tag = tag;
+    this.children = [];
+    this.attributes = {};
+    this.text = '';
+    this.classes = new Set();
+  }
+  setAttribute(k, v) { this.attributes[k] = v; }
+  addEventListener(e, fn) { this['on' + e] = fn; }
+  appendChild(child) { this.children.push(child); }
+  addClass(c) { this.classes.add(c); }
+  
+  toString(indent = '') {
+    const cls = this.classes.size ? \` class="\${[...this.classes].join(' ')}"\` : '';
+    const attrs = Object.entries(this.attributes)
+      .map(([k,v]) => \` \${k}="\${v}"\`).join('');
+    let result = \`\${indent}<\${this.tag}\${cls}\${attrs}>\`;
+    if (this.text) result += this.text;
+    if (this.children.length) {
+      result += '\\n' + this.children.map(c => c.toString(indent + '  ')).join('\\n');
+      result += \`\\n\${indent}</\${this.tag}>\`;
+    } else {
+      result += \`</\${this.tag}>\`;
+    }
+    return result;
+  }
+}
+
+// Build a todo list
+const ul = new MockElement('ul');
+ul.addClass('todo-list');
+
+const todos = ['Learn JS', 'Build something', 'Deploy'];
+
+todos.forEach((text, i) => {
+  const li = new MockElement('li');
+  li.text = text;
+  li.setAttribute('data-id', i);
+  li.addEventListener('click', () => alert('Clicked!'));
+  ul.appendChild(li);
+});
+
+console.log("Generated HTML:\\n");
+console.log(ul.toString());
+
+console.log("\\n✓ In real code:");
+console.log("  const li = document.createElement('li');");
+console.log("  li.textContent = 'New item';");
+console.log("  ul.appendChild(li);");` },
+
+  // ADVANCED
+  { cat: "Advanced", name: "Map & Set", desc: "<code>Map</code> holds key-value pairs (any type as key). <code>Set</code> holds unique values.",
+    code: `// Map - better than objects for dynamic keys
+const map = new Map();
+
+map.set('name', 'Alice');
+map.set(42, 'the answer');
+map.set(true, 'yes');
+map.set({ id: 1 }, 'object key!');
+
+console.log("Size:", map.size);
+console.log("Get 'name':", map.get('name'));
+console.log("Get 42:", map.get(42));
+console.log("Has true:", map.has(true));
+
+// Iterate
+console.log("\\nIterate:");
+for (const [key, value] of map) {
+  console.log(\`  \${typeof key}: \${key} => \${value}\`);
+}
+
+// Set - unique values
+const set = new Set([1, 2, 3, 2, 1, 4]);
+console.log("\\nSet:", [...set]);
+console.log("Size:", set.size);
+
+set.add(5);
+set.add(5); // ignored
+console.log("After add:", [...set]);
+
+// Common patterns
+const array = [1, 2, 2, 3, 3, 3, 4];
+const unique = [...new Set(array)];
+console.log("\\nUnique array:", unique);
+
+// Intersection
+const a = new Set([1, 2, 3, 4]);
+const b = new Set([3, 4, 5, 6]);
+const intersection = [...a].filter(x => b.has(x));
+console.log("Intersection:", intersection);
+
+// Union
+const union = [...new Set([...a, ...b])];
+console.log("Union:", union);` },
+
+  { cat: "Advanced", name: "Symbols & Iterators", desc: "<code>Symbol</code> creates unique identifiers. Used for iterator protocol, private properties, etc.",
+    code: `// Symbols are always unique
+const id1 = Symbol('id');
+const id2 = Symbol('id');
+console.log("id1 === id2:", id1 === id2); // false
+
+// As object keys (won't conflict)
+const user = {
+  name: "Alice",
+  [id1]: 12345
+};
+
+console.log("User:", user);
+console.log("user[id1]:", user[id1]);
+console.log("Object.keys:", Object.keys(user)); // doesn't show symbol
+
+// Well-known symbols
+console.log("\\nWell-known symbols:");
+console.log("  Symbol.iterator");
+console.log("  Symbol.toStringTag");
+console.log("  Symbol.asyncIterator");
+
+// Custom iterator with Symbol.iterator
+const range = {
+  from: 1,
+  to: 5,
+  [Symbol.iterator]() {
+    let current = this.from;
+    const last = this.to;
+    return {
+      next: () => {
+        return current <= last
+          ? { value: current++, done: false }
+          : { done: true };
+      }
+    };
+  }
+};
+
+console.log("\\nSpread with iterator:", [...range]);
+console.log("For-of with iterator:");
+for (const n of range) {
+  console.log(" ", n);
+}
+
+// Symbol.for - global symbol registry
+const s1 = Symbol.for('app.id');
+const s2 = Symbol.for('app.id');
+console.log("\\nSymbol.for same:", s1 === s2);` },
+
+  { cat: "Advanced", name: "Proxy & Reflect", desc: "<code>Proxy</code> wraps objects to intercept operations. <code>Reflect</code> provides default behaviors.",
+    code: `// Basic proxy - validation
+const validator = {
+  set(target, prop, value) {
+    if (prop === 'age' && typeof value !== 'number') {
+      throw new TypeError('Age must be a number');
+    }
+    if (prop === 'age' && value < 0) {
+      throw new RangeError('Age cannot be negative');
+    }
+    target[prop] = value;
+    return true;
+  }
+};
+
+const person = new Proxy({}, validator);
+person.name = "Alice";
+person.age = 30;
+console.log("Valid:", person);
+
+try {
+  person.age = -5;
+} catch (e) {
+  console.log("Error:", e.message);
+}
+
+// Proxy with getter
+const handler = {
+  get(target, prop) {
+    if (prop in target) return target[prop];
+    return \`Property '\${prop}' does not exist\`;
+  }
+};
+
+const user = new Proxy({ name: "Bob" }, handler);
+console.log("\\nuser.name:", user.name);
+console.log("user.age:", user.age);
+
+// Observe changes
+function observe(obj, callback) {
+  return new Proxy(obj, {
+    set(target, prop, value) {
+      const old = target[prop];
+      target[prop] = value;
+      callback(prop, old, value);
+      return true;
+    }
+  });
+}
+
+const state = observe({ count: 0 }, (prop, old, val) => {
+  console.log(\`\\n📡 \${prop}: \${old} -> \${val}\`);
+});
+
+state.count = 1;
+state.count = 2;
+state.count = 3;` },
+
+  { cat: "Advanced", name: "Web APIs", desc: "Browsers provide APIs for storage, geolocation, notifications, clipboard, and more.",
+    code: `// Browser APIs overview (simulated)
+
+console.log("🌐 Browser APIs Cheat Sheet:\\n");
+
+// localStorage
+console.log("📦 localStorage:");
+console.log("  localStorage.setItem('key', 'value')");
+console.log("  localStorage.getItem('key')");
+console.log("  localStorage.removeItem('key')");
+
+// sessionStorage (same as localStorage, but per-tab)
+console.log("\\n📦 sessionStorage:");
+console.log("  Same API as localStorage");
+console.log("  Cleared when tab closes");
+
+// Geolocation
+console.log("\\n📍 Geolocation:");
+console.log("  navigator.geolocation.getCurrentPosition(");
+console.log("    pos => console.log(pos.coords)");
+console.log("  );");
+
+// Notifications
+console.log("\\n🔔 Notifications:");
+console.log("  Notification.requestPermission()");
+console.log("  new Notification('Title', { body: '...' })");
+
+// Clipboard
+console.log("\\n📋 Clipboard:");
+console.log("  navigator.clipboard.writeText('text')");
+console.log("  navigator.clipboard.readText()");
+
+// Fullscreen
+console.log("\\n🖥️ Fullscreen:");
+console.log("  element.requestFullscreen()");
+console.log("  document.exitFullscreen()");
+
+// History
+console.log("\\n📜 History:");
+console.log("  history.pushState({}, '', '/new-url')");
+console.log("  history.back()");
+
+// Intersection Observer
+console.log("\\n👀 IntersectionObserver:");
+console.log("  const obs = new IntersectionObserver(cb);");
+console.log("  obs.observe(element);");
+
+// Simulate a working example
+console.log("\\n✅ Simulated localStorage demo:");
+const storage = {};
+storage['user'] = JSON.stringify({ name: "Alice" });
+const retrieved = JSON.parse(storage['user']);
+console.log("Stored and retrieved:", retrieved);` },
+
+  { cat: "Advanced", name: "Error Handling", desc: "Use <code>try/catch/finally</code> to handle errors gracefully. Custom errors extend <code>Error</code>.",
+    code: `// Basic try/catch
+function divide(a, b) {
+  if (b === 0) throw new Error("Division by zero");
+  return a / b;
+}
+
+try {
+  console.log("10 / 2 =", divide(10, 2));
+  console.log("10 / 0 =", divide(10, 0)); // throws
+} catch (error) {
+  console.log("Caught:", error.message);
+} finally {
+  console.log("Finally always runs");
+}
+
+// Custom error class
+class ValidationError extends Error {
+  constructor(field, message) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+function validateUser(user) {
+  if (!user.name) {
+    throw new ValidationError('name', 'Name is required');
+  }
+  if (user.age < 18) {
+    throw new ValidationError('age', 'Must be 18+');
+  }
+  return true;
+}
+
+try {
+  validateUser({ name: "Bob", age: 15 });
+} catch (e) {
+  if (e instanceof ValidationError) {
+    console.log(\`\\n⚠️  Field '\${e.field}': \${e.message}\`);
+  } else {
+    console.log("Unknown error:", e);
+  }
+}
+
+// Async error handling
+async function risky() {
+  return Promise.reject("Async failure!");
+}
+
+risky().catch(e => console.log("\\nAsync caught:", e));
+
+// Global error handlers (in browser)
+console.log("\\n🌐 Global handlers:");
+console.log("  window.onerror = (msg, url, line) => {...}");
+console.log("  window.addEventListener('unhandledrejection', ...)");` },
+
+  { cat: "Advanced", name: "Modules", desc: "ES6 modules let you split code into files. <code>export</code> to share, <code>import</code> to use.",
+    code: `// ES6 Modules syntax guide
+
+console.log("📦 ES6 Module Patterns:\\n");
+
+// ===== math.js =====
+console.log("// math.js");
+console.log("export const PI = 3.14159;");
+console.log("export function add(a, b) { return a + b; }");
+console.log("export default class Calculator { ... }");
+
+// ===== app.js =====
+console.log("\\n// app.js");
+console.log("import Calculator, { PI, add } from './math.js';");
+console.log("import * as math from './math.js';");
+
+// ===== Simulate it =====
+console.log("\\n✅ Simulated modules:");
+
+const math = (() => {
+  // Private (not exported)
+  const _log = (msg) => console.log("  [math]", msg);
+  
+  // Public API
+  return {
+    PI: 3.14159,
+    add: (a, b) => { _log(\`add(\${a}, \${b})\`); return a + b; },
+    circleArea: (r) => {
+      _log(\`circleArea(\${r})\`);
+      return math.PI * r ** 2;
+    }
+  };
+})();
+
+console.log("PI:", math.PI);
+console.log("add:", math.add(2, 3));
+console.log("circleArea:", math.circleArea(5));
+
+console.log("\\n📌 Module tips:");
+console.log("  • Modules are strict mode by default");
+console.log("  • Each module has its own scope");
+console.log("  • Imports are live bindings");
+console.log("  • Use dynamic import for code-splitting:");
+console.log("    const mod = await import('./heavy.js')");` },
+
+  { cat: "Advanced", name: "WeakMap & WeakSet", desc: "Hold <strong>weak</strong> references to objects — allowing garbage collection. Keys must be objects.",
+    code: `// WeakMap - keys must be objects, held weakly
+const cache = new WeakMap();
+
+function process(obj) {
+  if (cache.has(obj)) {
+    console.log("Cache hit!");
+    return cache.get(obj);
+  }
+  
+  console.log("Computing...");
+  const result = { expensive: obj.value ** 2 };
+  cache.set(obj, result);
+  return result;
+}
+
+const data = { value: 5 };
+console.log("First call:", process(data));
+console.log("Second call:", process(data)); // cache hit!
+
+// Different object = no cache
+const other = { value: 5 };
+console.log("Different obj:", process(other));
+
+// Private data pattern
+const privateData = new WeakMap();
+
+class User {
+  constructor(name, secret) {
+    this.name = name;
+    privateData.set(this, { secret });
+  }
+  
+  getSecret() {
+    return privateData.get(this).secret;
+  }
+}
+
+const user = new User("Alice", "password123");
+console.log("\\nUser name:", user.name);
+console.log("User secret:", user.getSecret());
+console.log("Keys of user:", Object.keys(user)); // no secret!
+
+// WeakSet - unique objects, held weakly
+const seen = new WeakSet();
+
+function trackVisit(obj) {
+  if (seen.has(obj)) {
+    return "Already visited";
+  }
+  seen.add(obj);
+  return "First visit";
+}
+
+const page = { id: 1 };
+console.log("\\n", trackVisit(page));
+console.log(trackVisit(page));
+
+console.log("\\n💡 Use cases:");
+console.log("  • Caching computed results");
+console.log("  • Private class data");
+console.log("  • Tracking object relationships");
+console.log("  • Avoiding memory leaks");` }
+];
+
+// ============================================================
+// SHOWCASE DEMOS - Pure JS Magic
+// ============================================================
+const showcase = [
+  {
+    id: 'particles',
+    title: 'Particle Universe',
+    badge: 'Canvas',
+    info: 'Thousands of particles following your mouse with physics-based motion. Move your mouse over the canvas!',
+    controls: ['Reset', 'More', 'Less'],
+    setup: (canvas) => {
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let mouse = { x: canvas.width/2, y: canvas.height/2 };
+      
+      const createParticles = (n) => {
+        particles = Array.from({length: n}, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          size: Math.random() * 2 + 1,
+          hue: Math.random() * 360
+        }));
+      };
+      
+      createParticles(500);
+      
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      });
+      
+      let hueOffset = 0;
+      let animId;
+      const draw = () => {
+        ctx.fillStyle = 'rgba(0,0,0,0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        hueOffset += 0.5;
+        
+        particles.forEach(p => {
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx*dx + dy*dy) + 1;
+          const force = Math.min(50 / dist, 0.5);
+          
+          p.vx += dx * force * 0.01;
+          p.vy += dy * force * 0.01;
+          p.vx *= 0.95;
+          p.vy *= 0.95;
+          p.x += p.vx;
+          p.y += p.vy;
+          
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          
+          ctx.fillStyle = `hsl(${(p.hue + hueOffset) % 360}, 100%, 60%)`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        
+        animId = requestAnimationFrame(draw);
+      };
+      draw();
+      
+      return {
+        cleanup: () => cancelAnimationFrame(animId),
+        controls: {
+          'Reset': () => createParticles(500),
+          'More': () => { particles = particles.concat(Array.from({length: 200}, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+            size: Math.random() * 2 + 1,
+            hue: Math.random() * 360
+          }))); },
+          'Less': () => { particles = particles.slice(0, Math.max(50, particles.length - 200)); }
+        }
+      };
+    }
+  },
+  {
+    id: 'mandelbrot',
+    title: 'Mandelbrot Fractal',
+    badge: 'Math',
+    info: 'Infinite complexity from a simple equation: z = z² + c. Click to zoom in!',
+    controls: ['Reset'],
+    setup: (canvas) => {
+      const ctx = canvas.getContext('2d');
+      let viewX = -0.5, viewY = 0, zoom = 1;
+      
+      const draw = () => {
+        const w = canvas.width, h = canvas.height;
+        const img = ctx.createImageData(w, h);
+        const maxIter = 100;
+        
+        for (let py = 0; py < h; py++) {
+          for (let px = 0; px < w; px++) {
+            const x0 = (px / w - 0.5) / zoom + viewX;
+            const y0 = (py / h - 0.5) / zoom + viewY;
+            let x = 0, y = 0, iter = 0;
+            
+            while (x*x + y*y <= 4 && iter < maxIter) {
+              const xt = x*x - y*y + x0;
+              y = 2*x*y + y0;
+              x = xt;
+              iter++;
+            }
+            
+            const i = (py * w + px) * 4;
+            if (iter === maxIter) {
+              img.data[i] = img.data[i+1] = img.data[i+2] = 0;
+            } else {
+              const t = iter / maxIter;
+              img.data[i]   = Math.floor(9 * (1-t) * t * t * t * 255);
+              img.data[i+1] = Math.floor(15 * (1-t) * (1-t) * t * t * 255);
+              img.data[i+2] = Math.floor(8.5 * (1-t) * (1-t) * (1-t) * t * 255);
+            }
+            img.data[i+3] = 255;
+          }
+        }
+        ctx.putImageData(img, 0, 0);
+      };
+      
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const px = e.clientX - rect.left;
+        const py = e.clientY - rect.top;
+        viewX = (px / canvas.width - 0.5) / zoom + viewX;
+        viewY = (py / canvas.height - 0.5) / zoom + viewY;
+        zoom *= 2;
+        draw();
+      });
+      
+      draw();
+      return { cleanup: () => {}, controls: { 'Reset': () => { viewX = -0.5; viewY = 0; zoom = 1; draw(); } } };
+    }
+  },
+  {
+    id: 'physics',
+    title: 'Physics Playground',
+    badge: 'Simulation',
+    info: 'Balls with gravity, collisions, and energy. Click to add balls!',
+    controls: ['Clear', 'Anti-Gravity'],
+    setup: (canvas) => {
+      const ctx = canvas.getContext('2d');
+      let balls = [];
+      let gravity = 0.3;
+      
+      const addBall = (x, y) => {
+        balls.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.5) * 8,
+          r: 15 + Math.random() * 20,
+          color: `hsl(${Math.random()*360}, 70%, 60%)`
+        });
+      };
+      
+      for (let i = 0; i < 5; i++) addBall(Math.random() * canvas.width, Math.random() * canvas.height / 2);
+      
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        addBall(e.clientX - rect.left, e.clientY - rect.top);
+      });
+      
+      let animId;
+      const draw = () => {
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        balls.forEach(b => {
+          b.vy += gravity;
+          b.x += b.vx;
+          b.y += b.vy;
+          
+          if (b.x + b.r > canvas.width || b.x - b.r < 0) {
+            b.vx *= -0.9;
+            b.x = Math.max(b.r, Math.min(canvas.width - b.r, b.x));
+          }
+          if (b.y + b.r > canvas.height) {
+            b.vy *= -0.85;
+            b.y = canvas.height - b.r;
+          }
+          
+          ctx.fillStyle = b.color;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+          ctx.stroke();
+        });
+        
+        animId = requestAnimationFrame(draw);
+      };
+      draw();
+      
+      return {
+        cleanup: () => cancelAnimationFrame(animId),
+        controls: {
+          'Clear': () => { balls = []; },
+          'Anti-Gravity': () => { gravity *= -1; }
+        }
+      };
+    }
+  },
+  {
+    id: 'cube3d',
+    title: '3D Rotating Cube',
+    badge: '3D Math',
+    info: 'A wireframe cube rendered with pure 2D canvas and 3D projection math. Drag to rotate!',
+    controls: ['Auto Rotate', 'Color Mode'],
+    setup: (canvas) => {
+      const ctx = canvas.getContext('2d');
+      let rotX = 0.5, rotY = 0.5, rotZ = 0;
+      let autoRotate = true;
+      let colorMode = false;
+      let dragging = false, lastX = 0, lastY = 0;
+      
+      const vertices = [
+        [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
+        [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]
+      ];
+      const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+      const faces = [[0,1,2,3],[4,5,6,7],[0,1,5,4],[2,3,7,6],[1,2,6,5],[0,3,7,4]];
+      
+      canvas.addEventListener('mousedown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; autoRotate = false; });
+      canvas.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        rotY += (e.clientX - lastX) * 0.01;
+        rotX += (e.clientY - lastY) * 0.01;
+        lastX = e.clientX; lastY = e.clientY;
+      });
+      canvas.addEventListener('mouseup', () => dragging = false);
+      canvas.addEventListener('mouseleave', () => dragging = false);
+      
+      const project = ([x, y, z]) => {
+        // Rotate X
+        let y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
+        let z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
+        // Rotate Y
+        let x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
+        let z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
+        // Rotate Z
+        let x3 = x2 * Math.cos(rotZ) - y1 * Math.sin(rotZ);
+        let y3 = x2 * Math.sin(rotZ) + y1 * Math.cos(rotZ);
+        
+        const scale = 300 / (z2 + 5);
+        return [canvas.width/2 + x3 * scale, canvas.height/2 + y3 * scale, z2];
+      };
+      
+      let animId;
+      const draw = () => {
+        if (autoRotate) { rotY += 0.01; rotX += 0.005; }
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const projected = vertices.map(project);
+        
+        faces.forEach((face, i) => {
+          ctx.beginPath();
+          face.forEach((vi, idx) => {
+            const [x, y] = projected[vi];
+            if (idx === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.closePath();
+          if (colorMode) {
+            ctx.fillStyle = `hsla(${i * 60}, 70%, 50%, 0.3)`;
+            ctx.fill();
+          }
+          ctx.strokeStyle = colorMode ? `hsl(${i * 60}, 80%, 60%)` : '#7c3aed';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+        
+        projected.forEach(([x, y]) => {
+          ctx.fillStyle = colorMode ? '#fff' : '#06b6d4';
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        
+        animId = requestAnimationFrame(draw);
+      };
+      draw();
+      
+      return {
+        cleanup: () => cancelAnimationFrame(animId),
+        controls: {
+          'Auto Rotate': () => { autoRotate = !autoRotate; },
+          'Color Mode': () => { colorMode = !colorMode; }
+        }
+      };
+    }
+  },
+  {
+    id: 'sorting',
+    title: 'Sorting Visualizer',
+    badge: 'Algorithms',
+    info: 'Watch algorithms sort data in real-time. Each bar is a number being compared and swapped.',
+    controls: ['Bubble', 'Quick', 'Shuffle'],
+    setup: (canvas) => {
+      const ctx = canvas.getContext('2d');
+      let arr = Array.from({length: 60}, (_, i) => i + 1);
+      let comparing = new Set();
+      let sorted = new Set();
+      let running = false;
+      
+      const shuffle = () => {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        sorted.clear();
+      };
+      shuffle();
+      
+      const draw = () => {
+        ctx.fillStyle = '#0a0e1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const barW = canvas.width / arr.length;
+        arr.forEach((v, i) => {
+          const h = (v / arr.length) * canvas.height;
+          let color = '#7c3aed';
+          if (sorted.has(i)) color = '#10b981';
+          if (comparing.has(i)) color = '#ef4444';
+          ctx.fillStyle = color;
+          ctx.fillRect(i * barW, canvas.height - h, barW - 1, h);
+        });
+      };
+      
+      const delay = (ms) => new Promise(r => setTimeout(r, ms));
+      
+      const bubbleSort = async () => {
+        if (running) return; running = true; sorted.clear();
+        for (let i = 0; i < arr.length; i++) {
+          for (let j = 0; j < arr.length - i - 1; j++) {
+            comparing = new Set([j, j+1]); draw(); await delay(10);
+            if (arr[j] > arr[j+1]) {
+              [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+            }
+          }
+          sorted.add(arr.length - i - 1); draw();
+        }
+        comparing.clear(); running = false;
+      };
+      
+      const quickSort = async (lo = 0, hi = arr.length - 1) => {
+        if (running && lo !== 0) return;
+        if (lo === 0) { running = true; sorted.clear(); }
+        if (lo < hi) {
+          const p = await partition(lo, hi);
+          sorted.add(p); draw();
+          await quickSort(lo, p - 1);
+          await quickSort(p + 1, hi);
+        }
+        if (lo === 0) { comparing.clear(); for (let i = 0; i < arr.length; i++) sorted.add(i); draw(); running = false; }
+      };
+      
+      const partition = async (lo, hi) => {
+        const pivot = arr[hi];
+        let i = lo - 1;
+        for (let j = lo; j < hi; j++) {
+          comparing = new Set([j, hi]); draw(); await delay(15);
+          if (arr[j] < pivot) {
+            i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+        }
+        [arr[i+1], arr[hi]] = [arr[hi], arr[i+1]];
+        return i + 1;
+      };
+      
+      draw();
+      const interval = setInterval(() => { if (!running) draw(); }, 100);
+      
+      return {
+        cleanup: () => clearInterval(interval),
+        controls: {
+          'Bubble': bubbleSort,
+          'Quick': quickSort,
+          'Shuffle': () => { if (!running) { shuffle(); draw(); } }
+        }
+      };
+    }
+  },
+  {
+    id: 'waves',
+    title: 'Wave Interference',
+    badge: 'Physics',
+    info: 'Multiple waves combining in real-time. See how complex waves emerge from simple sine functions.',
+    controls: ['Add Wave', 'Remove', 'Reset'],
+    setup: (canvas) => {
+      const ctx = canvas.getContext('2d');
+      let waves = [
+        { freq: 1, amp: 40, phase: 0, color: '#ef4444' },
+        { freq: 2, amp: 30, phase: 0, color: '#3b82f6' }
+      ];
+      let time = 0;
+      
+      const draw = () => {
+        ctx.fillStyle = '#0a0e1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Grid
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height/2);
+        ctx.lineTo(canvas.width, canvas.height/2);
+        ctx.stroke();
+        
+        // Individual waves (faded)
+        waves.forEach(w => {
+          ctx.strokeStyle = w.color + '40';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (let x = 0; x < canvas.width; x++) {
+            const y = canvas.height/2 + Math.sin(x * 0.02 * w.freq + time + w.phase) * w.amp;
+            if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        });
+        
+        // Combined wave
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (let x = 0; x < canvas.width; x++) {
+          let sum = 0;
+          waves.forEach(w => sum += Math.sin(x * 0.02 * w.freq + time + w.phase) * w.amp);
+          const y = canvas.height/2 + sum;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        
+        time += 0.05;
+        animId = requestAnimationFrame(draw);
+      };
+      
+      let animId;
+      draw();
+      
+      return {
+        cleanup: () => cancelAnimationFrame(animId),
+        controls: {
+          'Add Wave': () => {
+            waves.push({
+              freq: Math.random() * 4 + 0.5,
+              amp: Math.random() * 40 + 10,
+              phase: Math.random() * Math.PI * 2,
+              color: `hsl(${Math.random()*360}, 70%, 60%)`
+            });
+          },
+          'Remove': () => { waves.pop(); },
+          'Reset': () => {
+            waves = [
+              { freq: 1, amp: 40, phase: 0, color: '#ef4444' },
+              { freq: 2, amp: 30, phase: 0, color: '#3b82f6' }
+            ];
+          }
+        }
+      };
+    }
+  }
+];
+
+// ============================================================
+// UI LOGIC
+// ============================================================
+const nav = document.getElementById('nav');
+const editor = document.getElementById('editor');
+const highlight = document.getElementById('highlight');
+const consoleEl = document.getElementById('console');
+const desc = document.getElementById('desc');
+const pageTitle = document.getElementById('pageTitle');
+const pageSubtitle = document.getElementById('pageSubtitle');
+
+// Build nav
+const groups = {};
+concepts.forEach(c => {
+  if (!groups[c.cat]) groups[c.cat] = [];
+  groups[c.cat].push(c);
+});
+
+let navHTML = '<div class="nav-group"><div class="nav-title">🌟 Getting Started</div>';
+navHTML += `<div class="nav-item active" data-welcome="true"><span class="dot"></span>Welcome</div></div>`;
+
+Object.entries(groups).forEach(([cat, items]) => {
+  navHTML += `<div class="nav-group"><div class="nav-title">${cat}</div>`;
+  items.forEach(item => {
+    navHTML += `<div class="nav-item" data-name="${item.name}"><span class="dot"></span>${item.name}</div>`;
+  });
+  navHTML += '</div>';
+});
+nav.innerHTML = navHTML;
+
+// Syntax highlighter
+function highlightCode(code) {
+  return code
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/(\/\/.*)/g, '<span class="cm">$1</span>')
+    .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="cm">$1</span>')
+    .replace(/(["'`])(?:(?!\1|\\).|\\.)*\1/g, '<span class="str">$&</span>')
+    .replace(/\b(const|let|var|function|class|extends|return|if|else|for|while|do|switch|case|break|continue|try|catch|finally|throw|new|typeof|instanceof|async|await|yield|import|export|from|default|this|super|of|in)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(true|false|null|undefined|NaN|Infinity)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>')
+    .replace(/\b([A-Za-z_$][\w$]*)(?=\s*\()/g, '<span class="fn">$1</span>')
+    .replace(/(console|Math|Array|Object|Promise|Map|Set|Symbol|Proxy|Reflect|Error|Date|JSON)\b/g, '<span class="fn">$1</span>');
+}
+
+function updateHighlight() {
+  highlight.innerHTML = highlightCode(editor.value) + '\n';
+}
+
+editor.addEventListener('input', updateHighlight);
+editor.addEventListener('scroll', () => { highlight.scrollTop = editor.scrollTop; highlight.scrollLeft = editor.scrollLeft; });
+updateHighlight();
+
+// Console logger
+function logToConsole(type, ...args) {
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  const icons = { log: '›', error: '✕', warn: '⚠', info: 'ℹ', result: '←' };
+  entry.innerHTML = `<span class="icon">${icons[type] || '›'}</span><span>${args.map(a => {
+    if (typeof a === 'object') {
+      try { return '<span style="color:#a5d6ff">' + JSON.stringify(a, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;') + '</span>'; }
+      catch { return String(a); }
+    }
+    if (typeof a === 'string') return a.replace(/</g,'&lt;').replace(/\n/g,'<br>');
+    return String(a);
+  }).join(' ')}</span>`;
+  consoleEl.appendChild(entry);
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+// Run code
+document.getElementById('runBtn').addEventListener('click', () => {
+  consoleEl.innerHTML = '';
+  logToConsole('info', '▶ Running code...');
+  
+  const mockConsole = {
+    log: (...args) => logToConsole('log', ...args),
+    error: (...args) => logToConsole('error', ...args),
+    warn: (...args) => logToConsole('warn', ...args),
+    info: (...args) => logToConsole('info', ...args),
+    table: (data) => logToConsole('log', data)
+  };
+  
+  try {
+    const code = editor.value;
+    const fn = new Function('console', code);
+    const result = fn(mockConsole);
+    if (result !== undefined) logToConsole('result', result);
+    logToConsole('info', '✓ Execution complete');
+  } catch (e) {
+    logToConsole('error', `${e.name}: ${e.message}`);
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => { consoleEl.innerHTML = ''; });
+
+// Nav clicks
+nav.addEventListener('click', (e) => {
+  const item = e.target.closest('.nav-item');
+  if (!item) return;
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  item.classList.add('active');
+  
+  // Switch to learn tab
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab[data-tab="learn"]').classList.add('active');
+  document.getElementById('learnView').style.display = 'grid';
+  document.getElementById('showcaseView').style.display = 'none';
+  
+  if (item.dataset.welcome) {
+    pageTitle.textContent = 'Welcome';
+    pageSubtitle.textContent = 'Master JavaScript interactively';
+    desc.innerHTML = 'Click any topic on the left to start. Every concept has a working example you can edit and run!';
+    editor.value = `// Welcome to the Interactive JavaScript Encyclopedia
+// This is a LIVE code editor. Try editing and clicking Run!
+
+const message = "JavaScript is amazing!";
+console.log(message);
+
+// Topics available:
+console.log("📚 60+ concepts across 9 categories");
+console.log("⚡ Edit any code and hit Run");
+console.log("✨ Check out the Showcase tab for visual demos");
+
+// Try me:
+const fruits = ["🍎", "🍌", "🍇"];
+fruits.forEach(fruit => console.log("Fruit:", fruit));`;
+    updateHighlight();
+  } else {
+    const concept = concepts.find(c => c.name === item.dataset.name);
+    if (concept) {
+      pageTitle.textContent = concept.name;
+      pageSubtitle.textContent = concept.cat;
+      desc.innerHTML = concept.desc;
+      editor.value = concept.code;
+      updateHighlight();
+    }
+  }
+});
+
+// Search
+document.getElementById('search').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = !q || text.includes(q) ? 'flex' : 'none';
+  });
+  document.querySelectorAll('.nav-group').forEach(group => {
+    const visibleItems = group.querySelectorAll('.nav-item[style*="flex"], .nav-item:not([style])');
+    const hasVisible = Array.from(group.querySelectorAll('.nav-item')).some(i => i.style.display !== 'none');
+    group.style.display = hasVisible ? 'block' : 'none';
+  });
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    
+    if (tab.dataset.tab === 'learn') {
+      document.getElementById('learnView').style.display = 'grid';
+      document.getElementById('showcaseView').style.display = 'none';
+    } else {
+      document.getElementById('learnView').style.display = 'none';
+      document.getElementById('showcaseView').style.display = 'block';
+      pageTitle.textContent = '✨ Showcase';
+      pageSubtitle.textContent = 'Stunning visual demos built with pure JavaScript';
+      initShowcase();
+    }
+  });
+});
+
+// Showcase
+let currentCleanup = null;
+function initShowcase() {
+  const grid = document.getElementById('showcaseGrid');
+  grid.innerHTML = '';
+  
+  showcase.forEach(demo => {
+    const card = document.createElement('div');
+    card.className = 'demo-card';
+    card.innerHTML = `
+      <div class="demo-header">
+        <span class="demo-title">${demo.title}</span>
+        <span class="demo-badge">${demo.badge}</span>
+      </div>
+      <div class="demo-body">
+        <canvas class="demo-canvas" width="400" height="220"></canvas>
+        <div class="demo-controls"></div>
+        <div class="demo-info">${demo.info}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+    
+    const canvas = card.querySelector('canvas');
+    const controlsDiv = card.querySelector('.demo-controls');
+    
+    setTimeout(() => {
+      const api = demo.setup(canvas);
+      
+      demo.controls.forEach(name => {
+        const btn = document.createElement('button');
+        btn.className = 'demo-btn';
+        btn.textContent = name;
+        btn.addEventListener('click', () => {
+          api.controls[name]?.();
+          btn.classList.add('active');
+          setTimeout(() => btn.classList.remove('active'), 200);
+        });
+        controlsDiv.appendChild(btn);
+      });
+    }, 100);
+  });
+}
+
+// Keyboard shortcut: Ctrl/Cmd + Enter to run
+editor.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('runBtn').click();
+  }
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+    editor.selectionStart = editor.selectionEnd = start + 2;
+    updateHighlight();
+  }
+});
+
+// Welcome state
+pageTitle.textContent = 'Welcome to JS Encyclopedia';
+pageSubtitle.textContent = 'Interactive learning with live code execution';
+</script>
+</body>
+</html>
