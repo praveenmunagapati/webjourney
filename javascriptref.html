@@ -2155,16 +2155,24 @@ nav.innerHTML = navHTML;
 
 // Syntax highlighter
 function highlightCode(code) {
-  return code
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/(\/\/.*)/g, '<span class="cm">$1</span>')
-    .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="cm">$1</span>')
-    .replace(/(["'`])(?:(?!\1|\\).|\\.)*\1/g, '<span class="str">$&</span>')
-    .replace(/\b(const|let|var|function|class|extends|return|if|else|for|while|do|switch|case|break|continue|try|catch|finally|throw|new|typeof|instanceof|async|await|yield|import|export|from|default|this|super|of|in)\b/g, '<span class="kw">$1</span>')
-    .replace(/\b(true|false|null|undefined|NaN|Infinity)\b/g, '<span class="kw">$1</span>')
-    .replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>')
-    .replace(/\b([A-Za-z_$][\w$]*)(?=\s*\()/g, '<span class="fn">$1</span>')
-    .replace(/(console|Math|Array|Object|Promise|Map|Set|Symbol|Proxy|Reflect|Error|Date|JSON)\b/g, '<span class="fn">$1</span>');
+  // 1. Escape raw HTML special characters first to prevent layout breakages
+  let html = code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // 2. Master regex pattern: Each token type occupies a specific capture group
+  const pattern = /(\/\/.*)|(\/\*[\s\S]*?\*\/)|((["'`])(?:(?!\4|\\).|\\.)*\4)|\b(const|let|var|function|class|extends|return|if|else|for|while|do|switch|case|break|continue|try|catch|finally|throw|new|typeof|instanceof|async|await|yield|import|export|from|default|this|super|of|in|true|false|null|undefined|NaN|Infinity)\b|\b(console|Math|Array|Object|Promise|Map|Set|Symbol|Proxy|Reflect|Error|Date|JSON)\b|\b(\d+\.?\d*)\b|\b([A-Za-z_$][\w$]*)(?=\s*\()/g;
+
+  // 3. Process tokens in a single linear pass
+  return html.replace(pattern, (match, p1, p2, p3, p4, p5, p6, p7, p8) => {
+    if (p1 || p2) return `<span class="cm">${match}</span>`; // Comments (Green/Gray)
+    if (p3) return `<span class="str">${match}</span>`;        // Strings (Blue)
+    if (p5) return `<span class="kw">${match}</span>`;         // Keywords & Literals (Red)
+    if (p6 || p8) return `<span class="fn">${match}</span>`;   // Native Objects & Functions (Purple)
+    if (p7) return `<span class="num">${match}</span>`;        // Numbers (Light Blue)
+    return match;
+  });
 }
 
 function updateHighlight() {
