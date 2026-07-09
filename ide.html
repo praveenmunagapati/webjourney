@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebJourney IDE — Learn HTML, CSS & JavaScript</title>
+  <meta name="description" content="All-in-one web IDE for learning HTML5, CSS3 & JavaScript with 100+ live examples.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-app:#06080f;--bg-primary:#0b0f1a;--bg-secondary:#111827;--bg-tertiary:#1a2236;
+      --bg-editor:#0d1117;--bg-hover:rgba(139,92,246,0.08);--bg-active:rgba(139,92,246,0.15);
+      --text-primary:#e2e8f0;--text-secondary:#94a3b8;--text-muted:#64748b;
+      --accent:#8b5cf6;--accent-2:#06b6d4;--accent-3:#f472b6;
+      --accent-grad:linear-gradient(135deg,#8b5cf6,#06b6d4);
+      --accent-grad2:linear-gradient(135deg,#f472b6,#8b5cf6,#06b6d4);
+      --border:rgba(148,163,184,0.08);--border-active:rgba(139,92,246,0.4);
+      --shadow-glow:0 0 20px rgba(139,92,246,0.15);
+      --success:#10b981;--warning:#f59e0b;--error:#ef4444;--info:#3b82f6;
+      --html-color:#e34c26;--css-color:#264de4;--js-color:#f0db4f;
+      --radius:8px;--glass:rgba(17,24,39,0.7);--transition:0.2s cubic-bezier(0.4,0,0.2,1);
+      --sidebar-w:280px;
+    }
+    [data-theme="light"]{
+      --bg-app:#f0f2f5;--bg-primary:#f8fafc;--bg-secondary:#fff;--bg-tertiary:#f1f5f9;
+      --bg-editor:#fff;--bg-hover:rgba(139,92,246,0.06);--bg-active:rgba(139,92,246,0.1);
+      --text-primary:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;
+      --border:rgba(15,23,42,0.08);--glass:rgba(255,255,255,0.8);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;overflow:hidden}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-app);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+    button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit}
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:3px}
+    ::-webkit-scrollbar-thumb:hover{background:var(--text-secondary)}
+
+    /* SPLASH */
+    .splash{position:fixed;inset:0;z-index:10000;background:var(--bg-app);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity .6s,visibility .6s}
+    .splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    .splash-logo{font-size:3.5rem;animation:pulse 1.5s ease-in-out infinite}
+    .splash-title{font-size:1.4rem;font-weight:800;background:var(--accent-grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .splash-bar{width:120px;height:3px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden}
+    .splash-bar::after{content:'';display:block;width:40%;height:100%;border-radius:3px;background:var(--accent-grad);animation:load 1s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+    @keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+
+    /* APP */
+    .app{height:100vh;display:flex;flex-direction:column;opacity:0;transition:opacity .4s ease .3s}
+    .app.visible{opacity:1}
+
+    /* TOOLBAR */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;padding:0 12px;height:46px;min-height:46px;background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100;position:relative}
+    .toolbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--accent-grad);opacity:.3}
+    .brand{display:flex;align-items:center;gap:8px;user-select:none}
+    .brand-logo{width:28px;height:28px;background:var(--accent-grad);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+    .brand-name{font-size:.9rem;font-weight:700;background:var(--accent-grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .brand-tag{font-size:.55rem;font-weight:600;background:var(--accent-grad);color:#fff;padding:1px 5px;border-radius:3px;text-transform:uppercase}
+    .tb-actions{display:flex;align-items:center;gap:4px}
+    .tb-group{display:flex;align-items:center;gap:3px;padding:0 5px;border-right:1px solid var(--border)}
+    .tb-group:last-child{border-right:none;padding-right:0}
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:.72rem;font-weight:500;color:var(--text-secondary);transition:all var(--transition);white-space:nowrap}
+    .btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+    .btn.active,.btn.primary{background:var(--accent-grad);color:#fff;box-shadow:0 2px 10px rgba(139,92,246,.3)}
+    .btn.primary:hover{box-shadow:0 4px 16px rgba(139,92,246,.45);transform:translateY(-1px)}
+    .btn-icon{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:.9rem;color:var(--text-secondary);transition:all var(--transition)}
+    .btn-icon:hover{background:var(--bg-hover);color:var(--text-primary)}
+
+    /* WORKSPACE */
+    .workspace{flex:1;display:flex;overflow:hidden}
+
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);display:flex;flex-direction:column;background:var(--bg-secondary);border-right:1px solid var(--border);transition:width .3s,min-width .3s;overflow:hidden}
+    .sidebar.collapsed{width:0;min-width:0;border-right:none}
+    .sidebar-header{padding:12px;border-bottom:1px solid var(--border)}
+    .sidebar-search{width:100%;padding:8px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:.78rem;outline:none;transition:border var(--transition);font-family:inherit}
+    .sidebar-search:focus{border-color:var(--accent)}
+    .sidebar-search::placeholder{color:var(--text-muted)}
+    .sidebar-body{flex:1;overflow-y:auto;padding:6px 0}
+    .sidebar-cat{user-select:none}
+    .sidebar-cat-header{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);cursor:pointer;transition:all var(--transition);position:sticky;top:0;background:var(--bg-secondary);z-index:2}
+    .sidebar-cat-header:hover{color:var(--text-secondary);background:var(--bg-hover)}
+    .sidebar-cat-header .arrow{font-size:.6rem;transition:transform .2s;flex-shrink:0}
+    .sidebar-cat-header.open .arrow{transform:rotate(90deg)}
+    .sidebar-cat-header .cat-icon{font-size:.85rem}
+    .sidebar-cat-header .cat-count{margin-left:auto;background:var(--bg-tertiary);padding:1px 6px;border-radius:8px;font-size:.6rem;color:var(--text-muted)}
+    .sidebar-items{overflow:hidden;max-height:0;transition:max-height .3s ease}
+    .sidebar-items.open{max-height:5000px}
+    .sidebar-subcat{padding:6px 14px 2px 28px;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);opacity:.7}
+    .sidebar-item{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 28px;font-size:.76rem;color:var(--text-secondary);cursor:pointer;transition:all var(--transition);border-left:2px solid transparent;position:relative}
+    .sidebar-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+    .sidebar-item.active{background:var(--bg-active);color:#fff;border-left-color:var(--accent)}
+    .sidebar-item .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:.5}
+    .sidebar-item.active .dot{opacity:1;box-shadow:0 0 6px currentColor}
+    .sidebar-item.html-item .dot{background:var(--html-color)}
+    .sidebar-item.css-item .dot{background:var(--css-color)}
+    .sidebar-item.js-item .dot{background:var(--js-color)}
+    .sidebar-item.hidden{display:none}
+    .sidebar-footer{padding:8px 12px;border-top:1px solid var(--border);text-align:center}
+    .sidebar-footer span{font-size:.65rem;color:var(--text-muted)}
+    .no-results{padding:20px;text-align:center;color:var(--text-muted);font-size:.8rem}
+
+    /* MAIN PANEL */
+    .main-panel{flex:1;display:flex;overflow:hidden;min-width:0}
+
+    /* EDITOR PANEL */
+    .editor-panel{width:50%;min-width:200px;display:flex;flex-direction:column;background:var(--bg-primary);border-right:1px solid var(--border)}
+    .editor-tabs{display:flex;align-items:stretch;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 4px;min-height:36px;gap:1px}
+    .editor-tab{display:flex;align-items:center;gap:6px;padding:0 14px;font-size:.75rem;font-weight:500;color:var(--text-muted);position:relative;transition:all var(--transition);border-radius:6px 6px 0 0}
+    .editor-tab:hover{color:var(--text-secondary);background:var(--bg-hover)}
+    .editor-tab.active{color:var(--text-primary);background:var(--bg-primary)}
+    .editor-tab.active::after{content:'';position:absolute;bottom:0;left:6px;right:6px;height:2px;border-radius:2px 2px 0 0}
+    .editor-tab[data-lang="html"].active::after{background:var(--html-color)}
+    .editor-tab[data-lang="css"].active::after{background:var(--css-color)}
+    .editor-tab[data-lang="javascript"].active::after{background:var(--js-color)}
+    .tab-dot{width:7px;height:7px;border-radius:50%}
+    .editor-tab[data-lang="html"] .tab-dot{background:var(--html-color)}
+    .editor-tab[data-lang="css"] .tab-dot{background:var(--css-color)}
+    .editor-tab[data-lang="javascript"] .tab-dot{background:var(--js-color)}
+    .editor-container{flex:1;position:relative;overflow:hidden}
+    .editor-instance{position:absolute;inset:0;display:none}
+    .editor-instance.active{display:block}
+
+    /* RESIZE */
+    .resize-handle{width:5px;cursor:col-resize;background:transparent;position:relative;z-index:50;flex-shrink:0;transition:background var(--transition)}
+    .resize-handle:hover,.resize-handle.active{background:rgba(139,92,246,.15)}
+    .resize-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:3px;height:36px;border-radius:3px;background:var(--text-muted);opacity:0;transition:opacity var(--transition)}
+    .resize-handle:hover::after,.resize-handle.active::after{opacity:.4}
+
+    /* OUTPUT */
+    .output-panel{flex:1;min-width:200px;display:flex;flex-direction:column;background:var(--bg-primary)}
+    .output-header{display:flex;align-items:center;justify-content:space-between;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 6px 0 4px;min-height:36px}
+    .output-tabs{display:flex;align-items:stretch;gap:1px}
+    .output-tab{display:flex;align-items:center;gap:5px;padding:0 12px;font-size:.75rem;font-weight:500;color:var(--text-muted);position:relative;transition:all var(--transition)}
+    .output-tab:hover{color:var(--text-secondary)}
+    .output-tab.active{color:var(--text-primary)}
+    .output-tab.active::after{content:'';position:absolute;bottom:0;left:6px;right:6px;height:2px;background:var(--accent-grad);border-radius:2px 2px 0 0}
+    .console-badge{background:var(--error);color:#fff;font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:8px;min-width:14px;text-align:center;display:none;animation:pop .3s ease}
+    .console-badge.visible{display:inline-block}
+    @keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+    .output-actions{display:flex;align-items:center;gap:2px}
+    .preview-container{flex:1;position:relative;background:#fff}
+    .preview-container iframe{width:100%;height:100%;border:none;background:#fff}
+    .console-container{flex:1;display:none;flex-direction:column;background:var(--bg-editor);font-family:'JetBrains Mono',monospace;font-size:.78rem}
+    .console-container.active{display:flex}
+    .console-output{flex:1;overflow-y:auto;padding:6px}
+    .console-entry{padding:3px 8px;margin:1px 0;border-radius:3px;display:flex;align-items:flex-start;gap:6px;animation:slide .15s ease;word-break:break-word}
+    @keyframes slide{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+    .console-entry.log{color:var(--text-primary)}.console-entry.info{color:var(--info);background:rgba(59,130,246,.06)}
+    .console-entry.warn{color:var(--warning);background:rgba(245,158,11,.06)}.console-entry.error{color:var(--error);background:rgba(239,68,68,.08)}
+    .console-entry.clear-msg{color:var(--text-muted);font-style:italic}
+    .console-entry-icon{flex-shrink:0;width:14px;text-align:center;opacity:.7;font-size:.7rem}
+    .console-entry-text{flex:1;white-space:pre-wrap}
+    .console-input-bar{display:flex;align-items:center;gap:6px;padding:6px 10px;border-top:1px solid var(--border);background:var(--bg-secondary)}
+    .console-prompt{color:var(--accent);font-weight:600;font-size:.8rem}
+    .console-input{flex:1;background:transparent;border:none;outline:none;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.78rem}
+    .console-input::placeholder{color:var(--text-muted)}
+
+    /* EXAMPLE INFO BAR */
+    .example-info{display:none;padding:8px 14px;background:var(--bg-tertiary);border-bottom:1px solid var(--border);font-size:.76rem;color:var(--text-secondary);line-height:1.5;max-height:60px;overflow-y:auto}
+    .example-info.visible{display:block}
+    .example-info strong{color:var(--accent)}
+    .example-info .example-title{color:var(--text-primary);font-weight:600;margin-right:6px}
+
+    /* STATUSBAR */
+    .statusbar{display:flex;align-items:center;justify-content:space-between;padding:0 12px;height:24px;min-height:24px;background:var(--bg-secondary);border-top:1px solid var(--border);font-size:.65rem;color:var(--text-muted);user-select:none}
+    .statusbar-left,.statusbar-right{display:flex;align-items:center;gap:14px}
+    .status-item{display:flex;align-items:center;gap:3px}
+    .status-dot{width:5px;height:5px;border-radius:50%;background:var(--success);animation:dotPulse 2s ease infinite}
+    @keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    .output-panel.fullscreen{position:fixed;inset:0;z-index:9999}
+    .ace_editor{font-family:'JetBrains Mono',monospace!important}
+    @media(max-width:900px){
+      .sidebar{width:0;min-width:0;border-right:none}
+      .sidebar.mobile-open{width:280px;min-width:280px;position:absolute;z-index:200;height:100%;border-right:1px solid var(--border)}
+    }
+  </style>
+</head>
+<body>
+  <div class="splash" id="splash"><div class="splash-logo">🚀</div><div class="splash-title">WebJourney IDE</div><div class="splash-bar"></div></div>
+  <div class="app" id="app">
+    <header class="toolbar">
+      <div class="brand">
+        <button class="btn-icon" id="sidebarToggle" title="Toggle Sidebar">☰</button>
+        <div class="brand-logo">🚀</div>
+        <span class="brand-name">WebJourney IDE</span>
+        <span class="brand-tag">v2</span>
+      </div>
+      <div class="tb-actions">
+        <div class="tb-group">
+          <button class="btn primary" id="runBtn" title="Run (Ctrl+Enter)"><span>▶</span> Run</button>
+          <button class="btn active" id="autoRunBtn" title="Auto-Run (Ctrl+D)"><span>⚡</span> Auto</button>
+        </div>
+        <div class="tb-group">
+          <button class="btn" id="resetBtn" title="Reset to original example">↺ Reset</button>
+          <button class="btn" id="downloadBtn" title="Download">↓ Export</button>
+        </div>
+        <div class="tb-group">
+          <button class="btn-icon" id="fontMinusBtn" title="Font −">A<small>−</small></button>
+          <button class="btn-icon" id="fontPlusBtn" title="Font +">A<small>+</small></button>
+        </div>
+        <div class="tb-group">
+          <button class="btn-icon" id="themeBtn" title="Toggle Theme">🌙</button>
+        </div>
+      </div>
+    </header>
+    <div class="workspace" id="workspace">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <input class="sidebar-search" id="sidebarSearch" type="text" placeholder="🔍 Search examples..." autocomplete="off" spellcheck="false">
+        </div>
+        <div class="sidebar-body" id="sidebarBody"></div>
+        <div class="sidebar-footer"><span id="exampleCount">0</span> <span>examples</span></div>
+      </aside>
+      <div class="main-panel">
+        <div class="editor-panel" id="editorPanel">
+          <div class="example-info" id="exampleInfo"></div>
+          <div class="editor-tabs">
+            <button class="editor-tab active" data-lang="html"><span class="tab-dot"></span> HTML</button>
+            <button class="editor-tab" data-lang="css"><span class="tab-dot"></span> CSS</button>
+            <button class="editor-tab" data-lang="javascript"><span class="tab-dot"></span> JS</button>
+          </div>
+          <div class="editor-container">
+            <div class="editor-instance active" id="htmlEditorEl"></div>
+            <div class="editor-instance" id="cssEditorEl"></div>
+            <div class="editor-instance" id="jsEditorEl"></div>
+          </div>
+        </div>
+        <div class="resize-handle" id="resizeHandle"></div>
+        <div class="output-panel" id="outputPanel">
+          <div class="output-header">
+            <div class="output-tabs">
+              <button class="output-tab active" data-panel="preview"><span>👁</span> Preview</button>
+              <button class="output-tab" data-panel="console"><span>⌨</span> Console <span class="console-badge" id="consoleBadge">0</span></button>
+            </div>
+            <div class="output-actions">
+              <button class="btn-icon" id="clearConsoleBtn" title="Clear Console">🗑</button>
+              <button class="btn-icon" id="refreshBtn" title="Refresh">↻</button>
+              <button class="btn-icon" id="fullscreenBtn" title="Fullscreen">⛶</button>
+            </div>
+          </div>
+          <div class="preview-container" id="previewPanel"><iframe id="previewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe></div>
+          <div class="console-container" id="consolePanel">
+            <div class="console-output" id="consoleOutput"></div>
+            <div class="console-input-bar"><span class="console-prompt">›</span><input class="console-input" id="consoleInput" type="text" placeholder="Type JavaScript..." autocomplete="off" spellcheck="false"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="statusbar">
+      <div class="statusbar-left">
+        <div class="status-item"><span class="status-dot" id="statusDot"></span><span id="statusText">Ready</span></div>
+        <div class="status-item" id="cursorInfo">Ln 1, Col 1</div>
+      </div>
+      <div class="statusbar-right">
+        <div class="status-item" id="autoRunStatus">⚡ Auto-run ON</div>
+        <div class="status-item">💾 Auto-saved</div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ace.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ext-language_tools.min.js"></script>
+  <script>
+  // =====================================================================
+  // DATA: HTML EXAMPLES
+  // =====================================================================
+  const HTML_EXAMPLES = [
+    { cat:"Document Structure", name:"DOCTYPE & html", desc:"The document type and root element", html:'<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Hello World!</h1>\n  <p>This is a basic HTML page structure.</p>\n</body>\n</html>', css:"", js:"" },
+    { cat:"Text Elements", name:"Headings h1-h6", desc:"HTML headings from most to least important", html:'<h1>Heading 1</h1>\n<h2>Heading 2</h2>\n<h3>Heading 3</h3>\n<h4>Heading 4</h4>\n<h5>Heading 5</h5>\n<h6>Heading 6</h6>', css:"body{font-family:sans-serif;padding:20px}h1{color:#2c3e50}h2{color:#3498db}h3{color:#e74c3c}h4{color:#27ae60}h5{color:#8e44ad}h6{color:#f39c12}", js:"" },
+    { cat:"Text Elements", name:"Paragraphs & Spans", desc:"Block paragraphs and inline spans for text", html:'<p>This is a paragraph. Paragraphs are <strong>block-level</strong> elements.</p>\n<p>This has a <span style="color:red;font-weight:bold">red span</span> inside it.</p>\n<p>You can use <em>emphasis</em>, <strong>strong</strong>, <mark>highlight</mark>, and <small>small text</small>.</p>', css:"body{font-family:Georgia,serif;padding:20px;line-height:1.8;max-width:600px}p{margin-bottom:12px}", js:"" },
+    { cat:"Text Elements", name:"Code & Preformatted", desc:"Display code snippets and preformatted text", html:'<p>Use <code>console.log()</code> to debug JavaScript.</p>\n<pre>\nfunction hello() {\n  return "Hello, World!";\n}\n</pre>\n<p>The <kbd>Ctrl</kbd> + <kbd>S</kbd> shortcut saves files.</p>', css:"body{font-family:sans-serif;padding:20px}code{background:#f0f0f0;padding:2px 6px;border-radius:3px;color:#e74c3c}pre{background:#2c3e50;color:#ecf0f1;padding:15px;border-radius:6px;overflow-x:auto}kbd{background:#eee;border:1px solid #ccc;padding:2px 6px;border-radius:3px;font-size:.9em}", js:"" },
+    { cat:"Text Elements", name:"Blockquote & Citation", desc:"Quoting text from external sources", html:'<blockquote cite="https://example.com">\n  <p>"The only way to do great work is to love what you do."</p>\n  <footer>— <cite>Steve Jobs</cite></footer>\n</blockquote>\n<p>An inline quote: <q>To be or not to be</q> by Shakespeare.</p>', css:"body{font-family:Georgia,serif;padding:20px;max-width:500px}blockquote{border-left:4px solid #3498db;margin:20px 0;padding:15px 20px;background:#f8f9fa;border-radius:0 8px 8px 0}blockquote p{font-size:1.1em;font-style:italic;color:#555}footer{margin-top:8px;color:#888}q{color:#2c3e50;font-style:italic}", js:"" },
+    { cat:"Text Elements", name:"Subscript & Superscript", desc:"Chemical formulas and mathematical notation", html:'<h3>Chemical Formulas</h3>\n<p>Water: H<sub>2</sub>O</p>\n<p>Carbon Dioxide: CO<sub>2</sub></p>\n\n<h3>Math</h3>\n<p>E = mc<sup>2</sup></p>\n<p>x<sup>2</sup> + y<sup>2</sup> = z<sup>2</sup></p>', css:"body{font-family:sans-serif;padding:20px}h3{color:#2c3e50;margin-top:15px}p{margin:5px 0;font-size:1.1em}", js:"" },
+    { cat:"Lists", name:"Unordered & Ordered Lists", desc:"Bulleted and numbered lists", html:'<h3>Shopping List</h3>\n<ul>\n  <li>Apples</li>\n  <li>Bananas</li>\n  <li>Milk</li>\n</ul>\n\n<h3>Steps to Cook</h3>\n<ol>\n  <li>Preheat oven to 350°F</li>\n  <li>Mix ingredients</li>\n  <li>Bake for 30 minutes</li>\n</ol>', css:"body{font-family:sans-serif;padding:20px}h3{color:#2c3e50;margin:15px 0 8px}ul{list-style-type:disc}ol{list-style-type:decimal}li{margin:4px 0;padding-left:5px}", js:"" },
+    { cat:"Lists", name:"Definition List", desc:"Term and description pairs", html:'<dl>\n  <dt>HTML</dt>\n  <dd>HyperText Markup Language — the structure of web pages.</dd>\n  \n  <dt>CSS</dt>\n  <dd>Cascading Style Sheets — styles and visual presentation.</dd>\n  \n  <dt>JavaScript</dt>\n  <dd>A programming language for interactive web pages.</dd>\n</dl>', css:"body{font-family:sans-serif;padding:20px;max-width:500px}dt{font-weight:bold;color:#2c3e50;margin-top:12px;font-size:1.1em}dd{color:#666;margin-left:20px;margin-top:4px;border-left:3px solid #3498db;padding-left:12px}", js:"" },
+    { cat:"Tables", name:"HTML Table", desc:"Structured data in rows and columns", html:'<table>\n  <caption>Student Grades</caption>\n  <thead>\n    <tr><th>Name</th><th>Subject</th><th>Grade</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Alice</td><td>Math</td><td>A</td></tr>\n    <tr><td>Bob</td><td>Science</td><td>B+</td></tr>\n    <tr><td>Carol</td><td>English</td><td>A-</td></tr>\n  </tbody>\n</table>', css:"body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}caption{font-weight:bold;margin-bottom:10px;color:#2c3e50;font-size:1.2em}th{background:#3498db;color:#fff;padding:12px;text-align:left}td{padding:10px 12px;border-bottom:1px solid #eee}tr:hover{background:#f5f8ff}", js:"" },
+    { cat:"Forms", name:"Login Form", desc:"Form with inputs, labels, and a submit button", html:'<form onsubmit="return false">\n  <h2>Login</h2>\n  <div class="field">\n    <label for="email">Email</label>\n    <input type="email" id="email" placeholder="you@example.com" required>\n  </div>\n  <div class="field">\n    <label for="pass">Password</label>\n    <input type="password" id="pass" placeholder="Enter password" required>\n  </div>\n  <div class="field">\n    <label><input type="checkbox"> Remember me</label>\n  </div>\n  <button type="submit">Sign In</button>\n</form>', css:'body{font-family:sans-serif;padding:20px;display:flex;justify-content:center}form{width:320px;background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1)}h2{margin-bottom:20px;color:#2c3e50}.field{margin-bottom:15px}label{display:block;margin-bottom:5px;font-size:.9em;color:#555}input[type="email"],input[type="password"]{width:100%;padding:10px;border:2px solid #ddd;border-radius:6px;font-size:1em;outline:none;transition:border .3s}input:focus{border-color:#3498db}button{width:100%;padding:12px;background:#3498db;color:#fff;border:none;border-radius:6px;font-size:1em;cursor:pointer;transition:background .3s}button:hover{background:#2980b9}', js:"" },
+    { cat:"Forms", name:"Registration Form", desc:"Select, radio, textarea and other form controls", html:'<form onsubmit="return false">\n  <h2>Register</h2>\n  <input type="text" placeholder="Full Name" required>\n  <select>\n    <option value="">Select Country</option>\n    <option>India</option>\n    <option>USA</option>\n    <option>UK</option>\n  </select>\n  <div class="radios">\n    <label><input type="radio" name="gender" value="m"> Male</label>\n    <label><input type="radio" name="gender" value="f"> Female</label>\n    <label><input type="radio" name="gender" value="o"> Other</label>\n  </div>\n  <textarea placeholder="Tell us about yourself..." rows="3"></textarea>\n  <input type="range" min="18" max="100" value="25">\n  <input type="color" value="#3498db">\n  <button type="submit">Register</button>\n</form>', css:'body{font-family:sans-serif;padding:20px;display:flex;justify-content:center;background:#f0f2f5}form{width:350px;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08)}h2{margin-bottom:15px;color:#2c3e50}input[type="text"],select,textarea{width:100%;padding:10px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px;font-size:.9em;font-family:inherit}.radios{margin-bottom:12px;display:flex;gap:15px}.radios label{font-size:.9em;color:#555}input[type="range"]{width:100%;margin-bottom:10px}input[type="color"]{margin-bottom:12px}button{width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer}', js:"" },
+    { cat:"Media", name:"Images & Figures", desc:"Displaying images with captions", html:'<figure>\n  <img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\'><rect width=\'400\' height=\'200\' fill=\'%233498db\'/><text x=\'50%\' y=\'50%\' fill=\'white\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'24\' font-family=\'sans-serif\'>Sample Image</text></svg>" alt="Sample" style="width:100%;border-radius:8px">\n  <figcaption>Figure 1: A sample image using SVG data URI</figcaption>\n</figure>', css:"body{font-family:sans-serif;padding:20px;max-width:500px;margin:0 auto}figure{margin:0}figcaption{text-align:center;color:#666;font-style:italic;margin-top:8px;font-size:.9em}", js:"" },
+    { cat:"Media", name:"Audio & Video", desc:"HTML5 media elements (using placeholder since no real media)", html:'<div class="media-demo">\n  <h3>🎵 Audio Element</h3>\n  <audio controls>\n    <source src="audio.mp3" type="audio/mpeg">\n    Your browser does not support audio.\n  </audio>\n  \n  <h3>🎬 Video Element</h3>\n  <video controls width="100%" poster="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'640\' height=\'360\'><rect width=\'640\' height=\'360\' fill=\'%232c3e50\'/><text x=\'50%\' y=\'50%\' fill=\'white\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'28\' font-family=\'sans-serif\'>▶ Video Placeholder</text></svg>">\n    <source src="video.mp4" type="video/mp4">\n    Your browser does not support video.\n  </video>\n</div>', css:"body{font-family:sans-serif;padding:20px;max-width:500px;margin:0 auto}h3{color:#2c3e50;margin:20px 0 10px}audio{width:100%}video{border-radius:8px}", js:"" },
+    { cat:"Semantic HTML", name:"Page Layout", desc:"Semantic elements for page structure", html:'<header>\n  <nav>\n    <a href="#" class="logo">MySite</a>\n    <a href="#">Home</a>\n    <a href="#">About</a>\n    <a href="#">Contact</a>\n  </nav>\n</header>\n<main>\n  <article>\n    <h1>Welcome to My Website</h1>\n    <p>This demonstrates semantic HTML5 elements.</p>\n    <section>\n      <h2>Features</h2>\n      <p>Semantic tags make your HTML meaningful.</p>\n    </section>\n  </article>\n  <aside>\n    <h3>Sidebar</h3>\n    <p>Related content goes here.</p>\n  </aside>\n</main>\n<footer>\n  <p>&copy; 2025 MySite. All rights reserved.</p>\n</footer>', css:'body{font-family:sans-serif;margin:0}header{background:#2c3e50;color:#fff}nav{display:flex;align-items:center;padding:12px 20px;gap:20px}.logo{font-weight:bold;font-size:1.2em}nav a{color:#ecf0f1;text-decoration:none}nav a:hover{color:#3498db}main{display:flex;padding:20px;gap:20px;max-width:800px;margin:0 auto}article{flex:2}aside{flex:1;background:#f8f9fa;padding:15px;border-radius:8px}h1{color:#2c3e50;margin-bottom:10px}h2{color:#3498db;margin:15px 0 8px}footer{background:#2c3e50;color:#ecf0f1;text-align:center;padding:15px;margin-top:20px}', js:"" },
+    { cat:"Interactive", name:"Details & Summary", desc:"Expandable/collapsible sections", html:'<h2>FAQ</h2>\n<details open>\n  <summary>What is HTML?</summary>\n  <p>HTML (HyperText Markup Language) is the standard markup language for creating web pages.</p>\n</details>\n<details>\n  <summary>What is CSS?</summary>\n  <p>CSS (Cascading Style Sheets) describes how HTML elements should be displayed on screen.</p>\n</details>\n<details>\n  <summary>What is JavaScript?</summary>\n  <p>JavaScript is a programming language that makes web pages interactive and dynamic.</p>\n</details>', css:"body{font-family:sans-serif;padding:20px;max-width:500px;margin:0 auto}h2{color:#2c3e50;margin-bottom:15px}details{margin-bottom:8px;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden}summary{padding:12px 16px;background:#f8f9fa;cursor:pointer;font-weight:600;color:#2c3e50;transition:background .2s}summary:hover{background:#e8ecf1}details[open] summary{background:#3498db;color:#fff}details p{padding:12px 16px;color:#555;line-height:1.6}", js:"" },
+    { cat:"Interactive", name:"Progress & Meter", desc:"Progress bars and meter gauges", html:'<h3>Download Progress</h3>\n<progress value="70" max="100">70%</progress>\n<span>70%</span>\n\n<h3>Battery Level</h3>\n<meter value="0.8" min="0" max="1" low="0.25" high="0.75" optimum="1">80%</meter>\n<span>80%</span>\n\n<h3>Disk Usage</h3>\n<meter value="0.9" min="0" max="1" low="0.3" high="0.7" optimum="0.3">90%</meter>\n<span>90% (Warning!)</span>', css:"body{font-family:sans-serif;padding:20px}h3{color:#2c3e50;margin:15px 0 8px}progress,meter{width:200px;height:20px;margin-right:10px;vertical-align:middle}span{font-size:.9em;color:#666}", js:"" },
+    { cat:"Graphics", name:"SVG Drawing", desc:"Scalable Vector Graphics inline in HTML", html:'<svg width="300" height="200" viewBox="0 0 300 200">\n  <rect x="10" y="10" width="280" height="180" rx="15" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/>\n  <circle cx="80" cy="80" r="40" fill="#e74c3c" opacity=".8"/>\n  <circle cx="150" cy="80" r="40" fill="#3498db" opacity=".8"/>\n  <circle cx="220" cy="80" r="40" fill="#2ecc71" opacity=".8"/>\n  <text x="150" y="160" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#2c3e50">SVG Shapes</text>\n</svg>', css:"body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f0f0f0}svg{filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}", js:"" },
+    { cat:"Graphics", name:"Canvas Drawing", desc:"Drawing with the HTML5 Canvas API", html:'<canvas id="myCanvas" width="400" height="250"></canvas>', css:"body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#1a1a2e}canvas{border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.3)}", js:'var canvas = document.getElementById("myCanvas");\nvar ctx = canvas.getContext("2d");\n\n// Background\nctx.fillStyle = "#0f0f23";\nctx.fillRect(0, 0, 400, 250);\n\n// Stars\nfor (var i = 0; i < 50; i++) {\n  ctx.fillStyle = "rgba(255,255,255," + Math.random() + ")";\n  ctx.fillRect(Math.random()*400, Math.random()*250, 2, 2);\n}\n\n// Moon\nctx.beginPath();\nctx.arc(320, 60, 35, 0, Math.PI * 2);\nctx.fillStyle = "#f1c40f";\nctx.fill();\n\n// Mountains\nctx.beginPath();\nctx.moveTo(0, 250);\nctx.lineTo(100, 120);\nctx.lineTo(200, 180);\nctx.lineTo(300, 100);\nctx.lineTo(400, 160);\nctx.lineTo(400, 250);\nctx.fillStyle = "#2c3e50";\nctx.fill();\n\n// Text\nctx.font = "18px sans-serif";\nctx.fillStyle = "#ecf0f1";\nctx.fillText("Canvas Night Sky 🌙", 110, 230);\n\nconsole.log("🎨 Canvas drawn!");' },
+  ];
+
+  // =====================================================================
+  // DATA: CSS EXAMPLES (from cssDB)
+  // =====================================================================
+  const CSS_EXAMPLES = [
+    { cat:"Animation", name:"animation", desc:"Shorthand for all animation properties", html:"<div class='box'></div>", css:".box{width:50px;height:50px;background:#3b82f6;border-radius:8px;animation:slide 2s infinite alternate}@keyframes slide{from{transform:translateX(0)}to{transform:translateX(120px)}}" },
+    { cat:"Animation", name:"animation-name", desc:"Specifies the @keyframes animation name", html:"<div class='box'></div>", css:".box{width:50px;height:50px;background:#ef4444;border-radius:8px;animation-name:spin;animation-duration:2s;animation-iteration-count:infinite}@keyframes spin{to{transform:rotate(360deg)}}" },
+    { cat:"Animation", name:"animation-timing-function", desc:"Speed curve: ease, linear, cubic-bezier", html:"<div class='box'></div>", css:".box{width:50px;height:50px;background:#f59e0b;border-radius:8px;animation:move 2s infinite alternate;animation-timing-function:cubic-bezier(0.68,-0.55,0.27,1.55)}@keyframes move{to{transform:translateX(120px)}}" },
+    { cat:"Animation", name:"@keyframes", desc:"Define animation steps with from/to or percentages", html:"<div class='box'></div>", css:".box{width:60px;height:60px;background:#8b5cf6;border-radius:50%;animation:rainbow 3s infinite}@keyframes rainbow{0%{background:#ef4444;transform:scale(1)}25%{background:#f59e0b;transform:scale(1.2)}50%{background:#10b981;transform:scale(1)}75%{background:#3b82f6;transform:scale(1.2)}100%{background:#ef4444;transform:scale(1)}}" },
+    { cat:"Background", name:"background", desc:"Shorthand for all background properties", html:"<div class='box'>Gradient Background</div>", css:".box{width:100%;height:100px;background:linear-gradient(45deg,#3b82f6,#ec4899);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-family:sans-serif}" },
+    { cat:"Background", name:"background-image", desc:"Set gradients or image backgrounds", html:"<div class='box'>Radial Gradient</div>", css:".box{width:100%;height:100px;background-image:radial-gradient(circle,#3b82f6,#1e3a8a);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif}" },
+    { cat:"Background", name:"background-size", desc:"Control background sizing: cover, contain, custom", html:"<div class='box'></div>", css:".box{width:100%;height:100px;background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:20px 20px;background-position:0 0,10px 10px;border-radius:8px}" },
+    { cat:"Background", name:"background-clip: text", desc:"Clip background to text shape", html:"<div class='box'>TEXT CLIP</div>", css:".box{width:100%;height:100px;background:linear-gradient(to right,#3b82f6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:2.5rem;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:sans-serif}" },
+    { cat:"Box Model", name:"width & height", desc:"Set dimensions of an element", html:"<div class='box'>200 × 80px</div>", css:".box{width:200px;height:80px;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;font-family:sans-serif;font-weight:bold}" },
+    { cat:"Box Model", name:"margin & padding", desc:"Outer and inner spacing of elements", html:"<div class='outer'><div class='box'>Padding: 20px<br>Margin: auto</div></div>", css:".outer{background:#e2e8f0;padding:20px;border-radius:8px}.box{width:160px;background:#8b5cf6;color:#fff;padding:20px;margin:0 auto;border-radius:8px;text-align:center;font-family:sans-serif;font-size:.9em}" },
+    { cat:"Box Model", name:"box-sizing", desc:"border-box vs content-box calculation", html:"<div class='wrap'><div class='box cb'>Content-Box</div><div class='box bb'>Border-Box</div></div>", css:".wrap{display:flex;gap:12px;font-family:sans-serif;font-size:12px}.box{width:150px;height:60px;background:#fff;border:4px solid #3b82f6;display:flex;align-items:center;justify-content:center;padding:10px}.bb{box-sizing:border-box}.cb{box-sizing:content-box}" },
+    { cat:"Box Model", name:"display", desc:"Block, inline, flex, grid, none", html:"<div class='box'><div class='item'>Flex</div><div class='item'>Items</div><div class='item'>Here</div></div>", css:".box{display:flex;gap:10px;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#3b82f6;color:#fff;padding:10px 20px;border-radius:6px;font-family:sans-serif}" },
+    { cat:"Box Model", name:"overflow", desc:"Handle content that exceeds box dimensions", html:"<div class='box'>This is a lot of text that will be hidden because overflow is set to hidden and the box has a fixed height and width constraint.</div>", css:".box{width:180px;height:60px;background:#f1f5f9;border:2px solid #cbd5e1;overflow:hidden;padding:10px;font-size:13px;font-family:sans-serif;border-radius:6px}" },
+    { cat:"Flexbox", name:"flex-direction", desc:"Row, column, row-reverse, column-reverse", html:"<div class='box'><div class='item'>1</div><div class='item'>2</div><div class='item'>3</div></div>", css:".box{display:flex;flex-direction:column;gap:8px;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#8b5cf6;color:#fff;padding:10px;border-radius:6px;text-align:center;font-family:sans-serif}" },
+    { cat:"Flexbox", name:"justify-content", desc:"Align items along the main axis", html:"<div class='box'><div class='item'>1</div><div class='item'>2</div><div class='item'>3</div></div>", css:".box{display:flex;justify-content:space-between;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#ec4899;color:#fff;padding:10px 24px;border-radius:6px;font-family:sans-serif}" },
+    { cat:"Flexbox", name:"align-items", desc:"Align items along the cross axis", html:"<div class='box'><div class='item'>Short</div><div class='item tall'>Tall</div><div class='item'>Short</div></div>", css:".box{display:flex;align-items:center;height:100px;background:#f1f5f9;padding:12px;border-radius:8px;gap:10px}.item{background:#10b981;color:#fff;padding:10px;border-radius:6px;font-family:sans-serif}.tall{height:60px;display:flex;align-items:center}" },
+    { cat:"Flexbox", name:"flex-wrap & gap", desc:"Wrap items and control spacing", html:"<div class='box'><div class='item'>One</div><div class='item'>Two</div><div class='item'>Three</div><div class='item'>Four</div><div class='item'>Five</div></div>", css:".box{display:flex;flex-wrap:wrap;gap:10px;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#f59e0b;color:#fff;padding:10px 24px;border-radius:6px;font-family:sans-serif}" },
+    { cat:"Grid", name:"grid-template-columns", desc:"Define column tracks with fr, px, auto", html:"<div class='box'><div class='item'>1fr</div><div class='item'>2fr</div><div class='item'>1fr</div></div>", css:".box{display:grid;grid-template-columns:1fr 2fr 1fr;gap:10px;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#14b8a6;color:#fff;padding:15px;text-align:center;border-radius:6px;font-family:sans-serif}" },
+    { cat:"Grid", name:"grid-template-areas", desc:"Name grid regions for a clean layout", html:"<div class='box'><div class='item h'>Header</div><div class='item s'>Sidebar</div><div class='item m'>Main Content</div><div class='item f'>Footer</div></div>", css:".box{display:grid;grid-template-areas:'header header' 'sidebar main' 'footer footer';grid-template-columns:1fr 2fr;gap:10px;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#ec4899;color:#fff;padding:16px;text-align:center;border-radius:6px;font-family:sans-serif}.h{grid-area:header}.s{grid-area:sidebar}.m{grid-area:main}.f{grid-area:footer}" },
+    { cat:"Grid", name:"grid-column: span", desc:"Make items span multiple columns", html:"<div class='box'><div class='item span'>Spans 2 columns</div><div class='item'>3</div><div class='item'>4</div><div class='item'>5</div></div>", css:".box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:#f1f5f9;padding:12px;border-radius:8px}.item{background:#6366f1;color:#fff;padding:15px;text-align:center;border-radius:6px;font-family:sans-serif}.span{grid-column:1/3}" },
+    { cat:"Typography", name:"color & font-family", desc:"Set text color and typeface", html:"<div class='t1'>Serif Font</div><div class='t2'>Monospace Font</div><div class='t3'>Sans-Serif Font</div>", css:".t1{font-family:Georgia,serif;font-size:1.5rem;color:#e74c3c;margin-bottom:10px}.t2{font-family:'Courier New',monospace;font-size:1.2rem;color:#3498db;margin-bottom:10px}.t3{font-family:system-ui,sans-serif;font-size:1.3rem;color:#27ae60}" },
+    { cat:"Typography", name:"text-decoration & transform", desc:"Underlines, strikethrough, uppercase", html:"<div class='u'>Wavy Underline</div><div class='s'>Strikethrough</div><div class='up'>uppercase transform</div>", css:".u{font-size:1.5rem;color:#3b82f6;text-decoration:underline wavy #ef4444;margin-bottom:10px;font-family:sans-serif}.s{font-size:1.3rem;text-decoration:line-through;color:#888;margin-bottom:10px;font-family:sans-serif}.up{text-transform:uppercase;letter-spacing:3px;font-size:1.2rem;color:#8b5cf6;font-weight:bold;font-family:sans-serif}" },
+    { cat:"Typography", name:"text-shadow", desc:"Add shadow effects to text", html:"<div class='text'>SHADOW</div>", css:".text{font-size:3rem;font-weight:900;color:#fff;text-shadow:3px 3px 0 #3b82f6,6px 6px 0 #ef4444;font-family:sans-serif;padding:20px}" },
+    { cat:"Transform", name:"transform", desc:"Rotate, scale, translate, skew", html:"<div class='wrap'><div class='box r'>Rotate</div><div class='box s'>Scale</div><div class='box sk'>Skew</div></div>", css:".wrap{display:flex;gap:20px;padding:30px;justify-content:center}.box{width:80px;height:80px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;font-size:12px;font-weight:bold;border-radius:8px}.r{background:#8b5cf6;transform:rotate(15deg)}.s{background:#ef4444;transform:scale(1.2)}.sk{background:#06b6d4;transform:skewX(-10deg)}" },
+    { cat:"Transform", name:"transition", desc:"Smooth property changes on hover", html:"<div class='box' title='Hover me!'>Hover Me</div>", css:".box{width:100px;height:100px;background:#3b82f6;border-radius:12px;margin:30px auto;transition:all 0.5s cubic-bezier(0.68,-0.55,0.27,1.55);display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;font-weight:bold;cursor:pointer}.box:hover{transform:scale(1.3) rotate(10deg);background:#ef4444;border-radius:50%;box-shadow:0 10px 30px rgba(239,68,68,.4)}" },
+    { cat:"Visual", name:"box-shadow", desc:"Add shadow to elements", html:"<div class='box'>Shadow</div>", css:".box{width:140px;height:80px;background:#fff;border-radius:12px;margin:30px auto;box-shadow:0 10px 25px -5px rgba(0,0,0,.2),0 4px 6px -2px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-weight:bold;color:#475569;font-family:sans-serif}" },
+    { cat:"Visual", name:"border-radius", desc:"Round corners of elements", html:"<div class='wrap'><div class='box r1'></div><div class='box r2'></div><div class='box r3'></div></div>", css:".wrap{display:flex;gap:20px;justify-content:center;padding:20px}.box{width:70px;height:70px;background:#ec4899}.r1{border-radius:12px}.r2{border-radius:50%}.r3{border-radius:12px 0 12px 0}" },
+    { cat:"Visual", name:"filter", desc:"Blur, grayscale, brightness effects", html:"<div class='wrap'><div class='box'>Normal</div><div class='box blur'>Blur</div><div class='box gray'>Gray</div><div class='box bright'>Bright</div></div>", css:".wrap{display:flex;gap:12px;justify-content:center;padding:20px}.box{width:70px;height:70px;background:linear-gradient(45deg,#f59e0b,#ef4444);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-family:sans-serif}.blur{filter:blur(3px)}.gray{filter:grayscale(100%)}.bright{filter:brightness(1.5)}" },
+    { cat:"Visual", name:"backdrop-filter (Glass)", desc:"Glassmorphism effect with blur behind element", html:"<div class='bg'><div class='glass'>Glass Effect</div></div>", css:".bg{width:100%;height:140px;background:linear-gradient(45deg,#3b82f6,#ec4899);border-radius:12px;position:relative;display:flex;align-items:center;justify-content:center}.glass{padding:20px 32px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.4);border-radius:12px;color:#fff;font-weight:bold;font-family:sans-serif;font-size:1.1em}" },
+    { cat:"Visual", name:"clip-path", desc:"Create custom shapes by clipping", html:"<div class='wrap'><div class='box tri'></div><div class='box hex'></div><div class='box star'></div></div>", css:".wrap{display:flex;gap:20px;justify-content:center;padding:20px}.box{width:80px;height:80px}.tri{background:#14b8a6;clip-path:polygon(50% 0%,0% 100%,100% 100%)}.hex{background:#8b5cf6;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)}.star{background:#f59e0b;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}" },
+    { cat:"Positioning", name:"position", desc:"Static, relative, absolute, fixed, sticky", html:"<div class='wrap'><div class='box'>Absolute positioned</div></div>", css:".wrap{position:relative;height:120px;background:#f1f5f9;border-radius:8px;border:2px dashed #cbd5e1}.box{position:absolute;top:15px;right:15px;width:auto;padding:10px 16px;background:#f59e0b;border-radius:6px;color:#fff;font-family:sans-serif;font-size:13px}" },
+    { cat:"Positioning", name:"z-index", desc:"Stack order of positioned elements", html:"<div class='wrap'><div class='b1'>1</div><div class='b2'>2</div><div class='b3'>3</div></div>", css:".wrap{position:relative;height:100px;padding:10px}.b1,.b2,.b3{position:absolute;width:60px;height:60px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-family:sans-serif;border-radius:8px}.b1{background:#3b82f6;top:10px;left:10px;z-index:1}.b2{background:#ef4444;top:25px;left:35px;z-index:3}.b3{background:#10b981;top:40px;left:60px;z-index:2}" },
+    { cat:"UI", name:"cursor", desc:"Change cursor on hover", html:"<div class='wrap'><div class='box c1'>pointer</div><div class='box c2'>wait</div><div class='box c3'>not-allowed</div><div class='box c4'>grab</div></div>", css:".wrap{display:flex;gap:10px;flex-wrap:wrap;padding:10px}.box{padding:12px 16px;background:#e2e8f0;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-family:sans-serif;transition:background .2s}.box:hover{background:#cbd5e1}.c1{cursor:pointer}.c2{cursor:wait}.c3{cursor:not-allowed}.c4{cursor:grab}" },
+    { cat:"UI", name:"resize & object-fit", desc:"User-resizable boxes and image fitting", html:"<div class='box'>Resize me! (drag bottom-right corner)</div>", css:".box{width:200px;height:80px;background:#f1f5f9;border:2px solid #3b82f6;border-radius:8px;resize:both;overflow:auto;padding:12px;font-family:sans-serif;font-size:13px;color:#475569}" },
+  ];
+
+  // =====================================================================
+  // DATA: JAVASCRIPT EXAMPLES
+  // =====================================================================
+  const JS_EXAMPLES = [
+    { cat:"Fundamentals", name:"Variables", desc:"let, const, and var declare variables", html:"", css:"", code:"// Variables and types\nlet age = 25;           // Can be reassigned\nconst name = \"Alice\";   // Cannot be reassigned\nvar legacy = \"old\";     // Function-scoped (avoid)\n\nconsole.log(\"Name:\", name);\nconsole.log(\"Age:\", age);\nconsole.log(\"Type of age:\", typeof age);\nconsole.log(\"Type of name:\", typeof name);\n\nage = 26;\nconsole.log(\"New age:\", age);" },
+    { cat:"Fundamentals", name:"Data Types", desc:"7 primitive types: string, number, boolean, null, undefined, symbol, bigint", html:"", css:"", code:"// The 7 primitive types\nconst str = \"hello\";\nconst num = 42;\nconst bool = true;\nconst empty = null;\nconst undef = undefined;\nconst sym = Symbol(\"id\");\nconst big = 9007199254740991n;\n\nconsole.log(\"String:\", typeof str, str);\nconsole.log(\"Number:\", typeof num, num);\nconsole.log(\"Boolean:\", typeof bool, bool);\nconsole.log(\"Null:\", typeof null, \"(it's 'object'!)\");\nconsole.log(\"Undefined:\", typeof undef);\nconsole.log(\"Symbol:\", typeof sym);\nconsole.log(\"BigInt:\", typeof big);" },
+    { cat:"Fundamentals", name:"Operators", desc:"Arithmetic, comparison, logical operators", html:"", css:"", code:"// Arithmetic\nconsole.log(\"10 + 3 =\", 10 + 3);\nconsole.log(\"10 / 3 =\", 10 / 3);\nconsole.log(\"10 % 3 =\", 10 % 3);\nconsole.log(\"10 ** 3 =\", 10 ** 3);\n\n// Comparison (strict vs loose)\nconsole.log(\"\\nComparison:\");\nconsole.log(\"5 === '5':\", 5 === '5');  // false\nconsole.log(\"5 == '5':\", 5 == '5');   // true (avoid!)\n\n// Logical\nconst a = true, b = false;\nconsole.log(\"\\nLogical:\");\nconsole.log(\"a && b:\", a && b);\nconsole.log(\"a || b:\", a || b);\nconsole.log(\"!a:\", !a);\n\n// Nullish coalescing\nconst user = null;\nconsole.log(\"\\nuser ?? 'guest':\", user ?? 'guest');" },
+    { cat:"Fundamentals", name:"Strings", desc:"String methods: slice, replace, split, includes", html:"", css:"", code:"const name = \"World\";\nconst greeting = \"Hello, \" + name + \"!\";\nconsole.log(greeting);\n\n// Common methods\nconst str = \"JavaScript\";\nconsole.log(\"Length:\", str.length);\nconsole.log(\"Upper:\", str.toUpperCase());\nconsole.log(\"Slice:\", str.slice(0, 4));\nconsole.log(\"Replace:\", str.replace(\"Java\", \"Type\"));\nconsole.log(\"Includes:\", str.includes(\"Script\"));\nconsole.log(\"Split:\", \"a,b,c\".split(\",\"));\nconsole.log(\"Trim:\", \"  hello  \".trim());\nconsole.log(\"Repeat:\", \"ha\".repeat(3));" },
+    { cat:"Fundamentals", name:"Numbers & Math", desc:"Math functions: round, random, floor, sqrt", html:"", css:"", code:"console.log(\"PI:\", Math.PI);\nconsole.log(\"sqrt(16):\", Math.sqrt(16));\nconsole.log(\"pow(2, 8):\", Math.pow(2, 8));\nconsole.log(\"max(1,5,3):\", Math.max(1, 5, 3));\nconsole.log(\"floor(4.7):\", Math.floor(4.7));\nconsole.log(\"ceil(4.1):\", Math.ceil(4.1));\nconsole.log(\"round(4.5):\", Math.round(4.5));\nconsole.log(\"random:\", Math.random().toFixed(4));\nconsole.log(\"abs(-5):\", Math.abs(-5));\n\n// Precision issues\nconsole.log(\"\\n0.1 + 0.2 =\", 0.1 + 0.2);\nconsole.log(\"Fixed:\", (0.1 + 0.2).toFixed(1));" },
+    { cat:"Control Flow", name:"If / Else", desc:"Conditional branching with ternary operator", html:"", css:"", code:"const score = 85;\n\nif (score >= 90) {\n  console.log(\"Grade: A\");\n} else if (score >= 80) {\n  console.log(\"Grade: B\");\n} else if (score >= 70) {\n  console.log(\"Grade: C\");\n} else {\n  console.log(\"Grade: F\");\n}\n\n// Ternary operator\nconst status = score >= 60 ? \"Pass\" : \"Fail\";\nconsole.log(\"Status:\", status);\n\n// Optional chaining\nconst user = { name: \"Alice\" };\nconsole.log(\"Name:\", user?.name ?? \"Guest\");\nconsole.log(\"Age:\", user?.age ?? \"Unknown\");" },
+    { cat:"Control Flow", name:"Switch", desc:"Multi-way branching based on value matching", html:"", css:"", code:"const day = \"Wednesday\";\n\nswitch (day) {\n  case \"Monday\":\n    console.log(\"Start of week\");\n    break;\n  case \"Tuesday\":\n  case \"Wednesday\":\n  case \"Thursday\":\n    console.log(\"Midweek grind\");\n    break;\n  case \"Friday\":\n    console.log(\"TGIF!\");\n    break;\n  default:\n    console.log(\"Weekend! 🎉\");\n}" },
+    { cat:"Control Flow", name:"For Loops", desc:"Classic for, for...of, for...in loops", html:"", css:"", code:"// Classic for\nfor (let i = 1; i <= 5; i++) {\n  console.log(\"i =\", i);\n}\n\n// for...of (values)\nconst fruits = [\"🍎\", \"🍌\", \"🍇\"];\nconsole.log(\"\\nFruits:\");\nfor (const fruit of fruits) {\n  console.log(\" -\", fruit);\n}\n\n// for...in (keys)\nconst user = { name: \"Alice\", age: 30, city: \"NYC\" };\nconsole.log(\"\\nUser:\");\nfor (const key in user) {\n  console.log(\"  \" + key + \": \" + user[key]);\n}" },
+    { cat:"Control Flow", name:"While Loops", desc:"while and do...while with break/continue", html:"", css:"", code:"// While\nlet count = 0;\nwhile (count < 5) {\n  console.log(\"Count:\", count);\n  count++;\n}\n\n// Do-while (runs at least once)\nlet n = 10;\ndo {\n  console.log(\"n =\", n);\n  n *= 2;\n} while (n < 100);\n\n// Break and continue\nconsole.log(\"\\nEven numbers < 10:\");\nfor (let i = 0; i < 20; i++) {\n  if (i >= 10) break;\n  if (i % 2 !== 0) continue;\n  console.log(\" \", i);\n}" },
+    { cat:"Functions", name:"Function Basics", desc:"Declaration, expression, arrow, default params", html:"", css:"", code:"// Function declaration\nfunction greet(name) {\n  return \"Hello, \" + name + \"!\";\n}\nconsole.log(greet(\"Alice\"));\n\n// Function expression\nconst add = function(a, b) {\n  return a + b;\n};\nconsole.log(\"2 + 3 =\", add(2, 3));\n\n// Arrow function\nconst multiply = (a, b) => a * b;\nconsole.log(\"4 * 5 =\", multiply(4, 5));\n\n// Default parameters\nconst power = (base, exp = 2) => base ** exp;\nconsole.log(\"3² =\", power(3));\nconsole.log(\"2⁸ =\", power(2, 8));\n\n// Rest parameters\nconst sum = (...nums) => nums.reduce((a, b) => a + b, 0);\nconsole.log(\"Sum:\", sum(1, 2, 3, 4, 5));" },
+    { cat:"Functions", name:"Closures", desc:"Functions that remember their outer scope", html:"", css:"", code:"// Counter using closure\nfunction makeCounter() {\n  let count = 0;\n  return {\n    increment: () => ++count,\n    decrement: () => --count,\n    getCount: () => count\n  };\n}\n\nconst counter = makeCounter();\nconsole.log(counter.increment()); // 1\nconsole.log(counter.increment()); // 2\nconsole.log(counter.increment()); // 3\nconsole.log(counter.decrement()); // 2\nconsole.log(\"Final:\", counter.getCount());\n\n// Private variables\nfunction createWallet(initial) {\n  let balance = initial;\n  return {\n    deposit: (amt) => balance += amt,\n    getBalance: () => balance\n  };\n}\nconst wallet = createWallet(100);\nwallet.deposit(50);\nconsole.log(\"\\nBalance:\", wallet.getBalance());" },
+    { cat:"Functions", name:"Higher-Order Functions", desc:"Functions that take or return other functions", html:"", css:"", code:"// Function that returns a function\nfunction multiplier(factor) {\n  return (number) => number * factor;\n}\n\nconst double = multiplier(2);\nconst triple = multiplier(3);\nconsole.log(\"double(5):\", double(5));\nconsole.log(\"triple(5):\", triple(5));\n\n// Function that takes a function\nfunction applyOp(a, b, op) {\n  return op(a, b);\n}\nconsole.log(\"\\nAdd:\", applyOp(5, 3, (a, b) => a + b));\nconsole.log(\"Mul:\", applyOp(5, 3, (a, b) => a * b));\n\n// Compose\nconst compose = (...fns) => (x) => fns.reduceRight((acc, fn) => fn(acc), x);\nconst addOne = x => x + 1;\nconst timesTwo = x => x * 2;\nconst square = x => x ** 2;\n\nconst transform = compose(square, timesTwo, addOne);\nconsole.log(\"\\ncompose(3):\", transform(3));" },
+    { cat:"Arrays", name:"Array Basics", desc:"Creating, accessing, and modifying arrays", html:"", css:"", code:"const fruits = [\"🍎\", \"🍌\", \"🍇\", \"🍊\"];\n\nconsole.log(\"Array:\", fruits);\nconsole.log(\"Length:\", fruits.length);\nconsole.log(\"First:\", fruits[0]);\nconsole.log(\"Last:\", fruits[fruits.length - 1]);\n\n// Add/remove\nfruits.push(\"🍓\");\nconsole.log(\"\\nAfter push:\", fruits);\n\nfruits.pop();\nconsole.log(\"After pop:\", fruits);\n\nfruits.unshift(\"🥝\");\nconsole.log(\"After unshift:\", fruits);\n\n// Find\nconsole.log(\"\\nIncludes 🍌:\", fruits.includes(\"🍌\"));\nconsole.log(\"Index of 🍇:\", fruits.indexOf(\"🍇\"));\n\n// Slice (doesn't mutate)\nconsole.log(\"Slice(1,3):\", fruits.slice(1, 3));" },
+    { cat:"Arrays", name:"Array Methods", desc:"map, filter, reduce, find, sort", html:"", css:"", code:"const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\n\n// map - transform each element\nconst doubled = numbers.map(n => n * 2);\nconsole.log(\"Doubled:\", doubled);\n\n// filter - keep matching elements\nconst evens = numbers.filter(n => n % 2 === 0);\nconsole.log(\"Evens:\", evens);\n\n// reduce - combine into single value\nconst sum = numbers.reduce((acc, n) => acc + n, 0);\nconsole.log(\"Sum:\", sum);\n\n// find - first match\nconst found = numbers.find(n => n > 5);\nconsole.log(\"First > 5:\", found);\n\n// sort\nconst words = [\"banana\", \"apple\", \"cherry\"];\nconsole.log(\"Sorted:\", words.sort());\n\n// Chaining\nconst result = numbers\n  .filter(n => n % 2 === 0)\n  .map(n => n ** 2);\nconsole.log(\"\\nEven squares:\", result);" },
+    { cat:"Objects", name:"Object Basics", desc:"Key-value pairs, access, methods", html:"", css:"", code:"const user = {\n  name: \"Alice\",\n  age: 30,\n  email: \"alice@example.com\",\n  greet() { return \"Hi, I'm \" + this.name; }\n};\n\nconsole.log(\"Name:\", user.name);\nconsole.log(\"Email:\", user[\"email\"]);\nconsole.log(\"Greeting:\", user.greet());\n\n// Add/modify\nuser.city = \"NYC\";\nconsole.log(\"\\nUpdated:\", user);\n\n// Object methods\nconsole.log(\"\\nKeys:\", Object.keys(user));\nconsole.log(\"Values:\", Object.values(user));\n\n// Spread copy\nconst copy = { ...user, age: 31 };\nconsole.log(\"\\nCopy:\", copy);" },
+    { cat:"Objects", name:"Destructuring", desc:"Extract values from objects and arrays cleanly", html:"", css:"", code:"// Object destructuring\nconst user = { name: \"Alice\", age: 30, city: \"NYC\" };\nconst { name, age, city } = user;\nconsole.log(name, age, city);\n\n// Rename and default\nconst { name: userName, country = \"USA\" } = user;\nconsole.log(userName, country);\n\n// Array destructuring\nconst [a, b, c] = [1, 2, 3];\nconsole.log(\"\\nArray:\", a, b, c);\n\n// Skip and rest\nconst [x, , y, ...rest] = [1, 2, 3, 4, 5];\nconsole.log(\"Skip & rest:\", x, y, rest);\n\n// Swap variables\nlet p = 1, q = 2;\n[p, q] = [q, p];\nconsole.log(\"\\nSwapped:\", p, q);\n\n// In function params\nfunction show({ name, age }) {\n  console.log(\"\\n\" + name + \" is \" + age);\n}\nshow(user);" },
+    { cat:"Objects", name:"Classes", desc:"ES6 class syntax with constructor, methods, inheritance", html:"", css:"", code:"class Animal {\n  constructor(name, sound) {\n    this.name = name;\n    this.sound = sound;\n  }\n  speak() {\n    return this.name + \" says \" + this.sound;\n  }\n}\n\nclass Dog extends Animal {\n  constructor(name) {\n    super(name, \"Woof!\");\n    this.tricks = [];\n  }\n  learn(trick) {\n    this.tricks.push(trick);\n    return this;\n  }\n  showTricks() {\n    return this.name + \" knows: \" + this.tricks.join(\", \");\n  }\n}\n\nconst rex = new Dog(\"Rex\");\nconsole.log(rex.speak());\n\nrex.learn(\"sit\").learn(\"shake\").learn(\"roll over\");\nconsole.log(rex.showTricks());\n\nconsole.log(\"\\nIs Animal:\", rex instanceof Animal);\nconsole.log(\"Is Dog:\", rex instanceof Dog);" },
+    { cat:"DOM", name:"DOM Selectors", desc:"Query and access HTML elements from JavaScript", html:"<div id=\"app\">\n  <h2>DOM Demo</h2>\n  <p class=\"info\">First paragraph</p>\n  <p class=\"info\">Second paragraph</p>\n  <ul>\n    <li>Item 1</li>\n    <li>Item 2</li>\n    <li>Item 3</li>\n  </ul>\n  <button id=\"btn\">Click Me</button>\n  <div id=\"output\"></div>\n</div>", css:"body{font-family:sans-serif;padding:20px}#app{max-width:400px}h2{color:#2c3e50}button{padding:8px 20px;background:#3498db;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:10px}button:hover{background:#2980b9}#output{margin-top:10px;padding:10px;background:#f0f0f0;border-radius:6px;min-height:30px}", code:"// getElementById\nvar btn = document.getElementById('btn');\nvar output = document.getElementById('output');\n\n// querySelectorAll\nvar paragraphs = document.querySelectorAll('.info');\nconsole.log('Found', paragraphs.length, 'paragraphs');\n\nparagraphs.forEach(function(p, i) {\n  console.log('P' + (i+1) + ':', p.textContent);\n});\n\n// querySelector\nvar firstLi = document.querySelector('li');\nconsole.log('First li:', firstLi.textContent);\n\n// Event listener\nbtn.addEventListener('click', function() {\n  output.textContent = 'Button clicked at ' + new Date().toLocaleTimeString();\n  output.style.background = '#d4edda';\n  console.log('🖱 Button clicked!');\n});\n\nconsole.log('✅ DOM selectors ready!');" },
+    { cat:"DOM", name:"DOM Manipulation", desc:"Create, modify, and remove elements dynamically", html:"<div id=\"app\">\n  <h2>Todo List</h2>\n  <div style=\"display:flex;gap:8px;margin-bottom:12px\">\n    <input id=\"input\" placeholder=\"Add task...\" style=\"flex:1;padding:8px;border:1px solid #ddd;border-radius:6px\">\n    <button id=\"addBtn\">Add</button>\n  </div>\n  <ul id=\"list\"></ul>\n</div>", css:"body{font-family:sans-serif;padding:20px}#app{max-width:400px}h2{color:#2c3e50;margin-bottom:12px}button{padding:8px 16px;background:#3498db;color:#fff;border:none;border-radius:6px;cursor:pointer}li{padding:8px;margin:4px 0;background:#f8f9fa;border-radius:4px;display:flex;justify-content:space-between;align-items:center}li button{background:#e74c3c;padding:4px 10px;font-size:.8em}", code:"var input = document.getElementById('input');\nvar addBtn = document.getElementById('addBtn');\nvar list = document.getElementById('list');\n\naddBtn.addEventListener('click', addTodo);\ninput.addEventListener('keypress', function(e) {\n  if (e.key === 'Enter') addTodo();\n});\n\nfunction addTodo() {\n  var text = input.value.trim();\n  if (!text) return;\n  \n  // Create element\n  var li = document.createElement('li');\n  li.textContent = text;\n  \n  // Add delete button\n  var del = document.createElement('button');\n  del.textContent = '×';\n  del.addEventListener('click', function() {\n    li.remove();\n    console.log('Removed:', text);\n  });\n  \n  li.appendChild(del);\n  list.appendChild(li);\n  input.value = '';\n  console.log('Added:', text);\n}\n\nconsole.log('📝 Todo list ready!');" },
+    { cat:"DOM", name:"Event Handling", desc:"Click, input, keyboard, and mouse events", html:"<div id=\"app\">\n  <h2>Events Demo</h2>\n  <button id=\"btn\">Click Me (0)</button>\n  <input id=\"textInput\" placeholder=\"Type here...\" style=\"display:block;margin:10px 0;padding:8px;width:100%;border:1px solid #ddd;border-radius:6px\">\n  <div id=\"box\" style=\"width:200px;height:100px;background:#3498db;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;margin-top:10px\">Hover & Move</div>\n  <p id=\"output\" style=\"margin-top:10px;color:#666\"></p>\n</div>", css:"body{font-family:sans-serif;padding:20px}h2{color:#2c3e50;margin-bottom:12px}button{padding:8px 20px;background:#8b5cf6;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:1em}button:hover{background:#7c3aed}", code:"var btn = document.getElementById('btn');\nvar textInput = document.getElementById('textInput');\nvar box = document.getElementById('box');\nvar output = document.getElementById('output');\nvar clicks = 0;\n\n// Click event\nbtn.addEventListener('click', function() {\n  clicks++;\n  btn.textContent = 'Click Me (' + clicks + ')';\n  console.log('Click #' + clicks);\n});\n\n// Input event (fires on every keystroke)\ntextInput.addEventListener('input', function(e) {\n  output.textContent = 'You typed: ' + e.target.value;\n});\n\n// Mouse events\nbox.addEventListener('mouseenter', function() {\n  this.style.background = '#e74c3c';\n  this.textContent = 'Mouse entered!';\n});\n\nbox.addEventListener('mouseleave', function() {\n  this.style.background = '#3498db';\n  this.textContent = 'Hover & Move';\n});\n\nbox.addEventListener('mousemove', function(e) {\n  var rect = this.getBoundingClientRect();\n  var x = Math.round(e.clientX - rect.left);\n  var y = Math.round(e.clientY - rect.top);\n  this.textContent = 'x:' + x + ' y:' + y;\n});\n\nconsole.log('🎯 Events demo ready!');" },
+    { cat:"Async", name:"Promises", desc:"Handle async operations with .then/.catch", html:"", css:"", code:"// Create a promise\nfunction fetchUser(id) {\n  return new Promise(function(resolve, reject) {\n    console.log('Fetching user ' + id + '...');\n    setTimeout(function() {\n      if (id > 0) {\n        resolve({ id: id, name: 'User_' + id });\n      } else {\n        reject(new Error('Invalid ID'));\n      }\n    }, 500);\n  });\n}\n\n// Use the promise\nfetchUser(1)\n  .then(function(user) {\n    console.log('Got user:', user);\n    return fetchUser(2);\n  })\n  .then(function(user) {\n    console.log('Got user:', user);\n  })\n  .catch(function(err) {\n    console.error('Error:', err.message);\n  });\n\n// Promise.all\nPromise.all([\n  fetchUser(3),\n  fetchUser(4),\n  fetchUser(5)\n]).then(function(users) {\n  console.log('\\nAll users:', users);\n});" },
+    { cat:"Async", name:"Async / Await", desc:"Modern syntax for working with promises", html:"", css:"", code:"// Async function\nasync function fetchData() {\n  console.log('Starting...');\n  \n  // Simulate API call\n  function delay(ms) {\n    return new Promise(function(r) { setTimeout(r, ms); });\n  }\n  \n  await delay(300);\n  console.log('Step 1 done');\n  \n  await delay(300);\n  console.log('Step 2 done');\n  \n  return { message: 'All done!' };\n}\n\n// Call async function\nfetchData().then(function(result) {\n  console.log('Result:', result);\n});\n\n// Error handling\nasync function riskyOperation() {\n  try {\n    await new Promise(function(_, reject) {\n      setTimeout(function() {\n        reject(new Error('Something went wrong'));\n      }, 500);\n    });\n  } catch (err) {\n    console.error('Caught:', err.message);\n  }\n}\n\nriskyOperation();" },
+    { cat:"Advanced", name:"Map & Set", desc:"Specialized collections for unique values and key-value pairs", html:"", css:"", code:"// Set - unique values only\nconst set = new Set([1, 2, 3, 2, 1, 4]);\nconsole.log('Set:', [...set]); // [1, 2, 3, 4]\nconsole.log('Size:', set.size);\nconsole.log('Has 3:', set.has(3));\n\nset.add(5);\nset.delete(1);\nconsole.log('After add/delete:', [...set]);\n\n// Map - any type as key\nconst map = new Map();\nmap.set('name', 'Alice');\nmap.set(42, 'the answer');\nmap.set(true, 'yes');\n\nconsole.log('\\nMap:');\nmap.forEach(function(val, key) {\n  console.log(' ', key, '=>', val);\n});\n\n// Use case: count word frequency\nconst words = 'the cat sat on the mat the cat'.split(' ');\nconst freq = new Map();\nwords.forEach(function(w) {\n  freq.set(w, (freq.get(w) || 0) + 1);\n});\nconsole.log('\\nWord frequency:');\nfreq.forEach(function(count, word) {\n  console.log('  ' + word + ': ' + count);\n});" },
+    { cat:"Advanced", name:"Error Handling", desc:"try/catch/finally and custom errors", html:"", css:"", code:"// Basic try-catch\ntry {\n  console.log('Trying...');\n  JSON.parse('invalid json');\n} catch (err) {\n  console.error('Caught:', err.message);\n} finally {\n  console.log('Always runs!\\n');\n}\n\n// Custom error\nclass ValidationError extends Error {\n  constructor(field, message) {\n    super(message);\n    this.field = field;\n    this.name = 'ValidationError';\n  }\n}\n\nfunction validateAge(age) {\n  if (typeof age !== 'number') {\n    throw new ValidationError('age', 'Age must be a number');\n  }\n  if (age < 0 || age > 150) {\n    throw new ValidationError('age', 'Age must be 0-150');\n  }\n  return true;\n}\n\ntry {\n  validateAge(25);\n  console.log('Age 25: valid');\n  validateAge(-5);\n} catch (err) {\n  if (err instanceof ValidationError) {\n    console.error(err.name + ' [' + err.field + ']: ' + err.message);\n  }\n}" },
+    { cat:"Advanced", name:"JSON", desc:"Parse and stringify data for storage and APIs", html:"", css:"", code:"// Object to JSON string\nconst user = {\n  name: 'Alice',\n  age: 30,\n  hobbies: ['reading', 'coding'],\n  address: { city: 'NYC', zip: '10001' }\n};\n\nconst json = JSON.stringify(user, null, 2);\nconsole.log('JSON string:');\nconsole.log(json);\n\n// JSON string back to object\nconst parsed = JSON.parse(json);\nconsole.log('\\nParsed name:', parsed.name);\nconsole.log('Parsed city:', parsed.address.city);\nconsole.log('Hobbies:', parsed.hobbies);\n\n// Deep clone with JSON\nconst clone = JSON.parse(JSON.stringify(user));\nclone.name = 'Bob';\nconsole.log('\\nOriginal:', user.name);\nconsole.log('Clone:', clone.name);" },
+  ];
+
+  // =====================================================================
+  // APP STATE
+  // =====================================================================
+  const CONFIG = { debounceDelay:350, autoRun:true, fontSize:14, theme:'dark', activeTab:'html', activeOutput:'preview' };
+  const STORAGE_KEY = 'webjourney-ide-v2';
+  let editors = {}, debounceTimer = null, consoleCount = 0, isResizing = false;
+  let currentExample = null;
+  let allExamples = [];
+
+  // =====================================================================
+  // BUILD EXAMPLE DATABASE
+  // =====================================================================
+  function buildExampleDB() {
+    HTML_EXAMPLES.forEach(e => allExamples.push({ type:'html', ...e }));
+    CSS_EXAMPLES.forEach(e => allExamples.push({ type:'css', cat:e.cat, name:e.name, desc:e.desc, html:e.html||'', css:e.css||'', js:'' }));
+    JS_EXAMPLES.forEach(e => allExamples.push({ type:'js', cat:e.cat, name:e.name, desc:e.desc, html:e.html||'', css:e.css||'', js:e.code||'' }));
+    document.getElementById('exampleCount').textContent = allExamples.length;
+  }
+
+  // =====================================================================
+  // SIDEBAR RENDERING
+  // =====================================================================
+  function renderSidebar() {
+    const body = document.getElementById('sidebarBody');
+    const sections = [
+      { title:'HTML Tags', icon:'📄', type:'html', color:'var(--html-color)', data:HTML_EXAMPLES },
+      { title:'CSS Properties', icon:'🎨', type:'css', color:'var(--css-color)', data:CSS_EXAMPLES },
+      { title:'JavaScript', icon:'⚡', type:'js', color:'var(--js-color)', data:JS_EXAMPLES },
+    ];
+
+    let html = '';
+    sections.forEach((sec, si) => {
+      const cats = {};
+      sec.data.forEach(ex => { if (!cats[ex.cat]) cats[ex.cat] = []; cats[ex.cat].push(ex); });
+      const total = sec.data.length;
+      html += `<div class="sidebar-cat">`;
+      html += `<div class="sidebar-cat-header open" data-section="${si}"><span class="arrow">▸</span><span class="cat-icon">${sec.icon}</span> ${sec.title}<span class="cat-count">${total}</span></div>`;
+      html += `<div class="sidebar-items open" data-section="${si}">`;
+      for (const [cat, items] of Object.entries(cats)) {
+        html += `<div class="sidebar-subcat">${cat}</div>`;
+        items.forEach(item => {
+          const id = sec.type + '__' + item.name.replace(/[^a-zA-Z0-9]/g,'_');
+          html += `<div class="sidebar-item ${sec.type}-item" data-id="${id}" data-type="${sec.type}" data-name="${item.name}" data-search="${(item.name+' '+item.desc+' '+item.cat).toLowerCase()}"><span class="dot"></span>${item.name}</div>`;
+        });
+      }
+      html += `</div></div>`;
+    });
+    body.innerHTML = html;
+
+    // Category toggle
+    body.querySelectorAll('.sidebar-cat-header').forEach(h => {
+      h.addEventListener('click', () => {
+        h.classList.toggle('open');
+        const items = body.querySelector(`.sidebar-items[data-section="${h.dataset.section}"]`);
+        items.classList.toggle('open');
+      });
+    });
+
+    // Item click
+    body.querySelectorAll('.sidebar-item').forEach(item => {
+      item.addEventListener('click', () => loadExampleByItem(item));
+    });
+  }
+
+  function loadExampleByItem(itemEl) {
+    const type = itemEl.dataset.type;
+    const name = itemEl.dataset.name;
+    const example = allExamples.find(e => e.type === type && e.name === name);
+    if (!example) return;
+
+    // Highlight active
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    itemEl.classList.add('active');
+
+    currentExample = example;
+    loadExampleIntoEditors(example);
+  }
+
+  function loadExampleIntoEditors(ex) {
+    editors.html.setValue(ex.html || '', -1);
+    editors.css.setValue(ex.css || '', -1);
+    editors.js.setValue(ex.js || '', -1);
+
+    // Show info bar
+    const info = document.getElementById('exampleInfo');
+    const typeLabels = { html:'HTML', css:'CSS', js:'JavaScript' };
+    info.innerHTML = `<span class="example-title">${typeLabels[ex.type]}: ${ex.name}</span> ${ex.desc}`;
+    info.classList.add('visible');
+
+    // Switch to relevant tab
+    if (ex.type === 'css') switchEditorTab('css');
+    else if (ex.type === 'js') switchEditorTab('javascript');
+    else switchEditorTab('html');
+
+    clearConsole();
+    updatePreview();
+    document.getElementById('statusText').textContent = 'Loaded: ' + ex.name;
+    setTimeout(() => { document.getElementById('statusText').textContent = 'Ready'; }, 2000);
+  }
+
+  // Search
+  function initSearch() {
+    const input = document.getElementById('sidebarSearch');
+    input.addEventListener('input', () => {
+      const q = input.value.toLowerCase().trim();
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        if (!q || item.dataset.search.includes(q)) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      // Auto-open all sections when searching
+      if (q) {
+        document.querySelectorAll('.sidebar-items').forEach(s => s.classList.add('open'));
+        document.querySelectorAll('.sidebar-cat-header').forEach(h => h.classList.add('open'));
+      }
+    });
+  }
+
+  // =====================================================================
+  // EDITOR SETUP
+  // =====================================================================
+  function initEditors() {
+    ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/');
+    const defaultHTML = '<h1>Welcome to WebJourney IDE!</h1>\n<p>Select an example from the sidebar, or start coding here.</p>\n<button id="btn">Click Me</button>\n<div id="output"></div>';
+    const defaultCSS = 'body {\n  font-family: sans-serif;\n  padding: 20px;\n  background: linear-gradient(135deg, #667eea, #764ba2);\n  color: white;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n}\nh1 { margin-bottom: 10px; }\nbutton {\n  padding: 12px 30px;\n  font-size: 1.1em;\n  border: none;\n  border-radius: 50px;\n  background: white;\n  color: #764ba2;\n  font-weight: bold;\n  cursor: pointer;\n  margin-top: 15px;\n}\nbutton:hover { transform: scale(1.05); }\n#output { margin-top: 15px; font-size: 1.2em; }';
+    const defaultJS = 'var btn = document.getElementById("btn");\nvar output = document.getElementById("output");\nvar count = 0;\n\nbtn.addEventListener("click", function() {\n  count++;\n  output.textContent = "Clicked " + count + " times!";\n  console.log("Click #" + count);\n});\n\nconsole.log("🚀 WebJourney IDE ready!");\nconsole.log("👈 Pick any example from the sidebar!");';
+
+    const cfgs = {
+      html: { el:'htmlEditorEl', mode:'ace/mode/html', val:defaultHTML },
+      css: { el:'cssEditorEl', mode:'ace/mode/css', val:defaultCSS },
+      js: { el:'jsEditorEl', mode:'ace/mode/javascript', val:defaultJS }
+    };
+
+    Object.keys(cfgs).forEach(key => {
+      const c = cfgs[key];
+      const ed = ace.edit(c.el);
+      ed.setTheme(CONFIG.theme==='dark'?'ace/theme/one_dark':'ace/theme/chrome');
+      ed.session.setMode(c.mode);
+      ed.setValue(c.val, -1);
+      ed.setFontSize(CONFIG.fontSize);
+      ed.setOptions({ enableBasicAutocompletion:true, enableLiveAutocompletion:true, showPrintMargin:false, tabSize:2, useSoftTabs:true, wrap:true, scrollPastEnd:.5, animatedScroll:true, displayIndentGuides:true, highlightActiveLine:true });
+      ed.session.on('change', () => { if(CONFIG.autoRun){clearTimeout(debounceTimer);debounceTimer=setTimeout(updatePreview,CONFIG.debounceDelay)} });
+      ed.selection.on('changeCursor', () => { const p=ed.getCursorPosition();document.getElementById('cursorInfo').textContent='Ln '+(p.row+1)+', Col '+(p.column+1) });
+      editors[key] = ed;
+    });
+  }
+
+  // =====================================================================
+  // TAB SWITCHING
+  // =====================================================================
+  function initTabs() {
+    document.querySelectorAll('.editor-tab').forEach(t => t.addEventListener('click',()=>switchEditorTab(t.dataset.lang)));
+    switchEditorTab(CONFIG.activeTab);
+  }
+  function switchEditorTab(lang) {
+    CONFIG.activeTab = lang;
+    document.querySelectorAll('.editor-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector(`.editor-tab[data-lang="${lang}"]`).classList.add('active');
+    document.querySelectorAll('.editor-instance').forEach(el=>el.classList.remove('active'));
+    const map={html:'htmlEditorEl',css:'cssEditorEl',javascript:'jsEditorEl'};
+    document.getElementById(map[lang]).classList.add('active');
+    const key=lang==='javascript'?'js':lang;
+    if(editors[key]){editors[key].resize();editors[key].focus()}
+  }
+
+  // =====================================================================
+  // OUTPUT TABS
+  // =====================================================================
+  function initOutputTabs() {
+    document.querySelectorAll('.output-tab').forEach(t=>t.addEventListener('click',()=>switchOutputTab(t.dataset.panel)));
+  }
+  function switchOutputTab(panel) {
+    document.querySelectorAll('.output-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector(`.output-tab[data-panel="${panel}"]`).classList.add('active');
+    document.getElementById('previewPanel').style.display=panel==='preview'?'':'none';
+    const c=document.getElementById('consolePanel');
+    if(panel==='console'){c.classList.add('active');document.getElementById('consoleInput').focus()}else{c.classList.remove('active')}
+  }
+
+  // =====================================================================
+  // LIVE PREVIEW
+  // =====================================================================
+  function updatePreview() {
+    const html=editors.html?editors.html.getValue():'';
+    const css=editors.css?editors.css.getValue():'';
+    const js=editors.js?editors.js.getValue():'';
+    const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>${css}</style></head><body>${html}<script>(function(){var m=['log','warn','error','info'];m.forEach(function(method){var o=console[method];console[method]=function(){var a=Array.prototype.slice.call(arguments);o.apply(console,a);var s=a.map(function(x){try{if(x===null)return'null';if(x===undefined)return'undefined';if(typeof x==='object')return JSON.stringify(x,null,2);return String(x)}catch(e){return String(x)}});parent.postMessage({type:'console',method:method,args:s},'*')}});console.clear=function(){parent.postMessage({type:'console',method:'clear',args:[]},'*')};window.onerror=function(msg,u,line){parent.postMessage({type:'console',method:'error',args:['Error: '+msg+' (line '+line+')']},'*');return true};window.addEventListener('unhandledrejection',function(e){parent.postMessage({type:'console',method:'error',args:['Unhandled: '+(e.reason?e.reason.message||e.reason:'Unknown')]},'*')})})();try{${js}}catch(e){console.error(e.message||e)}<\/script></body></html>`;
+    document.getElementById('previewFrame').srcdoc=doc;
+    document.getElementById('statusDot').className='status-dot';
+  }
+
+  // =====================================================================
+  // CONSOLE
+  // =====================================================================
+  window.addEventListener('message',e=>{if(!e.data||e.data.type!=='console')return;const{method,args}=e.data;if(method==='clear'){document.getElementById('consoleOutput').innerHTML='';consoleCount=0;updateBadge();return}addEntry(method,args);consoleCount++;updateBadge()});
+  function addEntry(m,a){const o=document.getElementById('consoleOutput');const d=document.createElement('div');d.className='console-entry '+m;const icons={log:'›',info:'ℹ',warn:'⚠',error:'✕'};d.innerHTML='<span class="console-entry-icon">'+(icons[m]||'›')+'</span><span class="console-entry-text">'+esc(a.join(' '))+'</span>';o.appendChild(d);o.scrollTop=o.scrollHeight}
+  function updateBadge(){const b=document.getElementById('consoleBadge');if(consoleCount>0){b.textContent=consoleCount>99?'99+':consoleCount;b.classList.add('visible')}else{b.classList.remove('visible')}}
+  function clearConsole(){document.getElementById('consoleOutput').innerHTML='';consoleCount=0;updateBadge()}
+  function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+  function initConsoleInput(){
+    const inp=document.getElementById('consoleInput');const hist=[];let hi=-1;
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){const c=inp.value.trim();if(!c)return;hist.unshift(c);hi=-1;addEntry('log',['› '+c]);try{const f=document.getElementById('previewFrame');const r=f.contentWindow.eval(c);if(r!==undefined)addEntry('log',[String(typeof r==='object'?JSON.stringify(r,null,2):r)])}catch(err){addEntry('error',[err.message])}inp.value=''}
+      else if(e.key==='ArrowUp'){if(hist.length>0&&hi<hist.length-1){hi++;inp.value=hist[hi]}e.preventDefault()}
+      else if(e.key==='ArrowDown'){if(hi>0){hi--;inp.value=hist[hi]}else{hi=-1;inp.value=''}e.preventDefault()}
+    });
+  }
+
+  // =====================================================================
+  // RESIZE
+  // =====================================================================
+  function initResizer(){
+    const h=document.getElementById('resizeHandle'),ep=document.getElementById('editorPanel'),ws=document.querySelector('.main-panel');
+    h.addEventListener('mousedown',e=>{isResizing=true;h.classList.add('active');document.body.style.cursor='col-resize';document.body.style.userSelect='none';e.preventDefault()});
+    document.addEventListener('mousemove',e=>{if(!isResizing)return;const r=ws.getBoundingClientRect();const p=((e.clientX-r.left)/r.width)*100;ep.style.width=Math.max(20,Math.min(80,p))+'%';Object.values(editors).forEach(ed=>ed.resize())});
+    document.addEventListener('mouseup',()=>{if(isResizing){isResizing=false;document.getElementById('resizeHandle').classList.remove('active');document.body.style.cursor='';document.body.style.userSelect=''}});
+  }
+
+  // =====================================================================
+  // TOOLBAR
+  // =====================================================================
+  function initToolbar(){
+    document.getElementById('runBtn').addEventListener('click',()=>{clearConsole();updatePreview()});
+    const ab=document.getElementById('autoRunBtn');
+    ab.addEventListener('click',()=>{CONFIG.autoRun=!CONFIG.autoRun;ab.classList.toggle('active',CONFIG.autoRun);document.getElementById('autoRunStatus').textContent=CONFIG.autoRun?'⚡ Auto-run ON':'⚡ Auto-run OFF'});
+    document.getElementById('resetBtn').addEventListener('click',()=>{if(currentExample)loadExampleIntoEditors(currentExample)});
+    document.getElementById('downloadBtn').addEventListener('click',downloadProject);
+    document.getElementById('fontPlusBtn').addEventListener('click',()=>changeFontSize(1));
+    document.getElementById('fontMinusBtn').addEventListener('click',()=>changeFontSize(-1));
+    document.getElementById('themeBtn').addEventListener('click',toggleTheme);
+    document.getElementById('clearConsoleBtn').addEventListener('click',clearConsole);
+    document.getElementById('refreshBtn').addEventListener('click',()=>{clearConsole();updatePreview()});
+    document.getElementById('fullscreenBtn').addEventListener('click',()=>{const p=document.getElementById('outputPanel');p.classList.toggle('fullscreen');document.getElementById('fullscreenBtn').textContent=p.classList.contains('fullscreen')?'✕':'⛶'});
+    document.getElementById('sidebarToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('collapsed');setTimeout(()=>Object.values(editors).forEach(ed=>ed.resize()),300)});
+  }
+  function changeFontSize(d){CONFIG.fontSize=Math.max(10,Math.min(28,CONFIG.fontSize+d));Object.values(editors).forEach(ed=>ed.setFontSize(CONFIG.fontSize))}
+  function toggleTheme(){CONFIG.theme=CONFIG.theme==='dark'?'light':'dark';if(CONFIG.theme==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');const t=CONFIG.theme==='dark'?'ace/theme/one_dark':'ace/theme/chrome';Object.values(editors).forEach(ed=>ed.setTheme(t));document.getElementById('themeBtn').textContent=CONFIG.theme==='dark'?'🌙':'☀️'}
+  function downloadProject(){const h=editors.html.getValue(),c=editors.css.getValue(),j=editors.js.getValue();const f='<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<style>\n'+c+'\n</style>\n</head>\n<body>\n'+h+'\n<script>\n'+j+'\n<\/script>\n</body>\n</html>';const b=new Blob([f],{type:'text/html'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='project.html';a.click();URL.revokeObjectURL(u)}
+
+  // =====================================================================
+  // KEYBOARD SHORTCUTS
+  // =====================================================================
+  function initShortcuts(){
+    document.addEventListener('keydown',e=>{
+      if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();clearConsole();updatePreview()}
+      if(e.ctrlKey&&e.key==='d'){e.preventDefault();CONFIG.autoRun=!CONFIG.autoRun;document.getElementById('autoRunBtn').classList.toggle('active',CONFIG.autoRun);document.getElementById('autoRunStatus').textContent=CONFIG.autoRun?'⚡ Auto-run ON':'⚡ Auto-run OFF'}
+      if(e.ctrlKey&&e.key==='s'){e.preventDefault();document.getElementById('statusText').textContent='Saved!';setTimeout(()=>{document.getElementById('statusText').textContent='Ready'},1500)}
+      if(e.ctrlKey&&e.key==='1'){e.preventDefault();switchEditorTab('html')}
+      if(e.ctrlKey&&e.key==='2'){e.preventDefault();switchEditorTab('css')}
+      if(e.ctrlKey&&e.key==='3'){e.preventDefault();switchEditorTab('javascript')}
+      if(e.key==='Escape'){document.getElementById('outputPanel').classList.remove('fullscreen');document.getElementById('fullscreenBtn').textContent='⛶'}
+    });
+  }
+
+  // =====================================================================
+  // INIT
+  // =====================================================================
+  function init(){
+    buildExampleDB();
+    initEditors();
+    renderSidebar();
+    initSearch();
+    initTabs();
+    initOutputTabs();
+    initResizer();
+    initToolbar();
+    initConsoleInput();
+    initShortcuts();
+    updatePreview();
+    setTimeout(()=>{document.getElementById('splash').classList.add('hidden');document.getElementById('app').classList.add('visible')},1200);
+  }
+  if(typeof ace!=='undefined'){init()}else{window.addEventListener('load',()=>{if(typeof ace!=='undefined')init();else document.getElementById('splash').innerHTML='<div style="text-align:center;color:#ef4444"><div style="font-size:3rem;margin-bottom:1rem">⚠️</div><div style="font-size:1.1rem;font-weight:600">Failed to load editor</div><div style="margin-top:.5rem;opacity:.6">Check internet connection and reload.</div></div>'})}
+  </script>
+</body>
+</html>
