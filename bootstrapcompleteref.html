@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Complete Reference Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0914;
+            --card-bg: #131024;
+            --sidebar-bg: #0f0d1c;
+            --text: #e2dff0;
+            --text-muted: #8e89a5;
+            --accent: #9b5de5;
+            --accent-hover: #b583f7;
+            --accent-2: #00f5d4;
+            --border: #201c38;
+            --code-bg: #07050d;
+            --success: #10b981;
+            --danger: #ef4444;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-box { padding: 1rem; border-bottom: 1px solid var(--border); }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all var(--transition);
+        }
+
+        .search-box input:focus { 
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(155, 93, 229, 0.2);
+        }
+
+        .nav-links {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .nav-category {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--accent-2);
+            font-weight: 800;
+            margin-top: 0.5rem;
+            letter-spacing: 1.5px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(155, 93, 229, 0.08);
+            border-left-color: rgba(155, 93, 229, 0.4);
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: rgba(155, 93, 229, 0.15);
+            border-left-color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            scroll-behavior: smooth;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .category-header {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent-2);
+            margin: 3rem 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-header:first-of-type {
+            margin-top: 1rem;
+        }
+
+        /* Card layout */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(155, 93, 229, 0.08);
+            border-color: rgba(155, 93, 229, 0.3);
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .prop-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .card-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-section h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: -0.25rem;
+        }
+
+        .info-section p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .info-section li code {
+            background: var(--code-bg);
+            color: var(--accent-2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 245, 212, 0.15);
+        }
+
+        .code-block {
+            position: relative;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #d8d3ec;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .copy-btn:hover {
+            color: #fff;
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Live Preview window */
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .preview-window {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #f8fafc;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 220px;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-bottom-left-radius: 6px;
+            font-weight: 700;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preview-frame {
+            border: none;
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+            background: #f8fafc;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1><span>Bootstrap Reference</span></h1>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search classes or components...">
+        </div>
+        <nav class="nav-links" id="navLinks"></nav>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+        <header class="page-header">
+            <h2>Bootstrap 5.3 Encyclopedia</h2>
+            <p>Comprehensive, interactive reference of Bootstrap components and helper utilities with editable code previews.</p>
+        </header>
+        <div id="contentContainer"></div>
+    </main>
+
+    <script>
+        // ==========================================
+        // THE BOOTSTRAP DATABASE
+        // ==========================================
+        const bootstrapDB = [
+            // --- LAYOUT ---
+            { 
+                cat: "Layout", 
+                name: "Container", 
+                desc: "Containers are the most basic layout element in Bootstrap and are required when using the default grid system.", 
+                syntax: `<div class="container">\n  <!-- Content here -->\n</div>\n<div class="container-fluid">\n  <!-- Full width content -->\n</div>`, 
+                values: [".container", ".container-fluid", ".container-sm", ".container-md", ".container-lg", ".container-xl", ".container-xxl"],
+                html: `<div class="container bg-primary text-white p-3 text-center rounded mb-2">\n  Standard Responsive Container (.container)\n</div>\n<div class="container-fluid bg-dark text-white p-3 text-center rounded">\n  Full Width Container (.container-fluid)\n</div>` 
+            },
+            { 
+                cat: "Layout", 
+                name: "Grid System", 
+                desc: "Bootstrap's grid system uses a series of containers, rows, and columns to layout and align content. It's built with flexbox and is fully responsive.", 
+                syntax: `<div class="row">\n  <div class="col-4">One of three columns</div>\n  <div class="col-8">Two of three columns</div>\n</div>`, 
+                values: [".row", ".col-*", ".col-md-*", ".col-lg-*", ".offset-*", ".order-*"],
+                html: `<div class="row g-2 text-center text-white">\n  <div class="col-4">\n    <div class="bg-primary p-3 rounded">col-4</div>\n  </div>\n  <div class="col-8">\n    <div class="bg-success p-3 rounded">col-8</div>\n  </div>\n  <div class="col-6">\n    <div class="bg-warning text-dark p-3 rounded">col-6</div>\n  </div>\n  <div class="col-6">\n    <div class="bg-danger p-3 rounded">col-6</div>\n  </div>\n</div>` 
+            },
+            { 
+                cat: "Layout", 
+                name: "Responsive Grid", 
+                desc: "Change column layout based on media query screen breakpoints (sm: >=576px, md: >=768px, lg: >=992px, xl: >=1200px, xxl: >=1400px).", 
+                syntax: `<div class="col-12 col-md-6 col-lg-3">Responsive Column</div>`, 
+                values: [".col-sm-*", ".col-md-*", ".col-lg-*", ".col-xl-*", ".col-xxl-*"],
+                html: `<div class="row text-center text-white g-2">\n  <div class="col-12 col-md-6 col-lg-3">\n    <div class="bg-info p-3 rounded">col-12 col-md-6 col-lg-3</div>\n  </div>\n  <div class="col-12 col-md-6 col-lg-3">\n    <div class="bg-danger p-3 rounded">col-12 col-md-6 col-lg-3</div>\n  </div>\n  <div class="col-12 col-md-6 col-lg-3">\n    <div class="bg-primary p-3 rounded">col-12 col-md-6 col-lg-3</div>\n  </div>\n  <div class="col-12 col-md-6 col-lg-3">\n    <div class="bg-success p-3 rounded">col-12 col-md-6 col-lg-3</div>\n  </div>\n</div>` 
+            },
+            { 
+                cat: "Layout", 
+                name: "Gutters", 
+                desc: "Gutters are the padding between columns, used to responsively space and align content. Use gx-* for horizontal, gy-* for vertical, and g-* for both.", 
+                syntax: `<div class="row gx-5 gy-2">\n  <div class="col-6">Col 1</div>\n  <div class="col-6">Col 2</div>\n</div>`, 
+                values: [".g-0", ".g-1", ".g-2", ".g-3", ".g-4", ".g-5", ".gx-*", ".gy-*"],
+                html: `<div class="row gx-4 gy-2 text-center text-white">\n  <div class="col-6">\n    <div class="bg-secondary p-3 border">GX-4 Col 1</div>\n  </div>\n  <div class="col-6">\n    <div class="bg-secondary p-3 border">GX-4 Col 2</div>\n  </div>\n  <div class="col-6">\n    <div class="bg-secondary p-3 border">GX-4 Col 3</div>\n  </div>\n  <div class="col-6">\n    <div class="bg-secondary p-3 border">GX-4 Col 4</div>\n  </div>\n</div>` 
+            },
+
+            // --- CONTENT & TYPOGRAPHY ---
+            { 
+                cat: "Content", 
+                name: "Typography", 
+                desc: "Bootstrap styling features for headings, paragraph lead, inline elements, list styling, and typography helpers.", 
+                syntax: `<h1 class="display-1">Heading</h1>\n<p class="lead">Lead text paragraph</p>`, 
+                values: [".display-[1-6]", ".lead", ".text-decoration-none", ".font-monospace", ".text-capitalize"],
+                html: `<h1 class="display-3">Display 3</h1>\n<h2 class="display-6">Display 6</h2>\n<p class="lead">This is a lead paragraph helper designed to stand out.</p>\n<p class="font-monospace">Monospace text block</p>` 
+            },
+            { 
+                cat: "Content", 
+                name: "Colors & Backgrounds", 
+                desc: "Convey meaning through color utilities for backgrounds, borders, links, and text alignments.", 
+                syntax: `<div class="bg-primary text-white">...</div>`, 
+                values: [".bg-primary", ".bg-success", ".bg-danger", ".bg-warning", ".bg-info", ".bg-dark", ".text-muted", ".text-body"],
+                html: `<div class="p-3 mb-2 bg-primary text-white rounded">.bg-primary .text-white</div>\n<div class="p-3 mb-2 bg-success text-white rounded">.bg-success .text-white</div>\n<div class="p-3 mb-2 bg-warning text-dark rounded">.bg-warning .text-dark</div>\n<div class="p-3 mb-2 bg-danger text-white rounded">.bg-danger .text-white</div>` 
+            },
+            { 
+                cat: "Content", 
+                name: "Tables", 
+                desc: "Style tabular data with responsive tables, zebra-striping, hovering rows, active columns, and custom coloring.", 
+                syntax: `<table class="table table-striped table-hover table-bordered">\n  ...\n</table>`, 
+                values: [".table", ".table-striped", ".table-hover", ".table-bordered", ".table-dark", ".table-borderless"],
+                html: `<table class="table table-striped table-hover table-bordered border-primary">\n  <thead>\n    <tr>\n      <th>#</th>\n      <th>First Name</th>\n      <th>Role</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1</td>\n      <td>Sarah</td>\n      <td>Lead Designer</td>\n    </tr>\n    <tr class="table-info">\n      <td>2</td>\n      <td>Alex</td>\n      <td>Developer (Info row)</td>\n    </tr>\n    <tr>\n      <td>3</td>\n      <td>David</td>\n      <td>Backend Eng</td>\n    </tr>\n  </tbody>\n</table>` 
+            },
+            { 
+                cat: "Content", 
+                name: "Responsive Images", 
+                desc: "Make images scale responsively with parent containers, add styled rounded borders, and display thumbnail cards.", 
+                syntax: `<img src="..." class="img-fluid img-thumbnail" alt="...">`, 
+                values: [".img-fluid", ".img-thumbnail", ".rounded", ".float-start", ".mx-auto"],
+                html: `<div class="text-center">\n  <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect width='300' height='150' fill='%236f42c1'/><text x='50%' y='50%' fill='white' text-anchor='middle' dy='.3em' font-size='20'>Bootstrap Image</text></svg>" class="img-fluid img-thumbnail rounded" alt="Thumbnail">\n  <p class="mt-2 text-muted">.img-fluid and .img-thumbnail applied</p>\n</div>` 
+            },
+
+            // --- FORMS ---
+            { 
+                cat: "Forms", 
+                name: "Form Controls", 
+                desc: "Bootstrap styled form text inputs, select lists, file uploads, textareas, with sizes and focus highlights.", 
+                syntax: `<label class="form-label">Email</label>\n<input type="email" class="form-control">`, 
+                values: [".form-control", ".form-label", ".form-control-lg", ".form-control-sm"],
+                html: `<div class="mb-3">\n  <label for="exampleEmail" class="form-label">Email address</label>\n  <input type="email" class="form-control" id="exampleEmail" placeholder="name@example.com">\n</div>\n<div class="mb-3">\n  <label for="exampleTextarea" class="form-label">Comments</label>\n  <textarea class="form-control" id="exampleTextarea" rows="3" placeholder="Write here..."></textarea>\n</div>` 
+            },
+            { 
+                cat: "Forms", 
+                name: "Floating Labels", 
+                desc: "Create beautifully animated labels that float above your inputs when they contain values.", 
+                syntax: `<div class="form-floating">\n  <input type="email" class="form-control" id="floatingInput">\n  <label for="floatingInput">Email</label>\n</div>`, 
+                values: [".form-floating"],
+                html: `<div class="form-floating mb-3">\n  <input type="email" class="form-control" id="floatInput" placeholder="name@example.com">\n  <label for="floatInput">Email address</label>\n</div>\n<div class="form-floating">\n  <input type="password" class="form-control" id="floatPass" placeholder="Password">\n  <label for="floatPass">Password</label>\n</div>` 
+            },
+            { 
+                cat: "Forms", 
+                name: "Input Groups", 
+                desc: "Easily extend form controls by adding text, buttons, or button groups on either side of textual inputs.", 
+                syntax: `<div class="input-group">\n  <span class="input-group-text">@</span>\n  <input type="text" class="form-control">\n</div>`, 
+                values: [".input-group", ".input-group-text"],
+                html: `<div class="input-group mb-3">\n  <span class="input-group-text" id="basic-addon1">@</span>\n  <input type="text" class="form-control" placeholder="Username" aria-label="Username">\n</div>\n<div class="input-group">\n  <input type="text" class="form-control" placeholder="Search query..." aria-label="Search">\n  <button class="btn btn-primary" type="button" id="button-addon2">Search</button>\n</div>` 
+            },
+            { 
+                cat: "Forms", 
+                name: "Checkboxes & Radios", 
+                desc: "Styled custom checkboxes, radio buttons, switches, inline selections, and active states.", 
+                syntax: `<div class="form-check">\n  <input class="form-check-input" type="checkbox">\n  <label class="form-check-label">Label</label>\n</div>`, 
+                values: [".form-check", ".form-check-input", ".form-check-label", ".form-switch", ".form-check-inline"],
+                html: `<div class="form-check mb-2">\n  <input class="form-check-input" type="checkbox" id="checkEx" checked>\n  <label class="form-check-label" for="checkEx">Custom Checkbox</label>\n</div>\n<div class="form-check form-switch mb-3">\n  <input class="form-check-input" type="checkbox" role="switch" id="switchEx" checked>\n  <label class="form-check-label" for="switchEx">Custom Switch Checkbox</label>\n</div>\n<div class="form-check form-check-inline">\n  <input class="form-check-input" type="radio" name="inlineRadio" id="radio1" value="option1" checked>\n  <label class="form-check-label" for="radio1">Radio A</label>\n</div>\n<div class="form-check form-check-inline">\n  <input class="form-check-input" type="radio" name="inlineRadio" id="radio2" value="option2">\n  <label class="form-check-label" for="radio2">Radio B</label>\n</div>` 
+            },
+
+            // --- COMPONENTS ---
+            { 
+                cat: "Components", 
+                name: "Accordion", 
+                desc: "Build vertically collapsing accordions in combination with the collapse JavaScript plugin.", 
+                syntax: `<div class="accordion" id="accId">\n  <div class="accordion-item">\n    <h2 class="accordion-header">\n      <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#c1">Title</button>\n    </h2>\n    <div id="c1" class="accordion-collapse collapse show" data-bs-parent="#accId">\n      <div class="accordion-body">Body</div>\n    </div>\n  </div>\n</div>`, 
+                values: [".accordion", ".accordion-item", ".accordion-header", ".accordion-button", ".accordion-collapse", ".collapse"],
+                html: `<div class="accordion" id="accordionExample">\n  <div class="accordion-item">\n    <h2 class="accordion-header">\n      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">\n        Accordion Item #1\n      </button>\n    </h2>\n    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">\n      <div class="accordion-body">\n        This is the first accordion item body. Clicking the header toggles visibility.\n      </div>\n    </div>\n  </div>\n  <div class="accordion-item">\n    <h2 class="accordion-header">\n      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">\n        Accordion Item #2\n      </button>\n    </h2>\n    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">\n      <div class="accordion-body">\n        This is the second accordion item. Accordions collapse other opened items automatically within the same parent.\n      </div>\n    </div>\n  </div>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Alerts", 
+                desc: "Provide contextual feedback messages for typical user actions with flexible alert banners.", 
+                syntax: `<div class="alert alert-warning alert-dismissible fade show" role="alert">\n  Alert text here!\n  <button class="btn-close" data-bs-dismiss="alert"></button>\n</div>`, 
+                values: [".alert", ".alert-primary", ".alert-success", ".alert-danger", ".alert-warning", ".alert-dismissible", ".fade", ".show"],
+                html: `<div class="alert alert-success d-flex align-items-center" role="alert">\n  <div>\n    🚀 <strong>Success!</strong> Your project has been compiled successfully.\n  </div>\n</div>\n<div class="alert alert-danger alert-dismissible fade show" role="alert">\n  ⚠️ <strong>Error!</strong> Failed to save data. Try again.\n  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Badge", 
+                desc: "Add small count indicators, status labels, or circular badge tags to elements and buttons.", 
+                syntax: `<span class="badge bg-secondary">New</span>`, 
+                values: [".badge", ".bg-*", ".rounded-pill", ".position-relative"],
+                html: `<span class="badge bg-primary">Primary Tag</span>\n<span class="badge bg-success rounded-pill">Pill Shape</span>\n<hr>\n<button type="button" class="btn btn-dark position-relative">\n  Inbox\n  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">\n    99+\n    <span class="visually-hidden">unread messages</span>\n  </span>\n</button>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Buttons", 
+                desc: "Styled custom buttons for actions, anchors, sizes, states, colors, outlines, and block widths.", 
+                syntax: `<button class="btn btn-primary">Primary</button>`, 
+                values: [".btn", ".btn-primary", ".btn-outline-primary", ".btn-lg", ".btn-sm", ".btn-link"],
+                html: `<div class="d-flex flex-wrap gap-2">\n  <button class="btn btn-primary">Primary</button>\n  <button class="btn btn-success">Success</button>\n  <button class="btn btn-danger">Danger</button>\n  <button class="btn btn-outline-warning text-dark">Outline Warning</button>\n  <button class="btn btn-info btn-sm">Small Info</button>\n  <button class="btn btn-secondary btn-lg">Large Secondary</button>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Button Group", 
+                desc: "Group a series of buttons together on a single line or stack them vertically in button groups.", 
+                syntax: `<div class="btn-group">\n  <button class="btn btn-primary">L</button>\n  <button class="btn btn-primary">R</button>\n</div>`, 
+                values: [".btn-group", ".btn-group-vertical", ".btn-group-sm"],
+                html: `<div class="btn-group mb-3" role="group" aria-label="Basic example">\n  <button type="button" class="btn btn-primary">Left</button>\n  <button type="button" class="btn btn-primary">Middle</button>\n  <button type="button" class="btn btn-primary">Right</button>\n</div>\n<br>\n<div class="btn-group-vertical" role="group" aria-label="Vertical group">\n  <button type="button" class="btn btn-secondary">Button 1</button>\n  <button type="button" class="btn btn-secondary">Button 2</button>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Card", 
+                desc: "A flexible and extensible content container with options for headers, footers, images, titles, and grid cards.", 
+                syntax: `<div class="card">\n  <div class="card-body">Card text</div>\n</div>`, 
+                values: [".card", ".card-body", ".card-title", ".card-subtitle", ".card-header", ".card-footer", ".card-img-top"],
+                html: `<div class="card" style="max-width: 320px; margin: 0 auto;">\n  <div class="card-header bg-primary text-white font-weight-bold">Featured Card</div>\n  <div class="card-body">\n    <h5 class="card-title">Special Title Treatment</h5>\n    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>\n    <a href="#" class="btn btn-outline-primary btn-sm">Go somewhere</a>\n  </div>\n  <div class="card-footer text-muted text-center" style="font-size: 0.8rem;">2 days ago</div>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Carousel", 
+                desc: "A slideshow component for cycling through elements, images, or slides of text like a carousel.", 
+                syntax: `<div id="car" class="carousel slide" data-bs-ride="carousel">\n  ...\n</div>`, 
+                values: [".carousel", ".slide", ".carousel-inner", ".carousel-item", ".carousel-control-prev", ".carousel-indicators"],
+                html: `<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="max-width: 400px; margin:0 auto;">\n  <div class="carousel-indicators">\n    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>\n    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>\n  </div>\n  <div class="carousel-inner rounded">\n    <div class="carousel-item active">\n      <div class="bg-primary text-white d-flex flex-column align-items-center justify-content-center" style="height: 180px;">\n        <h3>First Slide Content</h3>\n        <p>Subtitle text description</p>\n      </div>\n    </div>\n    <div class="carousel-item">\n      <div class="bg-purple text-white d-flex flex-column align-items-center justify-content-center" style="height: 180px; background-color: #6f42c1;">\n        <h3>Second Slide Content</h3>\n        <p>Another description</p>\n      </div>\n    </div>\n  </div>\n  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">\n    <span class="carousel-control-prev-icon" aria-hidden="true"></span>\n    <span class="visually-hidden">Previous</span>\n  </button>\n  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">\n    <span class="carousel-control-next-icon" aria-hidden="true"></span>\n    <span class="visually-hidden">Next</span>\n  </button>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Dropdowns", 
+                desc: "Toggle contextual overlays for displaying lists of links and actions using the Bootstrap dropdown plugin.", 
+                syntax: `<div class="dropdown">\n  <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">Menu</button>\n  <ul class="dropdown-menu">\n    <li><a class="dropdown-item" href="#">Action</a></li>\n  </ul>\n</div>`, 
+                values: [".dropdown", ".dropdown-toggle", ".dropdown-menu", ".dropdown-item", ".dropdown-divider"],
+                html: `<div class="dropdown text-center">\n  <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">\n    Perform Actions\n  </button>\n  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">\n    <li><a class="dropdown-item" href="#">Edit Details</a></li>\n    <li><a class="dropdown-item" href="#">Add Entry</a></li>\n    <li><hr class="dropdown-divider"></li>\n    <li><a class="dropdown-item text-danger" href="#">Delete Project</a></li>\n  </ul>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "List Group", 
+                desc: "List groups are a flexible and powerful component for displaying a series of content, with custom styling and badges.", 
+                syntax: `<ul class="list-group">\n  <li class="list-group-item">Item</li>\n</ul>`, 
+                values: [".list-group", ".list-group-item", ".list-group-item-action", ".list-group-item-*"],
+                html: `<ul class="list-group">\n  <li class="list-group-item active" aria-current="true">Active List Header Item</li>\n  <li class="list-group-item d-flex justify-content-between align-items-center">\n    Notification Alerts\n    <span class="badge bg-danger rounded-pill">12</span>\n  </li>\n  <li class="list-group-item list-group-item-warning">Zebra Alert Context Item</li>\n  <li class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">Disabled list item action</li>\n</ul>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Modal", 
+                desc: "Use Bootstrap's JavaScript modal plugin to add dialogs/popups for user notifications, custom forms, or lightboxes.", 
+                syntax: `<button class="btn" data-bs-toggle="modal" data-bs-target="#m">Launch</button>\n<div class="modal fade" id="m">\n  <div class="modal-dialog">...</div>\n</div>`, 
+                values: [".modal", ".modal-dialog", ".modal-content", ".modal-header", ".modal-body", ".modal-footer", "data-bs-toggle=\"modal\"", "data-bs-target=\"#ID\""],
+                html: `<!-- Trigger Button -->\n<div class="text-center">\n  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#refModalDemo">\n    Open Demo Modal Window\n  </button>\n</div>\n\n<!-- Modal Structure -->\n<div class="modal fade" id="refModalDemo" tabindex="-1" aria-labelledby="refModalDemoLabel" aria-hidden="true">\n  <div class="modal-dialog">\n    <div class="modal-content">\n      <div class="modal-header">\n        <h5 class="modal-title" id="refModalDemoLabel">Native Bootstrap Modal</h5>\n        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n      </div>\n      <div class="modal-body">\n        This is a fully-functioning, responsive modal window loading directly inside an isolated iframe!\n      </div>\n      <div class="modal-footer">\n        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\n        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="alert('Action Saved!')">Save Changes</button>\n      </div>\n    </div>\n  </div>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Navs & Tabs", 
+                desc: "Build functional tabbed navigation panels easily using navigation lists and target panels.", 
+                syntax: `<ul class="nav nav-tabs">\n  <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab1">Tab 1</a></li>\n</ul>`, 
+                values: [".nav", ".nav-tabs", ".nav-pills", ".nav-link", ".tab-content", ".tab-pane"],
+                html: `<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">\n  <li class="nav-item" role="presentation">\n    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab">Home</button>\n  </li>\n  <li class="nav-item" role="presentation">\n    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab">Profile</button>\n  </li>\n</ul>\n<div class="tab-content" id="pills-tabContent">\n  <div class="tab-pane fade show active p-2 border rounded" id="pills-home" role="tabpanel">Home info tab panel. Fully working.</div>\n  <div class="tab-pane fade p-2 border rounded" id="pills-profile" role="tabpanel">User settings profile description panel.</div>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Navbar", 
+                desc: "A responsive navigation header container supporting branding, navigation menus, toggles, form fields, and dropdowns.", 
+                syntax: `<nav class="navbar navbar-expand-lg bg-light">\n  <div class="container-fluid">\n    <a class="navbar-brand">Brand</a>\n  </div>\n</nav>`, 
+                values: [".navbar", ".navbar-expand-*", ".navbar-brand", ".navbar-nav", ".navbar-toggler", ".collapse", ".navbar-collapse"],
+                html: `<nav class="navbar navbar-expand-lg bg-body-secondary rounded">\n  <div class="container-fluid">\n    <a class="navbar-brand" href="#" style="font-weight:700; color:#6f42c1;">WebJourney</a>\n    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">\n      <span class="navbar-toggler-icon"></span>\n    </button>\n    <div class="collapse navbar-collapse" id="navbarNav">\n      <ul class="navbar-nav ms-auto">\n        <li class="nav-item">\n          <a class="nav-link active" aria-current="page" href="#">Home</a>\n        </li>\n        <li class="nav-item">\n          <a class="nav-link" href="#">Features</a>\n        </li>\n      </ul>\n    </div>\n  </div>\n</nav>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Offcanvas", 
+                desc: "Build hidden sidebars or drawers that slide out from any side of the screen for navigation or custom forms.", 
+                syntax: `<button data-bs-toggle="offcanvas" data-bs-target="#off">Open</button>\n<div class="offcanvas offcanvas-start" id="off">...</div>`, 
+                values: [".offcanvas", ".offcanvas-start", ".offcanvas-end", ".offcanvas-top", ".offcanvas-bottom", ".offcanvas-header", ".offcanvas-body"],
+                html: `<!-- Drawer Trigger -->\n<div class="text-center">\n  <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">\n    Open Slide-out Drawer (Offcanvas)\n  </button>\n</div>\n\n<!-- Drawer Element -->\n<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">\n  <div class="offcanvas-header">\n    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Sidebar Drawer</h5>\n    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>\n  </div>\n  <div class="offcanvas-body">\n    <div>\n      This is offcanvas content. Click the backdrop or Close button to slide it back out of view.\n    </div>\n    <ul class="list-group mt-3">\n      <li class="list-group-item">Option Link 1</li>\n      <li class="list-group-item">Option Link 2</li>\n    </ul>\n  </div>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Progress Bar", 
+                desc: "Display progress data utilizing styled, stacked, striped, and animated progress bars.", 
+                syntax: `<div class="progress" role="progressbar"><div class="progress-bar" style="width: 50%"></div></div>`, 
+                values: [".progress", ".progress-bar", ".progress-bar-striped", ".progress-bar-animated"],
+                html: `<div class="progress mb-3" role="progressbar" aria-label="Basic example" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">\n  <div class="progress-bar" style="width: 45%">45% Done</div>\n</div>\n<div class="progress" role="progressbar" aria-label="Animated strip" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">\n  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 75%">75% Completed (Animated)</div>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Spinners", 
+                desc: "Indicate loading state of components or operations with responsive spinning animations.", 
+                syntax: `<div class="spinner-border text-primary"></div>`, 
+                values: [".spinner-border", ".spinner-grow", ".text-*", ".spinner-border-sm"],
+                html: `<div class="d-flex align-items-center justify-content-center gap-3">\n  <div class="spinner-border text-primary" role="status"></div>\n  <div class="spinner-grow text-success" role="status"></div>\n  <div class="spinner-border text-danger spinner-border-sm" role="status"></div>\n  <span>Loading items...</span>\n</div>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Toasts", 
+                desc: "Display small push notifications as modal overlay cards on screen corners or custom placement.", 
+                syntax: `<div class="toast"><div class="toast-header">Header</div><div class="toast-body">Body</div></div>`, 
+                values: [".toast", ".toast-container", ".toast-header", ".toast-body"],
+                html: `<div class="text-center">\n  <button type="button" class="btn btn-primary" id="toastTriggerBtn">Show Toast Alert</button>\n</div>\n\n<div class="toast-container position-fixed bottom-0 end-0 p-3">\n  <div id="liveToastDemo" class="toast" role="alert" aria-live="assertive" aria-atomic="true">\n    <div class="toast-header bg-dark text-white">\n      <strong class="me-auto">Notification Service</strong>\n      <small>Just now</small>\n      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>\n    </div>\n    <div class="toast-body">\n      This is a custom interactive toast notification triggered with JavaScript!\n    </div>\n  </div>\n</div>\n\n<script>\n  document.getElementById('toastTriggerBtn').addEventListener('click', function() {\n    var toastEl = document.getElementById('liveToastDemo');\n    var toast = new bootstrap.Toast(toastEl);\n    toast.show();\n  });\n<\/script>` 
+            },
+            { 
+                cat: "Components", 
+                name: "Tooltips", 
+                desc: "Small hover tags displaying contextual label descriptors using the Bootstrap Popper engine.", 
+                syntax: `<button data-bs-toggle="tooltip" title="Tooltip content">Hover</button>`, 
+                values: [".tooltip", "data-bs-toggle=\"tooltip\"", "data-bs-placement=\"*\""],
+                html: `<div class="text-center py-4 d-flex justify-content-center gap-2">\n  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip positioned at Top">Tooltip Top</button>\n  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip positioned at Bottom">Tooltip Bottom</button>\n</div>` 
+            },
+
+            // --- UTILITIES ---
+            { 
+                cat: "Utilities", 
+                name: "Flexbox Alignment", 
+                desc: "Quickly manage the layout, alignment, sizing, and spacing of grid columns, navigation headers, or any element using flexbox utilities.", 
+                syntax: `<div class="d-flex justify-content-between align-items-center">...</div>`, 
+                values: [".d-flex", ".flex-row", ".flex-column", ".justify-content-between", ".align-items-center", ".flex-wrap"],
+                html: `<div class="d-flex justify-content-between align-items-center bg-light p-3 border rounded">\n  <div class="bg-primary text-white p-2 rounded">Box Item 1</div>\n  <div class="bg-success text-white p-2 rounded">Box Item 2</div>\n  <div class="bg-danger text-white p-2 rounded">Box Item 3</div>\n</div>` 
+            },
+            { 
+                cat: "Utilities", 
+                name: "Spacing (Margin & Padding)", 
+                desc: "Assign responsive margins and paddings using clear shorthand properties. Formatted as {property}{sides}-{size} (e.g. mb-3, py-4).", 
+                syntax: `<div class="m-3 p-4">Spacing Box</div>`, 
+                values: ["m-[0-5]", "p-[0-5]", "mt-*", "mb-*", "ms-*", "me-*", "mx-*", "my-*"],
+                html: `<div class="bg-light border mb-2 p-4 rounded text-center">\n  <span class="bg-primary text-white p-3 m-2 d-inline-block rounded">m-2, p-3</span>\n  <span class="bg-success text-white p-2 ms-5 d-inline-block rounded">ms-5 (margin start), p-2</span>\n</div>` 
+            },
+            { 
+                cat: "Utilities", 
+                name: "Shadows", 
+                desc: "Add or remove shadows from elements using utility classes.", 
+                syntax: `<div class="shadow-lg">Large Shadow</div>`, 
+                values: [".shadow-none", ".shadow-sm", ".shadow", ".shadow-lg"],
+                html: `<div class="shadow-none p-3 mb-2 bg-light rounded">No Shadow (.shadow-none)</div>\n<div class="shadow-sm p-3 mb-2 bg-body-tertiary rounded">Small Shadow (.shadow-sm)</div>\n<div class="shadow p-3 mb-2 bg-body-tertiary rounded">Regular Shadow (.shadow)</div>\n<div class="shadow-lg p-3 bg-body-tertiary rounded">Large Shadow (.shadow-lg)</div>` 
+            },
+            { 
+                cat: "Utilities", 
+                name: "Sizing", 
+                desc: "Easily set the width or height of elements relative to their parent container.", 
+                syntax: `<div class="w-50">50% Width</div>`, 
+                values: [".w-25", ".w-50", ".w-75", ".w-100", ".h-25", ".h-50", ".h-75", ".h-100", ".mw-100", ".mh-100"],
+                html: `<div class="w-25 p-2 bg-primary text-white text-center rounded mb-1">w-25</div>\n<div class="w-50 p-2 bg-success text-white text-center rounded mb-1">w-50</div>\n<div class="w-75 p-2 bg-info text-white text-center rounded mb-1">w-75</div>\n<div class="w-100 p-2 bg-dark text-white text-center rounded">w-100</div>` 
+            },
+            { 
+                cat: "Utilities", 
+                name: "Position Helpers", 
+                desc: "Common utilities for configuring element positioning (static, relative, absolute, fixed, sticky) and placement anchors.", 
+                syntax: `<div class="position-absolute top-0 start-50">...</div>`, 
+                values: [".position-static", ".position-relative", ".position-absolute", ".position-fixed", ".position-sticky", ".top-0", ".end-0", ".bottom-0", ".start-0"],
+                html: `<div class="position-relative bg-light border rounded" style="height: 120px;">\n  <div class="position-absolute top-0 start-0 bg-primary text-white p-2 rounded-top rounded-end-0">Top-Left</div>\n  <div class="position-absolute top-0 end-0 bg-dark text-white p-2 rounded-top rounded-start-0">Top-Right</div>\n  <div class="position-absolute bottom-0 start-50 translate-middle-x bg-info text-white p-2 rounded-bottom-0">Bottom-Center</div>\n  <div class="position-absolute bottom-0 end-0 bg-success text-white p-2 rounded-bottom rounded-start-0">Bottom-Right</div>\n</div>` 
+            }
+        ];
+
+        // ==========================================
+        // RENDER ENGINE
+        // ==========================================
+        const mainContent = document.getElementById('contentContainer');
+        const navLinks = document.getElementById('navLinks');
+
+        function renderEncyclopedia() {
+            // Group by category
+            const categories = {};
+            bootstrapDB.forEach(item => {
+                if (!categories[item.cat]) categories[item.cat] = [];
+                categories[item.cat].push(item);
+            });
+
+            let navHTML = '';
+            let contentHTML = '';
+
+            for (const [cat, items] of Object.entries(categories)) {
+                navHTML += `<div class="nav-category">${cat}</div>`;
+                contentHTML += `<h3 class="category-header" id="cat-${cat.replace(/\s+/g, '')}">${cat}</h3>`;
+                
+                items.forEach(item => {
+                    navHTML += `<a href="#${item.name.replace(/\s+/g, '')}" class="nav-link">${item.name}</a>`;
+                    
+                    const valuesHTML = item.values.map(v => `<li><code>${v}</code></li>`).join('');
+                    
+                    // Encode for safe iframe injection
+                    const safeHTML = encodeURIComponent(item.html);
+
+                    contentHTML += `
+                        <div class="card" id="${item.name.replace(/\s+/g, '')}" data-name="${item.name.toLowerCase()}" data-cat="${cat.toLowerCase()}" data-desc="${item.desc.toLowerCase()}">
+                            <div class="card-header">
+                                <span class="prop-name">${item.name}</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-section">
+                                    <h4>Description</h4>
+                                    <p>${item.desc}</p>
+                                    <h4>Classes Highlighted</h4>
+                                    <ul>${valuesHTML}</ul>
+                                </div>
+                                <div class="info-section">
+                                    <h4>Syntax / Structure</h4>
+                                    <div class="code-block">
+                                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                        <pre>${escapeHtml(item.syntax)}</pre>
+                                    </div>
+                                </div>
+                                <div class="preview-container" style="grid-column: span 2;">
+                                    <h4 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Live Preview Panel</h4>
+                                    <div class="preview-window">
+                                        <span class="preview-label">Bootstrap Render</span>
+                                        <iframe class="preview-frame" data-html="${safeHTML}"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            navLinks.innerHTML = navHTML;
+            mainContent.innerHTML = contentHTML;
+
+            // Initialize Iframes Safely
+            document.querySelectorAll('.preview-frame').forEach(iframe => {
+                const html = decodeURIComponent(iframe.dataset.html);
+                iframe.srcdoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  ${html}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"><\/script>
+  <script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    // Initialize popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl)
+    });
+  <\/script>
+</body>
+</html>`;
+            });
+
+            // Smooth active navigation highlight
+            const links = document.querySelectorAll('.nav-link');
+            const cards = document.querySelectorAll('.card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        links.forEach(link => {
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('active');
+                            } else {
+                                link.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '-10% 0px -80% 0px',
+                threshold: 0
+            });
+
+            cards.forEach(card => observer.observe(card));
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function copyCode(btn) {
+            const code = btn.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.style.background = "var(--success)";
+                btn.style.color = "#000";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "";
+                    btn.style.color = "";
+                }, 2000);
+            });
+        }
+
+        // Search Logic
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.card');
+            const headers = document.querySelectorAll('.category-header');
+
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const cat = card.dataset.cat;
+                const desc = card.dataset.desc;
+                const match = name.includes(query) || cat.includes(query) || desc.includes(query);
+                card.style.display = match ? 'block' : 'none';
+            });
+
+            // Hide empty categories and their nav links
+            headers.forEach(header => {
+                const catId = header.id.replace('cat-', '').toLowerCase();
+                const cardsInCat = document.querySelectorAll(`.card[data-cat="${catId}"]`);
+                const visibleCards = Array.from(cardsInCat).filter(c => c.style.display !== 'none');
+                
+                const isCatVisible = visibleCards.length > 0;
+                header.style.display = isCatVisible ? 'block' : 'none';
+            });
+            
+            // Better sidebar category sync
+            document.querySelectorAll('.nav-category').forEach((navCat) => {
+                const catName = navCat.innerText.toLowerCase();
+                const visibleCardsInNav = Array.from(cards).filter(c => c.dataset.cat === catName && c.style.display !== 'none');
+                navCat.style.display = visibleCardsInNav.length > 0 ? 'block' : 'none';
+                
+                // Hide/show individual links
+                let nextEl = navCat.nextElementSibling;
+                while (nextEl && nextEl.classList.contains('nav-link')) {
+                    const linkName = nextEl.innerText.toLowerCase();
+                    const card = document.querySelector(`.card[data-name="${linkName}"]`);
+                    if (card) {
+                        nextEl.style.display = card.style.display !== 'none' ? 'block' : 'none';
+                    }
+                    nextEl = nextEl.nextElementSibling;
+                }
+            });
+        });
+
+        // Initialize
+        renderEncyclopedia();
+    </script>
+</body>
+</html>

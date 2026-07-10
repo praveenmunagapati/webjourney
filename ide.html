@@ -864,6 +864,61 @@
       font-family: 'JetBrains Mono', monospace !important
     }
 
+    /* References Dropdown styling */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 1px rgba(139, 92, 246, 0.2);
+      z-index: 1000;
+      min-width: 170px;
+      padding: 6px 0;
+      animation: dropdownFadeIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes dropdownFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: .72rem;
+      font-weight: 500;
+      transition: all var(--transition);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
     @media(max-width:900px) {
       .sidebar {
         width: 0;
@@ -900,6 +955,16 @@
         <div class="tb-group">
           <button class="btn" id="resetBtn" title="Reset to original">↺ Reset</button>
           <button class="btn" id="downloadBtn" title="Download">↓ Export</button>
+        </div>
+        <div class="tb-group dropdown">
+          <button class="btn" id="refDropdownBtn" title="Documentation References">📚 References ▾</button>
+          <div class="dropdown-menu" id="refDropdownMenu">
+            <a href="htmlcompleteref.html" target="_blank" class="dropdown-item">HTML Reference</a>
+            <a href="csscompleteref.html" target="_blank" class="dropdown-item">CSS Reference</a>
+            <a href="javascriptref.html" target="_blank" class="dropdown-item">JS Reference</a>
+            <div class="dropdown-divider"></div>
+            <a href="bootstrapcompleteref.html" target="_blank" class="dropdown-item" style="color: var(--accent-3); font-weight: 600;">Bootstrap Reference</a>
+          </div>
         </div>
         <div class="tb-group">
           <button class="btn-icon" id="fontMinusBtn" title="Font −">A<small>−</small></button>
@@ -2630,6 +2695,21 @@ run();`
       document.getElementById('refreshBtn').addEventListener('click', () => { clearConsole(); updatePreview() });
       document.getElementById('fullscreenBtn').addEventListener('click', () => { const p = document.getElementById('outputPanel'); p.classList.toggle('fullscreen'); document.getElementById('fullscreenBtn').textContent = p.classList.contains('fullscreen') ? '✕' : '⛶' });
       document.getElementById('sidebarToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('collapsed'); setTimeout(() => Object.values(editors).forEach(ed => ed.resize()), 300) });
+
+      // References Dropdown
+      const refBtn = document.getElementById('refDropdownBtn');
+      const refMenu = document.getElementById('refDropdownMenu');
+      if (refBtn && refMenu) {
+        refBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          refMenu.classList.toggle('show');
+        });
+        document.addEventListener('click', (e) => {
+          if (!refBtn.contains(e.target) && !refMenu.contains(e.target)) {
+            refMenu.classList.remove('show');
+          }
+        });
+      }
     }
     function changeFontSize(d) { CONFIG.fontSize = Math.max(10, Math.min(28, CONFIG.fontSize + d)); Object.values(editors).forEach(ed => ed.setFontSize(CONFIG.fontSize)) }
     function toggleTheme() { CONFIG.theme = CONFIG.theme === 'dark' ? 'light' : 'dark'; if (CONFIG.theme === 'light') document.documentElement.setAttribute('data-theme', 'light'); else document.documentElement.removeAttribute('data-theme'); Object.values(editors).forEach(ed => ed.setTheme(CONFIG.theme === 'dark' ? 'ace/theme/one_dark' : 'ace/theme/chrome')); document.getElementById('themeBtn').textContent = CONFIG.theme === 'dark' ? '🌙' : '☀️' }
