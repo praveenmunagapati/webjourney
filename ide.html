@@ -38,6 +38,8 @@
       --html-color: #e34c26;
       --css-color: #264de4;
       --js-color: #f0db4f;
+      --react-color: #61dafb;
+      --node-color: #339933;
       --radius: 8px;
       --glass: rgba(17, 24, 39, 0.7);
       --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -411,6 +413,14 @@
       background: var(--js-color)
     }
 
+    .sidebar-item.react-item .dot {
+      background: var(--react-color)
+    }
+
+    .sidebar-item.node-item .dot {
+      background: var(--node-color)
+    }
+
     .sidebar-item.hidden {
       display: none
     }
@@ -676,7 +686,9 @@
       flex-direction: column;
       background: var(--bg-editor);
       font-family: 'JetBrains Mono', monospace;
-      font-size: .78rem
+      font-size: .78rem;
+      min-height: 0;
+      overflow: hidden
     }
 
     .console-container.active {
@@ -936,7 +948,7 @@
             </div>
           </div>
           <div class="preview-container" id="previewPanel"><iframe id="previewFrame"
-              sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe></div>
+              sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe></div>
           <div class="console-container" id="consolePanel">
             <div class="console-output" id="consoleOutput"></div>
             <div class="console-input-bar"><span class="console-prompt">›</span><input class="console-input"
@@ -1590,6 +1602,613 @@
 
 
     // ========================================================================
+    //  DATA: ALL REACT.JS CONCEPTS — Complete Reference (40+ examples)
+    // ========================================================================
+    const REACT_EXAMPLES = [
+  // ── CORE CONCEPTS ─────────────────────────────────────────────────────
+  {
+    "cat": "Core Concepts",
+    "name": "Hello World",
+    "desc": "The simplest React app — rendering an element into the DOM with ReactDOM.createRoot.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>React Hello World</title>\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nfunction App() {\n  return (\n    <div style={{textAlign:'center',padding:'40px',fontFamily:'sans-serif'}}>\n      <h1 style={{background:'linear-gradient(135deg,#61dafb,#764ba2)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',fontSize:'2.5em'}}>Hello, React! ⚛️</h1>\n      <p style={{color:'#666',fontSize:'1.1em'}}>Welcome to the React.js reference.</p>\n      <p style={{background:'#f0f9ff',padding:'12px 20px',borderRadius:'8px',color:'#0369a1',display:'inline-block'}}>React {React.version} is running!</p>\n    </div>\n  );\n}\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Core Concepts",
+    "name": "JSX Basics",
+    "desc": "JSX lets you write HTML-like syntax in JavaScript. It compiles to React.createElement() calls.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nfunction App() {\n  const name = 'Developer';\n  const items = ['JSX Expressions', 'Attributes', 'Children', 'Fragments'];\n  const isLoggedIn = true;\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2 style={{color:'#1e293b'}}>JSX Basics</h2>\n\n      {/* Expressions in JSX */}\n      <div style={{background:'#f0fdf4',padding:'15px',borderRadius:'8px',marginBottom:'12px'}}>\n        <h3 style={{color:'#166534',margin:'0 0 8px'}}>Expressions</h3>\n        <p>Hello, <strong>{name}</strong>! 2 + 2 = <strong>{2 + 2}</strong></p>\n        <p>Current time: <strong>{new Date().toLocaleTimeString()}</strong></p>\n      </div>\n\n      {/* Conditional rendering */}\n      <div style={{background:'#fef3c7',padding:'15px',borderRadius:'8px',marginBottom:'12px'}}>\n        <h3 style={{color:'#92400e',margin:'0 0 8px'}}>Conditionals</h3>\n        <p>{isLoggedIn ? '✅ Logged in' : '❌ Not logged in'}</p>\n        {isLoggedIn && <p style={{color:'#166534'}}>Welcome back!</p>}\n      </div>\n\n      {/* Lists */}\n      <div style={{background:'#eff6ff',padding:'15px',borderRadius:'8px'}}>\n        <h3 style={{color:'#1e40af',margin:'0 0 8px'}}>Lists with .map()</h3>\n        <ul>{items.map((item, i) => <li key={i}>{item}</li>)}</ul>\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Core Concepts",
+    "name": "Components & Props",
+    "desc": "Components are reusable building blocks. Props pass data from parent to child, like function arguments.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\n// Reusable Card component\nfunction UserCard({ name, role, avatar, color }) {\n  return (\n    <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:'12px',padding:'20px',display:'flex',alignItems:'center',gap:'15px',marginBottom:'10px',borderLeft:`4px solid ${color}`}}>\n      <div style={{width:'48px',height:'48px',borderRadius:'50%',background:color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.5em'}}>{avatar}</div>\n      <div>\n        <h3 style={{margin:0,color:'#1e293b'}}>{name}</h3>\n        <p style={{margin:'4px 0 0',color:'#64748b',fontSize:'0.9em'}}>{role}</p>\n      </div>\n    </div>\n  );\n}\n\n// Default props\nUserCard.defaultProps = { color: '#8b5cf6' };\n\nfunction App() {\n  const users = [\n    { name: 'Alice', role: 'Frontend Developer', avatar: '👩‍💻', color: '#3b82f6' },\n    { name: 'Bob', role: 'UX Designer', avatar: '🎨', color: '#10b981' },\n    { name: 'Charlie', role: 'Backend Engineer', avatar: '⚙️', color: '#f59e0b' },\n  ];\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto'}}>\n      <h2 style={{color:'#1e293b'}}>👥 Team Directory</h2>\n      {users.map((u, i) => <UserCard key={i} {...u} />)}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Core Concepts",
+    "name": "Rendering Lists",
+    "desc": "Use .map() to transform arrays into lists of elements. Always provide a unique key prop.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nfunction App() {\n  const products = [\n    { id: 1, name: 'Laptop', price: 999, emoji: '💻', inStock: true },\n    { id: 2, name: 'Phone', price: 699, emoji: '📱', inStock: true },\n    { id: 3, name: 'Tablet', price: 449, emoji: '📟', inStock: false },\n    { id: 4, name: 'Watch', price: 299, emoji: '⌚', inStock: true },\n    { id: 5, name: 'Headphones', price: 199, emoji: '🎧', inStock: false },\n  ];\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto'}}>\n      <h2>🛒 Product List</h2>\n      <p style={{color:'#64748b'}}>Showing {products.filter(p=>p.inStock).length} in stock</p>\n      {products.map(product => (\n        <div key={product.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',background: product.inStock ? '#f0fdf4' : '#fef2f2',borderRadius:'8px',marginBottom:'8px',opacity: product.inStock ? 1 : 0.6}}>\n          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>\n            <span style={{fontSize:'1.5em'}}>{product.emoji}</span>\n            <div>\n              <strong>{product.name}</strong>\n              <div style={{fontSize:'0.85em',color:'#64748b'}}>{product.inStock ? '✅ In Stock' : '❌ Out of Stock'}</div>\n            </div>\n          </div>\n          <strong style={{color:'#0f766e'}}>${product.price}</strong>\n        </div>\n      ))}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Core Concepts",
+    "name": "Conditional Rendering",
+    "desc": "Render different UI based on conditions using ternary, &&, or early return patterns.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction StatusBadge({ status }) {\n  // Early return pattern\n  if (!status) return null;\n\n  const styles = {\n    online: { bg: '#dcfce7', color: '#166534', icon: '🟢' },\n    away:   { bg: '#fef9c3', color: '#854d0e', icon: '🟡' },\n    offline:{ bg: '#fee2e2', color: '#991b1b', icon: '🔴' },\n  };\n  const s = styles[status] || styles.offline;\n  return <span style={{background:s.bg,color:s.color,padding:'4px 12px',borderRadius:'20px',fontSize:'0.85em'}}>{s.icon} {status}</span>;\n}\n\nfunction App() {\n  const [loggedIn, setLoggedIn] = useState(false);\n  const [status, setStatus] = useState('online');\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto'}}>\n      <h2>Conditional Rendering</h2>\n\n      {/* Ternary */}\n      <div style={{padding:'16px',background:'#f8fafc',borderRadius:'8px',marginBottom:'12px'}}>\n        <h3 style={{margin:'0 0 10px'}}>Ternary Operator</h3>\n        {loggedIn\n          ? <p>✅ Welcome back! <StatusBadge status={status} /></p>\n          : <p>❌ Please log in</p>}\n        <button onClick={() => setLoggedIn(!loggedIn)} style={{padding:'8px 16px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer',marginTop:'8px'}}>\n          {loggedIn ? 'Log Out' : 'Log In'}\n        </button>\n      </div>\n\n      {/* && short-circuit */}\n      {loggedIn && (\n        <div style={{padding:'16px',background:'#f0fdf4',borderRadius:'8px',marginBottom:'12px'}}>\n          <h3 style={{margin:'0 0 10px'}}>Status Selector (only shown when logged in)</h3>\n          {['online','away','offline'].map(s => (\n            <button key={s} onClick={() => setStatus(s)} style={{padding:'6px 12px',margin:'0 4px',background: status===s ? '#3b82f6' : '#e2e8f0',color: status===s ? '#fff' : '#333',border:'none',borderRadius:'4px',cursor:'pointer',textTransform:'capitalize'}}>{s}</button>\n          ))}\n        </div>\n      )}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Core Concepts",
+    "name": "Event Handling",
+    "desc": "React events are camelCase (onClick, onChange). Handlers receive a SyntheticEvent wrapper.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction App() {\n  const [log, setLog] = useState([]);\n  const addLog = (msg) => setLog(prev => [`${new Date().toLocaleTimeString()} — ${msg}`, ...prev].slice(0, 8));\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>🎯 Event Handling</h2>\n\n      <div style={{display:'flex',gap:'8px',flexWrap:'wrap',marginBottom:'16px'}}>\n        <button onClick={() => addLog('Button clicked!')} style={{padding:'8px 16px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>onClick</button>\n        <button onDoubleClick={() => addLog('Double clicked!')} style={{padding:'8px 16px',background:'#8b5cf6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>onDoubleClick</button>\n        <div onMouseEnter={() => addLog('Mouse entered box')} onMouseLeave={() => addLog('Mouse left box')} style={{padding:'8px 16px',background:'#10b981',color:'#fff',borderRadius:'6px',cursor:'pointer'}}>Hover me</div>\n      </div>\n\n      <input type=\"text\" placeholder=\"Type here (onChange)...\" onChange={(e) => addLog(`Input: \"${e.target.value}\"`)} onFocus={() => addLog('Input focused')} onBlur={() => addLog('Input blurred')} style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px',fontSize:'1em',marginBottom:'16px',boxSizing:'border-box'}} />\n\n      <div onKeyDown={(e) => addLog(`Key: ${e.key}`)} tabIndex={0} style={{padding:'12px',background:'#fef3c7',borderRadius:'6px',marginBottom:'16px',textAlign:'center',cursor:'pointer',outline:'none'}}>Click here, then press any key (onKeyDown)</div>\n\n      <div style={{background:'#0f172a',borderRadius:'8px',padding:'12px',maxHeight:'200px',overflowY:'auto'}}>\n        <div style={{color:'#64748b',fontSize:'0.8em',marginBottom:'8px'}}>Event Log:</div>\n        {log.length === 0 ? <div style={{color:'#475569',fontSize:'0.85em'}}>Interact with the elements above...</div> : log.map((entry, i) => <div key={i} style={{color:'#e2e8f0',fontSize:'0.85em',padding:'3px 0',fontFamily:'monospace'}}>{entry}</div>)}\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Core Concepts",
+    "name": "Forms & Inputs",
+    "desc": "Controlled components bind input values to state. onChange updates state, value reflects it.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction App() {\n  const [form, setForm] = useState({ name: '', email: '', framework: 'react', agree: false });\n  const [submitted, setSubmitted] = useState(null);\n\n  const handleChange = (e) => {\n    const { name, value, type, checked } = e.target;\n    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));\n  };\n\n  const handleSubmit = (e) => {\n    e.preventDefault();\n    setSubmitted({...form});\n  };\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto'}}>\n      <h2>📝 Controlled Form</h2>\n      <form onSubmit={handleSubmit}>\n        <div style={{marginBottom:'12px'}}>\n          <label style={{display:'block',fontWeight:600,marginBottom:'4px'}}>Name</label>\n          <input name=\"name\" value={form.name} onChange={handleChange} placeholder=\"Your name\" style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px',boxSizing:'border-box'}} />\n        </div>\n        <div style={{marginBottom:'12px'}}>\n          <label style={{display:'block',fontWeight:600,marginBottom:'4px'}}>Email</label>\n          <input name=\"email\" type=\"email\" value={form.email} onChange={handleChange} placeholder=\"email@example.com\" style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px',boxSizing:'border-box'}} />\n        </div>\n        <div style={{marginBottom:'12px'}}>\n          <label style={{display:'block',fontWeight:600,marginBottom:'4px'}}>Favorite Framework</label>\n          <select name=\"framework\" value={form.framework} onChange={handleChange} style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px'}}>\n            <option value=\"react\">React</option><option value=\"vue\">Vue</option><option value=\"angular\">Angular</option><option value=\"svelte\">Svelte</option>\n          </select>\n        </div>\n        <label style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'16px'}}>\n          <input name=\"agree\" type=\"checkbox\" checked={form.agree} onChange={handleChange} />\n          I agree to the terms\n        </label>\n        <button type=\"submit\" disabled={!form.agree} style={{padding:'10px 24px',background: form.agree ? '#3b82f6' : '#94a3b8',color:'#fff',border:'none',borderRadius:'6px',cursor: form.agree ? 'pointer' : 'not-allowed',fontSize:'1em'}}>Submit</button>\n      </form>\n      {submitted && (\n        <div style={{marginTop:'16px',padding:'16px',background:'#f0fdf4',borderRadius:'8px',border:'1px solid #bbf7d0'}}>\n          <strong>✅ Submitted:</strong>\n          <pre style={{margin:'8px 0 0',fontSize:'0.85em',color:'#166534'}}>{JSON.stringify(submitted, null, 2)}</pre>\n        </div>\n      )}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+
+  // ── HOOKS ──────────────────────────────────────────────────────────────
+  {
+    "cat": "Hooks",
+    "name": "useState",
+    "desc": "Adds local state to function components. Returns [value, setter]. Triggers re-render on change.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  const [step, setStep] = useState(1);\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',textAlign:'center'}}>\n      <h2>useState Counter</h2>\n      <div style={{fontSize:'4em',fontWeight:800,color:'#3b82f6',margin:'20px 0'}}>{count}</div>\n      <div style={{display:'flex',justifyContent:'center',gap:'8px',marginBottom:'16px'}}>\n        <button onClick={() => setCount(c => c - step)} style={{padding:'10px 20px',fontSize:'1.2em',background:'#ef4444',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>−{step}</button>\n        <button onClick={() => setCount(0)} style={{padding:'10px 20px',fontSize:'1em',background:'#64748b',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>Reset</button>\n        <button onClick={() => setCount(c => c + step)} style={{padding:'10px 20px',fontSize:'1.2em',background:'#10b981',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>+{step}</button>\n      </div>\n      <label style={{color:'#64748b'}}>Step: <input type=\"range\" min=\"1\" max=\"10\" value={step} onChange={e => setStep(Number(e.target.value))} /> {step}</label>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<Counter />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "useEffect",
+    "desc": "Runs side effects after render. Accepts a cleanup function. Dependency array controls when it fires.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useEffect } = React;\n\nfunction Timer() {\n  const [seconds, setSeconds] = useState(0);\n  const [running, setRunning] = useState(false);\n  const [logs, setLogs] = useState([]);\n\n  // Effect with cleanup\n  useEffect(() => {\n    if (!running) return;\n    setLogs(l => [...l, `⏱ Timer started at ${seconds}s`].slice(-6));\n    const id = setInterval(() => setSeconds(s => s + 1), 1000);\n    return () => {\n      clearInterval(id);\n      setLogs(l => [...l, `🛑 Timer cleaned up`].slice(-6));\n    };\n  }, [running]);\n\n  // Effect on mount only\n  useEffect(() => {\n    setLogs(l => [...l, '🚀 Component mounted']);\n    return () => setLogs(l => [...l, '💀 Component unmounted']);\n  }, []);\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto'}}>\n      <h2>useEffect Timer</h2>\n      <div style={{fontSize:'3em',fontWeight:800,textAlign:'center',color:'#3b82f6',margin:'16px 0'}}>{String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</div>\n      <div style={{display:'flex',justifyContent:'center',gap:'8px',marginBottom:'20px'}}>\n        <button onClick={() => setRunning(!running)} style={{padding:'10px 24px',background: running ? '#ef4444' : '#10b981',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer',fontSize:'1em'}}>{running ? '⏸ Pause' : '▶ Start'}</button>\n        <button onClick={() => { setRunning(false); setSeconds(0); }} style={{padding:'10px 24px',background:'#64748b',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>↺ Reset</button>\n      </div>\n      <div style={{background:'#0f172a',borderRadius:'8px',padding:'12px',fontFamily:'monospace',fontSize:'0.8em'}}>\n        {logs.map((l, i) => <div key={i} style={{color:'#94a3b8',padding:'2px 0'}}>{l}</div>)}\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<Timer />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "useContext",
+    "desc": "Consumes a React.createContext value without prop drilling. Provider wraps the tree.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useContext, createContext } = React;\n\nconst ThemeContext = createContext();\n\nfunction ThemeToggle() {\n  const { theme, toggle } = useContext(ThemeContext);\n  return <button onClick={toggle} style={{padding:'8px 16px',background:'none',border:'2px solid',borderColor: theme==='dark'?'#fbbf24':'#3b82f6',color: theme==='dark'?'#fbbf24':'#3b82f6',borderRadius:'20px',cursor:'pointer',fontSize:'0.9em'}}>{theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}</button>;\n}\n\nfunction Card() {\n  const { theme } = useContext(ThemeContext);\n  const isDark = theme === 'dark';\n  return (\n    <div style={{background: isDark ? '#1e293b' : '#fff',padding:'20px',borderRadius:'12px',border: isDark ? '1px solid #334155' : '1px solid #e2e8f0',marginTop:'16px'}}>\n      <h3 style={{color: isDark ? '#f1f5f9' : '#1e293b',margin:'0 0 8px'}}>🎨 Themed Card</h3>\n      <p style={{color: isDark ? '#94a3b8' : '#64748b',margin:0}}>This card consumes the ThemeContext without prop drilling!</p>\n    </div>\n  );\n}\n\nfunction App() {\n  const [theme, setTheme] = useState('light');\n  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');\n\n  return (\n    <ThemeContext.Provider value={{ theme, toggle }}>\n      <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto',background: theme==='dark'?'#0f172a':'#f8fafc',minHeight:'100vh',transition:'background 0.3s'}}>\n        <h2 style={{color: theme==='dark'?'#f1f5f9':'#1e293b'}}>useContext</h2>\n        <ThemeToggle />\n        <Card />\n        <Card />\n      </div>\n    </ThemeContext.Provider>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "useReducer",
+    "desc": "Alternative to useState for complex state logic. Uses a reducer function like Redux.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useReducer, useState } = React;\n\nfunction todoReducer(state, action) {\n  switch (action.type) {\n    case 'ADD': return [...state, { id: Date.now(), text: action.text, done: false }];\n    case 'TOGGLE': return state.map(t => t.id === action.id ? { ...t, done: !t.done } : t);\n    case 'DELETE': return state.filter(t => t.id !== action.id);\n    default: return state;\n  }\n}\n\nfunction App() {\n  const [todos, dispatch] = useReducer(todoReducer, [\n    { id: 1, text: 'Learn useReducer', done: true },\n    { id: 2, text: 'Build a todo app', done: false },\n  ]);\n  const [text, setText] = useState('');\n\n  const handleAdd = (e) => {\n    e.preventDefault();\n    if (!text.trim()) return;\n    dispatch({ type: 'ADD', text });\n    setText('');\n  };\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto'}}>\n      <h2>useReducer Todo</h2>\n      <form onSubmit={handleAdd} style={{display:'flex',gap:'8px',marginBottom:'16px'}}>\n        <input value={text} onChange={e => setText(e.target.value)} placeholder=\"Add task...\" style={{flex:1,padding:'10px',border:'2px solid #e2e8f0',borderRadius:'8px'}} />\n        <button type=\"submit\" style={{padding:'10px 16px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>Add</button>\n      </form>\n      {todos.map(todo => (\n        <div key={todo.id} style={{display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',background: todo.done ? '#f0fdf4' : '#fff',border:'1px solid #e2e8f0',borderRadius:'8px',marginBottom:'6px'}}>\n          <input type=\"checkbox\" checked={todo.done} onChange={() => dispatch({ type: 'TOGGLE', id: todo.id })} />\n          <span style={{flex:1,textDecoration: todo.done ? 'line-through' : 'none',color: todo.done ? '#94a3b8' : '#1e293b'}}>{todo.text}</span>\n          <button onClick={() => dispatch({ type: 'DELETE', id: todo.id })} style={{background:'none',border:'none',color:'#ef4444',cursor:'pointer',fontSize:'1.2em'}}>×</button>\n        </div>\n      ))}\n      <p style={{color:'#64748b',fontSize:'0.85em',marginTop:'12px'}}>{todos.filter(t=>!t.done).length} remaining · {todos.filter(t=>t.done).length} completed</p>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "useRef",
+    "desc": "Creates a mutable ref that persists across renders. Used for DOM access and storing values without re-rendering.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useRef, useState, useEffect } = React;\n\nfunction App() {\n  const inputRef = useRef(null);\n  const renderCount = useRef(0);\n  const prevValue = useRef('');\n  const [value, setValue] = useState('');\n\n  renderCount.current++;\n\n  useEffect(() => {\n    prevValue.current = value;\n  }, [value]);\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto'}}>\n      <h2>useRef</h2>\n\n      {/* DOM ref */}\n      <div style={{background:'#eff6ff',padding:'16px',borderRadius:'8px',marginBottom:'12px'}}>\n        <h3 style={{margin:'0 0 10px',color:'#1e40af'}}>DOM Reference</h3>\n        <input ref={inputRef} placeholder=\"Click the button to focus me\" style={{width:'100%',padding:'10px',border:'2px solid #bfdbfe',borderRadius:'6px',boxSizing:'border-box',marginBottom:'8px'}} />\n        <button onClick={() => { inputRef.current.focus(); inputRef.current.select(); }} style={{padding:'8px 16px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Focus & Select Input</button>\n      </div>\n\n      {/* Render counter (doesn't cause re-render) */}\n      <div style={{background:'#f0fdf4',padding:'16px',borderRadius:'8px',marginBottom:'12px'}}>\n        <h3 style={{margin:'0 0 10px',color:'#166534'}}>Render Counter (no re-render)</h3>\n        <p>This component rendered <strong>{renderCount.current}</strong> times</p>\n        <p style={{color:'#64748b',fontSize:'0.85em'}}>useRef doesn't trigger re-renders when updated!</p>\n      </div>\n\n      {/* Previous value */}\n      <div style={{background:'#fef3c7',padding:'16px',borderRadius:'8px'}}>\n        <h3 style={{margin:'0 0 10px',color:'#92400e'}}>Previous Value Tracking</h3>\n        <input value={value} onChange={e => setValue(e.target.value)} placeholder=\"Type something...\" style={{width:'100%',padding:'10px',border:'2px solid #fde68a',borderRadius:'6px',boxSizing:'border-box',marginBottom:'8px'}} />\n        <p>Current: <strong>{value || '(empty)'}</strong></p>\n        <p>Previous: <strong>{prevValue.current || '(empty)'}</strong></p>\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "useMemo",
+    "desc": "Memoizes expensive computations. Only re-computes when dependencies change.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useMemo } = React;\n\nfunction expensiveFilter(items, query) {\n  console.log('🔄 Filtering (expensive operation)...');\n  // Simulate expensive work\n  const start = performance.now();\n  while (performance.now() - start < 50) {} // 50ms delay\n  return items.filter(item => item.toLowerCase().includes(query.toLowerCase()));\n}\n\nfunction App() {\n  const [query, setQuery] = useState('');\n  const [darkMode, setDarkMode] = useState(false);\n\n  const items = ['React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Remix', 'Gatsby', 'Nuxt', 'SvelteKit', 'Astro', 'Solid', 'Qwik', 'Preact', 'Lit', 'Alpine.js'];\n\n  // Only re-computes when `query` changes, not when darkMode toggles\n  const filtered = useMemo(() => expensiveFilter(items, query), [query]);\n\n  const bg = darkMode ? '#0f172a' : '#fff';\n  const text = darkMode ? '#f1f5f9' : '#1e293b';\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto',background:bg,color:text,minHeight:'100vh',transition:'all 0.3s'}}>\n      <h2>useMemo</h2>\n      <p style={{color:'#64748b',fontSize:'0.85em'}}>Toggle dark mode without re-running the expensive filter.</p>\n      <button onClick={() => setDarkMode(!darkMode)} style={{padding:'8px 16px',background:'#8b5cf6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer',marginBottom:'12px'}}>{darkMode ? '☀️ Light' : '🌙 Dark'}</button>\n      <input value={query} onChange={e => setQuery(e.target.value)} placeholder=\"Search frameworks...\" style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px',boxSizing:'border-box',marginBottom:'12px'}} />\n      <p style={{fontSize:'0.85em',color:'#64748b'}}>{filtered.length} of {items.length} shown</p>\n      {filtered.map(item => (\n        <div key={item} style={{padding:'10px 14px',background: darkMode ? '#1e293b' : '#f8fafc',borderRadius:'6px',marginBottom:'4px',border: darkMode ? '1px solid #334155' : '1px solid #e2e8f0'}}>{item}</div>\n      ))}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "useCallback",
+    "desc": "Memoizes callback functions to prevent unnecessary re-renders of child components.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useCallback, memo } = React;\n\nconst Button = memo(function Button({ onClick, label, color }) {\n  console.log(`🔄 ${label} button rendered`);\n  return <button onClick={onClick} style={{padding:'10px 20px',background:color,color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer',fontSize:'1em',margin:'0 4px'}}>{label}</button>;\n});\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  const [text, setText] = useState('');\n\n  // Without useCallback — new function every render (causes Button re-render)\n  const handleReset = () => setCount(0);\n\n  // With useCallback — stable reference (Button won't re-render unless deps change)\n  const handleIncrement = useCallback(() => setCount(c => c + 1), []);\n  const handleDecrement = useCallback(() => setCount(c => c - 1), []);\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto'}}>\n      <h2>useCallback + React.memo</h2>\n      <p style={{color:'#64748b',fontSize:'0.85em'}}>Open console to see which buttons re-render. Typing in the input only re-renders the Reset button (no useCallback).</p>\n      <div style={{fontSize:'3em',textAlign:'center',fontWeight:800,color:'#3b82f6',margin:'16px 0'}}>{count}</div>\n      <div style={{textAlign:'center',marginBottom:'16px'}}>\n        <Button onClick={handleDecrement} label=\"− Decrement\" color=\"#ef4444\" />\n        <Button onClick={handleReset} label=\"↺ Reset\" color=\"#64748b\" />\n        <Button onClick={handleIncrement} label=\"+ Increment\" color=\"#10b981\" />\n      </div>\n      <input value={text} onChange={e => setText(e.target.value)} placeholder=\"Type here to trigger re-render...\" style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px',boxSizing:'border-box'}} />\n      <p style={{color:'#94a3b8',fontSize:'0.8em',marginTop:'8px'}}>Reset button re-renders on each keystroke (no useCallback), but ± buttons don't.</p>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Hooks",
+    "name": "Custom Hooks",
+    "desc": "Extract reusable stateful logic into custom hooks (functions starting with 'use').",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useEffect } = React;\n\n// Custom hook: useLocalStorage\nfunction useLocalStorage(key, initialValue) {\n  const [value, setValue] = useState(() => {\n    try { return JSON.parse(localStorage.getItem(key)) ?? initialValue; }\n    catch { return initialValue; }\n  });\n  useEffect(() => { localStorage.setItem(key, JSON.stringify(value)); }, [key, value]);\n  return [value, setValue];\n}\n\n// Custom hook: useToggle\nfunction useToggle(initial = false) {\n  const [value, setValue] = useState(initial);\n  const toggle = () => setValue(v => !v);\n  return [value, toggle];\n}\n\n// Custom hook: useWindowSize\nfunction useWindowSize() {\n  const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });\n  useEffect(() => {\n    const handleResize = () => setSize({ width: window.innerWidth, height: window.innerHeight });\n    window.addEventListener('resize', handleResize);\n    return () => window.removeEventListener('resize', handleResize);\n  }, []);\n  return size;\n}\n\nfunction App() {\n  const [name, setName] = useLocalStorage('user_name', '');\n  const [darkMode, toggleDark] = useToggle(false);\n  const { width, height } = useWindowSize();\n\n  const bg = darkMode ? '#0f172a' : '#fff';\n  const text = darkMode ? '#f1f5f9' : '#1e293b';\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto',background:bg,color:text,minHeight:'100vh',transition:'all 0.3s'}}>\n      <h2>Custom Hooks</h2>\n\n      <div style={{background: darkMode?'#1e293b':'#f8fafc',padding:'16px',borderRadius:'8px',marginBottom:'12px',border: darkMode?'1px solid #334155':'1px solid #e2e8f0'}}>\n        <h3 style={{margin:'0 0 8px'}}>useLocalStorage</h3>\n        <input value={name} onChange={e => setName(e.target.value)} placeholder=\"Your name (persists on reload)\" style={{width:'100%',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'6px',boxSizing:'border-box'}} />\n        {name && <p style={{marginTop:'8px'}}>Hello, <strong>{name}</strong>! 👋</p>}\n      </div>\n\n      <div style={{background: darkMode?'#1e293b':'#f8fafc',padding:'16px',borderRadius:'8px',marginBottom:'12px',border: darkMode?'1px solid #334155':'1px solid #e2e8f0'}}>\n        <h3 style={{margin:'0 0 8px'}}>useToggle</h3>\n        <button onClick={toggleDark} style={{padding:'8px 16px',background:'#8b5cf6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>{darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}</button>\n      </div>\n\n      <div style={{background: darkMode?'#1e293b':'#f8fafc',padding:'16px',borderRadius:'8px',border: darkMode?'1px solid #334155':'1px solid #e2e8f0'}}>\n        <h3 style={{margin:'0 0 8px'}}>useWindowSize</h3>\n        <p>Width: <strong>{width}px</strong> · Height: <strong>{height}px</strong></p>\n        <p style={{fontSize:'0.85em',color:'#64748b'}}>Try resizing the preview panel!</p>\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+
+  // ── PATTERNS ───────────────────────────────────────────────────────────
+  {
+    "cat": "Patterns",
+    "name": "Composition",
+    "desc": "Prefer composition over inheritance. Use children prop and slots for flexible layouts.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\n// Generic container component\nfunction Card({ title, icon, color, children }) {\n  return (\n    <div style={{border:'1px solid #e2e8f0',borderRadius:'12px',overflow:'hidden',marginBottom:'12px'}}>\n      <div style={{background:color,padding:'12px 16px',display:'flex',alignItems:'center',gap:'8px'}}>\n        <span>{icon}</span>\n        <strong style={{color:'#fff'}}>{title}</strong>\n      </div>\n      <div style={{padding:'16px'}}>{children}</div>\n    </div>\n  );\n}\n\n// Layout component with named slots\nfunction SplitPane({ left, right }) {\n  return (\n    <div style={{display:'flex',gap:'12px'}}>\n      <div style={{flex:1}}>{left}</div>\n      <div style={{flex:1}}>{right}</div>\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>Composition Pattern</h2>\n\n      {/* children prop */}\n      <Card title=\"Info Card\" icon=\"ℹ️\" color=\"#3b82f6\">\n        <p>This content is passed as <code>children</code> prop.</p>\n        <p style={{color:'#64748b',fontSize:'0.85em'}}>Cards can contain anything!</p>\n      </Card>\n\n      <Card title=\"Warning Card\" icon=\"⚠️\" color=\"#f59e0b\">\n        <p style={{color:'#92400e'}}>Different content, same Card component.</p>\n      </Card>\n\n      {/* Named slots pattern */}\n      <h3 style={{marginTop:'20px'}}>Named Slots (SplitPane)</h3>\n      <SplitPane\n        left={<Card title=\"Left\" icon=\"👈\" color=\"#8b5cf6\"><p>Left panel</p></Card>}\n        right={<Card title=\"Right\" icon=\"👉\" color=\"#10b981\"><p>Right panel</p></Card>}\n      />\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Patterns",
+    "name": "Lifting State Up",
+    "desc": "Share state between siblings by moving it to the closest common parent.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction TemperatureInput({ scale, value, onChange }) {\n  const scaleNames = { c: 'Celsius', f: 'Fahrenheit' };\n  return (\n    <div style={{flex:1,background:'#f8fafc',padding:'16px',borderRadius:'8px',border:'1px solid #e2e8f0'}}>\n      <label style={{display:'block',fontWeight:600,marginBottom:'6px'}}>°{scale.toUpperCase()} — {scaleNames[scale]}</label>\n      <input type=\"number\" value={value} onChange={e => onChange(e.target.value)} placeholder={`Enter ${scaleNames[scale]}`} style={{width:'100%',padding:'12px',border:'2px solid #bfdbfe',borderRadius:'8px',fontSize:'1.2em',boxSizing:'border-box'}} />\n    </div>\n  );\n}\n\nfunction BoilingVerdict({ celsius }) {\n  const temp = parseFloat(celsius);\n  if (isNaN(temp)) return <p style={{color:'#64748b'}}>Enter a temperature.</p>;\n  return temp >= 100\n    ? <p style={{color:'#ef4444',fontSize:'1.2em'}}>🔥 The water would boil!</p>\n    : <p style={{color:'#3b82f6',fontSize:'1.2em'}}>❄️ The water would NOT boil.</p>;\n}\n\nfunction App() {\n  // State lifted to parent so both inputs stay in sync\n  const [temperature, setTemperature] = useState('');\n  const [scale, setScale] = useState('c');\n\n  const toCelsius = f => ((f - 32) * 5 / 9).toFixed(1);\n  const toFahrenheit = c => ((c * 9 / 5) + 32).toFixed(1);\n\n  const celsius = scale === 'f' ? toCelsius(temperature) : temperature;\n  const fahrenheit = scale === 'c' ? toFahrenheit(temperature) : temperature;\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>🌡️ Lifting State Up</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>Both inputs share state in the parent. Editing one updates the other.</p>\n      <div style={{display:'flex',gap:'12px',marginBottom:'16px'}}>\n        <TemperatureInput scale=\"c\" value={celsius} onChange={v => { setTemperature(v); setScale('c'); }} />\n        <TemperatureInput scale=\"f\" value={fahrenheit} onChange={v => { setTemperature(v); setScale('f'); }} />\n      </div>\n      <BoilingVerdict celsius={celsius} />\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Patterns",
+    "name": "Higher-Order Components",
+    "desc": "A HOC is a function that takes a component and returns an enhanced component. Classic reuse pattern.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useEffect } = React;\n\n// HOC: adds loading state to any component\nfunction withLoading(WrappedComponent) {\n  return function WithLoadingComponent(props) {\n    const [loading, setLoading] = useState(true);\n    useEffect(() => {\n      const timer = setTimeout(() => setLoading(false), 1500);\n      return () => clearTimeout(timer);\n    }, []);\n    if (loading) return (\n      <div style={{padding:'40px',textAlign:'center',color:'#64748b'}}>\n        <div style={{fontSize:'2em',animation:'spin 1s linear infinite',display:'inline-block'}}>⏳</div>\n        <p>Loading...</p>\n        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>\n      </div>\n    );\n    return <WrappedComponent {...props} />;\n  };\n}\n\n// HOC: adds a colored border wrapper\nfunction withBorder(WrappedComponent, color = '#3b82f6') {\n  return function WithBorderComponent(props) {\n    return (\n      <div style={{border:`3px solid ${color}`,borderRadius:'12px',padding:'16px',marginBottom:'12px'}}>\n        <WrappedComponent {...props} />\n      </div>\n    );\n  };\n}\n\n// Base components\nfunction UserProfile({ name, role }) {\n  return <div><h3 style={{margin:0}}>{name}</h3><p style={{margin:'4px 0 0',color:'#64748b'}}>{role}</p></div>;\n}\n\nfunction Stats({ value, label }) {\n  return <div style={{textAlign:'center'}}><div style={{fontSize:'2em',fontWeight:800,color:'#3b82f6'}}>{value}</div><div style={{color:'#64748b'}}>{label}</div></div>;\n}\n\n// Enhanced components\nconst LoadingProfile = withLoading(withBorder(UserProfile, '#8b5cf6'));\nconst LoadingStats = withLoading(withBorder(Stats, '#10b981'));\n\nfunction App() {\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto'}}>\n      <h2>Higher-Order Components</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>withLoading + withBorder HOCs compose together.</p>\n      <LoadingProfile name=\"Alice Johnson\" role=\"Senior Engineer\" />\n      <LoadingStats value=\"42\" label=\"Projects Completed\" />\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Patterns",
+    "name": "Render Props",
+    "desc": "A component with a render prop takes a function that returns React elements instead of implementing its own render logic.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useEffect } = React;\n\n// Render prop component: tracks mouse position\nfunction MouseTracker({ render }) {\n  const [pos, setPos] = useState({ x: 0, y: 0 });\n  const handleMouseMove = (e) => {\n    const rect = e.currentTarget.getBoundingClientRect();\n    setPos({ x: Math.round(e.clientX - rect.left), y: Math.round(e.clientY - rect.top) });\n  };\n  return (\n    <div onMouseMove={handleMouseMove} style={{height:'200px',background:'#0f172a',borderRadius:'12px',position:'relative',overflow:'hidden',cursor:'crosshair'}}>\n      {render(pos)}\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>Render Props</h2>\n      <p style={{color:'#64748b',marginBottom:'12px'}}>Same MouseTracker, different renders:</p>\n\n      <h3>Crosshair View</h3>\n      <MouseTracker render={({ x, y }) => (\n        <>\n          <div style={{position:'absolute',left:x,top:0,width:'1px',height:'100%',background:'rgba(59,130,246,0.3)'}} />\n          <div style={{position:'absolute',top:y,left:0,height:'1px',width:'100%',background:'rgba(59,130,246,0.3)'}} />\n          <div style={{position:'absolute',left:x-4,top:y-4,width:'8px',height:'8px',borderRadius:'50%',background:'#3b82f6',boxShadow:'0 0 10px #3b82f6'}} />\n          <span style={{position:'absolute',bottom:'10px',right:'10px',color:'#64748b',fontSize:'0.85em',fontFamily:'monospace'}}>({x}, {y})</span>\n        </>\n      )} />\n\n      <h3 style={{marginTop:'16px'}}>Heat Map View</h3>\n      <MouseTracker render={({ x, y }) => (\n        <div style={{width:'100%',height:'100%',background:`radial-gradient(circle at ${x}px ${y}px, #ef4444, #f59e0b, #0f172a 60%)`,transition:'background 0.05s'}} />\n      )} />\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Patterns",
+    "name": "Portals",
+    "desc": "Render children into a DOM node outside the parent component's DOM tree. Useful for modals and tooltips.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<div id=\"modal-root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction Modal({ isOpen, onClose, title, children }) {\n  if (!isOpen) return null;\n  return ReactDOM.createPortal(\n    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}} onClick={onClose}>\n      <div onClick={e => e.stopPropagation()} style={{background:'#fff',borderRadius:'16px',padding:'24px',maxWidth:'400px',width:'90%',boxShadow:'0 20px 60px rgba(0,0,0,0.3)',animation:'slideUp 0.3s ease'}}>\n        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>\n          <h2 style={{margin:0}}>{title}</h2>\n          <button onClick={onClose} style={{background:'none',border:'none',fontSize:'1.5em',cursor:'pointer',color:'#94a3b8'}}>×</button>\n        </div>\n        {children}\n      </div>\n    </div>,\n    document.getElementById('modal-root')\n  );\n}\n\nfunction App() {\n  const [showModal, setShowModal] = useState(false);\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <style>{`@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }`}</style>\n      <h2>React Portals</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>The modal renders into #modal-root, outside the #root tree.</p>\n      <div style={{border:'2px dashed #e2e8f0',padding:'20px',borderRadius:'8px',overflow:'hidden'}}>\n        <p>This container has <code>overflow: hidden</code>, but the modal still works because it's portaled outside!</p>\n        <button onClick={() => setShowModal(true)} style={{padding:'10px 24px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer',fontSize:'1em'}}>Open Portal Modal</button>\n      </div>\n      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title=\"Portal Modal 🚀\">\n        <p style={{color:'#64748b'}}>This modal is rendered via <code>ReactDOM.createPortal()</code> into a separate DOM node.</p>\n        <button onClick={() => setShowModal(false)} style={{marginTop:'12px',padding:'10px 24px',background:'#10b981',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>Got it!</button>\n      </Modal>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Patterns",
+    "name": "Error Boundaries",
+    "desc": "Class components that catch JavaScript errors in child components and display a fallback UI.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\n// Error Boundary must be a class component\nclass ErrorBoundary extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { hasError: false, error: null };\n  }\n  static getDerivedStateFromError(error) {\n    return { hasError: true, error };\n  }\n  componentDidCatch(error, errorInfo) {\n    console.error('Caught by Error Boundary:', error, errorInfo);\n  }\n  render() {\n    if (this.state.hasError) {\n      return (\n        <div style={{padding:'20px',background:'#fef2f2',border:'1px solid #fecaca',borderRadius:'12px',textAlign:'center'}}>\n          <div style={{fontSize:'3em'}}>💥</div>\n          <h3 style={{color:'#991b1b'}}>Something went wrong</h3>\n          <p style={{color:'#dc2626',fontFamily:'monospace',fontSize:'0.85em'}}>{this.state.error?.message}</p>\n          <button onClick={() => this.setState({ hasError: false, error: null })} style={{padding:'8px 20px',background:'#ef4444',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer',marginTop:'8px'}}>Try Again</button>\n        </div>\n      );\n    }\n    return this.props.children;\n  }\n}\n\n// Component that can throw\nfunction BuggyCounter() {\n  const [count, setCount] = useState(0);\n  if (count >= 3) throw new Error('Counter exceeded limit of 3!');\n  return (\n    <div style={{padding:'20px',background:'#f0fdf4',borderRadius:'12px',textAlign:'center',border:'1px solid #bbf7d0'}}>\n      <div style={{fontSize:'3em',fontWeight:800,color:'#10b981'}}>{count}</div>\n      <button onClick={() => setCount(c => c + 1)} style={{padding:'8px 20px',background:'#10b981',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer',marginTop:'8px'}}>Increment (crashes at 3)</button>\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto'}}>\n      <h2>Error Boundaries</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>Click to 3 to trigger an error. The boundary catches it gracefully.</p>\n      <ErrorBoundary>\n        <BuggyCounter />\n      </ErrorBoundary>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+
+  // ── STYLING ────────────────────────────────────────────────────────────
+  {
+    "cat": "Styling",
+    "name": "Inline Styles",
+    "desc": "React inline styles use camelCase properties and JavaScript objects instead of CSS strings.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction App() {\n  const [active, setActive] = useState(0);\n  const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6'];\n\n  // Dynamic style objects\n  const cardStyle = (i) => ({\n    padding: '16px 20px',\n    marginBottom: '8px',\n    borderRadius: '10px',\n    background: active === i ? colors[i] : '#f8fafc',\n    color: active === i ? '#fff' : '#1e293b',\n    cursor: 'pointer',\n    transition: 'all 0.2s ease',\n    transform: active === i ? 'scale(1.02)' : 'scale(1)',\n    border: `2px solid ${active === i ? colors[i] : '#e2e8f0'}`,\n    fontWeight: active === i ? 700 : 400,\n  });\n\n  const items = ['Padding & Margin', 'Border Radius', 'Gradients', 'Transitions', 'Transforms'];\n\n  return (\n    <div style={{ padding: '30px', fontFamily: 'sans-serif', maxWidth: '400px', margin: '0 auto' }}>\n      <h2 style={{ color: '#1e293b' }}>Inline Styles in React</h2>\n      <p style={{ color: '#64748b', fontSize: '0.9em', marginBottom: '16px' }}>Click cards to see dynamic inline styles:</p>\n      {items.map((item, i) => (\n        <div key={i} onClick={() => setActive(i)} style={cardStyle(i)}>{item}</div>\n      ))}\n      <pre style={{ background: '#0f172a', color: '#e2e8f0', padding: '12px', borderRadius: '8px', fontSize: '0.8em', marginTop: '16px', overflow: 'auto' }}>\n{JSON.stringify(cardStyle(active), null, 2)}\n      </pre>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Styling",
+    "name": "CSS Classes & Modules",
+    "desc": "Apply CSS classes conditionally with template literals or classnames utility patterns.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n<style>\n  .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; transition: all 0.2s; margin: 4px; }\n  .btn-primary { background: #3b82f6; color: #fff; }\n  .btn-primary:hover { background: #2563eb; }\n  .btn-success { background: #10b981; color: #fff; }\n  .btn-danger { background: #ef4444; color: #fff; }\n  .btn-outline { background: transparent; border: 2px solid #3b82f6; color: #3b82f6; }\n  .btn-lg { padding: 14px 28px; font-size: 1.1em; }\n  .btn-sm { padding: 6px 12px; font-size: 0.85em; }\n  .btn-disabled { opacity: 0.5; cursor: not-allowed; }\n  .card { padding: 16px; border-radius: 10px; margin: 8px 0; transition: all 0.2s; border: 2px solid #e2e8f0; }\n  .card-active { border-color: #3b82f6; background: #eff6ff; transform: translateX(4px); }\n</style>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\n// Simple classnames helper\nfunction cx(...args) {\n  return args.filter(Boolean).join(' ');\n}\n\nfunction App() {\n  const [active, setActive] = useState(1);\n  const [disabled, setDisabled] = useState(false);\n  const items = ['Dashboard', 'Profile', 'Settings'];\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto'}}>\n      <h2>CSS Classes in React</h2>\n\n      <h3>Button Variants</h3>\n      <div>\n        <button className=\"btn btn-primary\">Primary</button>\n        <button className=\"btn btn-success\">Success</button>\n        <button className=\"btn btn-danger\">Danger</button>\n        <button className=\"btn btn-outline\">Outline</button>\n      </div>\n\n      <h3>Conditional Classes</h3>\n      <label style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'12px'}}>\n        <input type=\"checkbox\" checked={disabled} onChange={() => setDisabled(!disabled)} />\n        Disable buttons\n      </label>\n      <button className={cx('btn', 'btn-primary', 'btn-lg', disabled && 'btn-disabled')}>Large {disabled ? '(disabled)' : ''}</button>\n      <button className={cx('btn', 'btn-success', 'btn-sm', disabled && 'btn-disabled')}>Small {disabled ? '(disabled)' : ''}</button>\n\n      <h3>Active State</h3>\n      {items.map((item, i) => (\n        <div key={i} className={cx('card', active === i && 'card-active')} onClick={() => setActive(i)} style={{cursor:'pointer'}}>\n          <strong>{item}</strong>\n        </div>\n      ))}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Styling",
+    "name": "Dynamic CSS Variables",
+    "desc": "Use CSS custom properties with React state for theme switching and dynamic styling.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n<style>\n  :root { --hue: 220; --sat: 80%; --radius: 12px; }\n  .themed-card { background: hsl(var(--hue), var(--sat), 95%); border: 2px solid hsl(var(--hue), var(--sat), 60%); border-radius: var(--radius); padding: 20px; margin: 10px 0; transition: all 0.3s; }\n  .themed-card h3 { color: hsl(var(--hue), var(--sat), 30%); margin: 0 0 8px; }\n  .themed-card p { color: hsl(var(--hue), var(--sat), 40%); margin: 0; }\n  .themed-btn { background: hsl(var(--hue), var(--sat), 50%); color: #fff; border: none; padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-size: 1em; transition: all 0.3s; }\n  .themed-btn:hover { background: hsl(var(--hue), var(--sat), 40%); }\n</style>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction App() {\n  const [hue, setHue] = useState(220);\n  const [radius, setRadius] = useState(12);\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto','--hue':hue,'--radius':`${radius}px`}}>\n      <h2>Dynamic CSS Variables</h2>\n\n      <div style={{marginBottom:'16px'}}>\n        <label>Hue: <strong>{hue}°</strong></label><br/>\n        <input type=\"range\" min=\"0\" max=\"360\" value={hue} onChange={e => setHue(e.target.value)} style={{width:'100%'}} />\n      </div>\n      <div style={{marginBottom:'16px'}}>\n        <label>Border Radius: <strong>{radius}px</strong></label><br/>\n        <input type=\"range\" min=\"0\" max=\"30\" value={radius} onChange={e => setRadius(e.target.value)} style={{width:'100%'}} />\n      </div>\n\n      <div className=\"themed-card\">\n        <h3>🎨 Themed Card</h3>\n        <p>This card responds to CSS custom properties controlled by React state.</p>\n      </div>\n      <button className=\"themed-btn\">Themed Button</button>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+
+  // ── STATE MANAGEMENT ───────────────────────────────────────────────────
+  {
+    "cat": "State Management",
+    "name": "Context + useReducer",
+    "desc": "Combine Context API with useReducer for a lightweight Redux-like global state pattern.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useReducer, useContext, createContext } = React;\n\nconst CartContext = createContext();\n\nfunction cartReducer(state, action) {\n  switch (action.type) {\n    case 'ADD': {\n      const exists = state.find(i => i.id === action.item.id);\n      if (exists) return state.map(i => i.id === action.item.id ? { ...i, qty: i.qty + 1 } : i);\n      return [...state, { ...action.item, qty: 1 }];\n    }\n    case 'REMOVE': return state.filter(i => i.id !== action.id);\n    case 'CLEAR': return [];\n    default: return state;\n  }\n}\n\nfunction CartProvider({ children }) {\n  const [cart, dispatch] = useReducer(cartReducer, []);\n  return <CartContext.Provider value={{ cart, dispatch }}>{children}</CartContext.Provider>;\n}\n\nfunction ProductList() {\n  const { dispatch } = useContext(CartContext);\n  const products = [\n    { id: 1, name: 'Coffee', price: 4.99, emoji: '☕' },\n    { id: 2, name: 'Croissant', price: 3.49, emoji: '🥐' },\n    { id: 3, name: 'Juice', price: 5.99, emoji: '🧃' },\n  ];\n  return (\n    <div>\n      <h3>Products</h3>\n      {products.map(p => (\n        <div key={p.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 14px',background:'#f8fafc',borderRadius:'8px',marginBottom:'6px'}}>\n          <span>{p.emoji} {p.name} — ${p.price}</span>\n          <button onClick={() => dispatch({ type: 'ADD', item: p })} style={{padding:'6px 14px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Add</button>\n        </div>\n      ))}\n    </div>\n  );\n}\n\nfunction Cart() {\n  const { cart, dispatch } = useContext(CartContext);\n  const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);\n  return (\n    <div style={{background:'#0f172a',borderRadius:'12px',padding:'16px',color:'#f1f5f9',marginTop:'16px'}}>\n      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>\n        <h3 style={{margin:0}}>🛒 Cart ({cart.reduce((s, i) => s + i.qty, 0)})</h3>\n        {cart.length > 0 && <button onClick={() => dispatch({ type: 'CLEAR' })} style={{background:'#ef4444',color:'#fff',border:'none',padding:'4px 12px',borderRadius:'4px',cursor:'pointer'}}>Clear</button>}\n      </div>\n      {cart.length === 0 ? <p style={{color:'#64748b',marginTop:'8px'}}>Cart is empty</p> : (\n        <>{cart.map(i => (\n          <div key={i.id} style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid #1e293b'}}>\n            <span>{i.emoji} {i.name} × {i.qty}</span>\n            <span>${(i.price * i.qty).toFixed(2)}</span>\n          </div>\n        ))}\n        <div style={{marginTop:'8px',fontWeight:700,fontSize:'1.1em'}}>Total: ${total.toFixed(2)}</div></>\n      )}\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <CartProvider>\n      <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto'}}>\n        <h2>Context + useReducer Store</h2>\n        <ProductList />\n        <Cart />\n      </div>\n    </CartProvider>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "State Management",
+    "name": "State Machines",
+    "desc": "Model component states as explicit finite states with defined transitions. Prevents impossible states.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useReducer } = React;\n\n// State machine: idle -> loading -> success/error -> idle\nfunction fetchMachine(state, event) {\n  switch (state.status) {\n    case 'idle':\n      if (event.type === 'FETCH') return { status: 'loading', data: null, error: null };\n      return state;\n    case 'loading':\n      if (event.type === 'RESOLVE') return { status: 'success', data: event.data, error: null };\n      if (event.type === 'REJECT') return { status: 'error', data: null, error: event.error };\n      return state;\n    case 'success':\n    case 'error':\n      if (event.type === 'RESET') return { status: 'idle', data: null, error: null };\n      return state;\n    default: return state;\n  }\n}\n\nfunction App() {\n  const [state, send] = useReducer(fetchMachine, { status: 'idle', data: null, error: null });\n\n  const simulateFetch = () => {\n    send({ type: 'FETCH' });\n    setTimeout(() => {\n      if (Math.random() > 0.4) {\n        send({ type: 'RESOLVE', data: { users: 42, posts: 128, comments: 567 } });\n      } else {\n        send({ type: 'REJECT', error: 'Network timeout' });\n      }\n    }, 1500);\n  };\n\n  const colors = { idle: '#64748b', loading: '#3b82f6', success: '#10b981', error: '#ef4444' };\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto'}}>\n      <h2>State Machine Pattern</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>Explicit states prevent impossible combinations like \"loading + error\".</p>\n\n      <div style={{textAlign:'center',padding:'24px',background:'#f8fafc',borderRadius:'12px',border:`2px solid ${colors[state.status]}`,marginBottom:'16px'}}>\n        <div style={{fontSize:'0.85em',color:colors[state.status],fontWeight:700,textTransform:'uppercase',marginBottom:'12px'}}>⬤ {state.status}</div>\n\n        {state.status === 'idle' && <button onClick={simulateFetch} style={{padding:'10px 24px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer',fontSize:'1em'}}>Fetch Data</button>}\n\n        {state.status === 'loading' && <div style={{fontSize:'2em',animation:'spin 1s linear infinite',display:'inline-block'}}>⏳</div>}\n\n        {state.status === 'success' && (\n          <div>\n            <p style={{fontSize:'1.5em'}}>✅</p>\n            {Object.entries(state.data).map(([k, v]) => <div key={k} style={{padding:'6px'}}><strong>{k}:</strong> {v}</div>)}\n            <button onClick={() => send({ type: 'RESET' })} style={{marginTop:'12px',padding:'8px 20px',background:'#10b981',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Reset</button>\n          </div>\n        )}\n\n        {state.status === 'error' && (\n          <div>\n            <p style={{fontSize:'1.5em'}}>❌</p>\n            <p style={{color:'#ef4444'}}>{state.error}</p>\n            <button onClick={() => send({ type: 'RESET' })} style={{marginTop:'8px',padding:'8px 20px',background:'#ef4444',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Retry</button>\n          </div>\n        )}\n      </div>\n      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>\n\n      <div style={{display:'flex',gap:'4px',justifyContent:'center'}}>\n        {['idle','loading','success','error'].map(s => (\n          <div key={s} style={{padding:'4px 12px',borderRadius:'4px',fontSize:'0.75em',fontWeight:600,background: state.status === s ? colors[s] : '#e2e8f0',color: state.status === s ? '#fff' : '#94a3b8'}}>{s}</div>\n        ))}\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+
+  // ── ADVANCED ────────────────────────────────────────────────────────────
+  {
+    "cat": "Advanced",
+    "name": "React.memo",
+    "desc": "Wraps a component to skip re-rendering when props haven't changed. Uses shallow comparison.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, memo } = React;\n\nlet normalRenders = 0;\nlet memoRenders = 0;\n\n// Normal component — re-renders every time parent re-renders\nfunction NormalChild({ name }) {\n  normalRenders++;\n  return (\n    <div style={{padding:'12px',background:'#fef2f2',borderRadius:'8px',marginBottom:'8px',border:'1px solid #fecaca'}}>\n      <strong>Normal Component</strong>\n      <p style={{margin:'4px 0 0',fontSize:'0.85em',color:'#991b1b'}}>Name: {name} · Rendered: {normalRenders} times</p>\n    </div>\n  );\n}\n\n// Memoized component — only re-renders when props change\nconst MemoChild = memo(function MemoChild({ name }) {\n  memoRenders++;\n  return (\n    <div style={{padding:'12px',background:'#f0fdf4',borderRadius:'8px',marginBottom:'8px',border:'1px solid #bbf7d0'}}>\n      <strong>React.memo Component</strong>\n      <p style={{margin:'4px 0 0',fontSize:'0.85em',color:'#166534'}}>Name: {name} · Rendered: {memoRenders} times</p>\n    </div>\n  );\n});\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  const [name] = useState('Alice');\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto'}}>\n      <h2>React.memo</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>Click the counter. The normal component re-renders every time, but the memo'd one skips re-renders since its props haven't changed.</p>\n      <div style={{textAlign:'center',marginBottom:'16px'}}>\n        <div style={{fontSize:'3em',fontWeight:800,color:'#3b82f6'}}>{count}</div>\n        <button onClick={() => setCount(c => c + 1)} style={{padding:'10px 24px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>Increment (parent re-render)</button>\n      </div>\n      <NormalChild name={name} />\n      <MemoChild name={name} />\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Advanced",
+    "name": "Lazy & Suspense",
+    "desc": "Code-split components with React.lazy() and show fallback UI with Suspense while loading.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, Suspense, lazy } = React;\n\n// Simulate a lazy-loaded component\nfunction createLazyComponent(content, delay) {\n  return lazy(() => new Promise(resolve => {\n    setTimeout(() => {\n      resolve({ default: () => content });\n    }, delay);\n  }));\n}\n\nconst LazyDashboard = createLazyComponent(\n  <div style={{padding:'20px',background:'#eff6ff',borderRadius:'12px',border:'1px solid #bfdbfe'}}>\n    <h3 style={{color:'#1e40af',margin:'0 0 8px'}}>📊 Dashboard</h3>\n    <p style={{color:'#3b82f6'}}>Dashboard loaded successfully! This component took 2 seconds to load.</p>\n  </div>, 2000\n);\n\nconst LazySettings = createLazyComponent(\n  <div style={{padding:'20px',background:'#f0fdf4',borderRadius:'12px',border:'1px solid #bbf7d0'}}>\n    <h3 style={{color:'#166534',margin:'0 0 8px'}}>⚙️ Settings</h3>\n    <p style={{color:'#10b981'}}>Settings loaded! This one took 1.5 seconds.</p>\n  </div>, 1500\n);\n\nfunction Spinner() {\n  return (\n    <div style={{textAlign:'center',padding:'40px'}}>\n      <div style={{fontSize:'2em',animation:'spin 1s linear infinite',display:'inline-block'}}>⏳</div>\n      <p style={{color:'#64748b',marginTop:'8px'}}>Loading component...</p>\n      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>\n    </div>\n  );\n}\n\nfunction App() {\n  const [tab, setTab] = useState('none');\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto'}}>\n      <h2>Lazy Loading & Suspense</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>Click a tab to lazy-load the component with a loading fallback.</p>\n      <div style={{display:'flex',gap:'8px',marginBottom:'16px'}}>\n        <button onClick={() => setTab('dashboard')} style={{padding:'10px 20px',background: tab==='dashboard'?'#3b82f6':'#e2e8f0',color: tab==='dashboard'?'#fff':'#333',border:'none',borderRadius:'8px',cursor:'pointer'}}>Dashboard</button>\n        <button onClick={() => setTab('settings')} style={{padding:'10px 20px',background: tab==='settings'?'#10b981':'#e2e8f0',color: tab==='settings'?'#fff':'#333',border:'none',borderRadius:'8px',cursor:'pointer'}}>Settings</button>\n      </div>\n      <Suspense fallback={<Spinner />}>\n        {tab === 'dashboard' && <LazyDashboard />}\n        {tab === 'settings' && <LazySettings />}\n      </Suspense>\n      {tab === 'none' && <p style={{color:'#94a3b8',textAlign:'center',padding:'20px'}}>Select a tab to load content</p>}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Advanced",
+    "name": "Fragments",
+    "desc": "Return multiple elements without extra DOM wrappers using <React.Fragment> or the short syntax <>.</>.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nfunction TableRow({ name, role, status }) {\n  // Fragment avoids wrapping <td> elements in an extra <div>\n  return (\n    <React.Fragment>\n      <td style={{padding:'10px 14px'}}>{name}</td>\n      <td style={{padding:'10px 14px'}}>{role}</td>\n      <td style={{padding:'10px 14px'}}>\n        <span style={{padding:'4px 10px',borderRadius:'20px',fontSize:'0.8em',background: status==='Active'?'#dcfce7':'#fef2f2',color: status==='Active'?'#166534':'#991b1b'}}>{status}</span>\n      </td>\n    </React.Fragment>\n  );\n}\n\nfunction Glossary({ items }) {\n  // Short syntax <> </> (can't use key prop)\n  return items.map((item, i) => (\n    <React.Fragment key={i}>\n      <dt style={{fontWeight:700,color:'#1e293b',marginTop:'12px'}}>{item.term}</dt>\n      <dd style={{color:'#64748b',marginLeft:'16px',borderLeft:'3px solid #3b82f6',paddingLeft:'12px'}}>{item.definition}</dd>\n    </React.Fragment>\n  ));\n}\n\nfunction App() {\n  const team = [\n    { name: 'Alice', role: 'Engineer', status: 'Active' },\n    { name: 'Bob', role: 'Designer', status: 'Active' },\n    { name: 'Charlie', role: 'PM', status: 'Away' },\n  ];\n  const terms = [\n    { term: 'Fragment', definition: 'Groups elements without adding extra DOM nodes' },\n    { term: 'Key', definition: 'Required when using Fragment in a list with map()' },\n    { term: 'Short Syntax', definition: '<> </> — cannot accept key or attributes' },\n  ];\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>React Fragments</h2>\n\n      <h3>Table with Fragment Rows</h3>\n      <table style={{width:'100%',borderCollapse:'collapse',border:'1px solid #e2e8f0',borderRadius:'8px',overflow:'hidden'}}>\n        <thead><tr style={{background:'#0f172a',color:'#f1f5f9'}}><th style={{padding:'10px 14px',textAlign:'left'}}>Name</th><th style={{padding:'10px 14px',textAlign:'left'}}>Role</th><th style={{padding:'10px 14px',textAlign:'left'}}>Status</th></tr></thead>\n        <tbody>{team.map((m, i) => <tr key={i} style={{borderBottom:'1px solid #e2e8f0'}}><TableRow {...m} /></tr>)}</tbody>\n      </table>\n\n      <h3 style={{marginTop:'20px'}}>Glossary with Keyed Fragments</h3>\n      <dl><Glossary items={terms} /></dl>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Advanced",
+    "name": "Forwarding Refs",
+    "desc": "Use React.forwardRef to pass a ref through a component to a child DOM element.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useRef, forwardRef, useImperativeHandle } = React;\n\n// Simple forwardRef\nconst FancyInput = forwardRef(function FancyInput({ label, ...props }, ref) {\n  return (\n    <div style={{marginBottom:'12px'}}>\n      <label style={{display:'block',fontWeight:600,marginBottom:'4px',color:'#1e293b'}}>{label}</label>\n      <input ref={ref} {...props} style={{width:'100%',padding:'12px',border:'2px solid #8b5cf6',borderRadius:'8px',fontSize:'1em',outline:'none',boxSizing:'border-box',transition:'border 0.2s'}} />\n    </div>\n  );\n});\n\n// forwardRef with useImperativeHandle (expose custom API)\nconst CustomInput = forwardRef(function CustomInput({ label }, ref) {\n  const inputRef = useRef();\n  useImperativeHandle(ref, () => ({\n    focus: () => inputRef.current.focus(),\n    clear: () => { inputRef.current.value = ''; },\n    shake: () => {\n      inputRef.current.style.animation = 'shake 0.5s';\n      setTimeout(() => { inputRef.current.style.animation = ''; }, 500);\n    },\n  }));\n  return (\n    <div style={{marginBottom:'12px'}}>\n      <label style={{display:'block',fontWeight:600,marginBottom:'4px',color:'#1e293b'}}>{label}</label>\n      <input ref={inputRef} placeholder=\"Type something...\" style={{width:'100%',padding:'12px',border:'2px solid #10b981',borderRadius:'8px',fontSize:'1em',outline:'none',boxSizing:'border-box'}} />\n    </div>\n  );\n});\n\nfunction App() {\n  const fancyRef = useRef();\n  const customRef = useRef();\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'420px',margin:'0 auto'}}>\n      <style>{`@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }`}</style>\n      <h2>Forwarding Refs</h2>\n\n      <FancyInput ref={fancyRef} label=\"Simple forwardRef\" placeholder=\"Click the button below...\" />\n      <button onClick={() => { fancyRef.current.focus(); fancyRef.current.value = 'Focused via ref!'; }} style={{padding:'8px 16px',background:'#8b5cf6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer',marginBottom:'20px'}}>Focus & Fill</button>\n\n      <CustomInput ref={customRef} label=\"useImperativeHandle\" />\n      <div style={{display:'flex',gap:'6px'}}>\n        <button onClick={() => customRef.current.focus()} style={{padding:'8px 16px',background:'#10b981',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Focus</button>\n        <button onClick={() => customRef.current.clear()} style={{padding:'8px 16px',background:'#f59e0b',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Clear</button>\n        <button onClick={() => customRef.current.shake()} style={{padding:'8px 16px',background:'#ef4444',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Shake!</button>\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Advanced",
+    "name": "Keys & Reconciliation",
+    "desc": "React uses keys to efficiently update lists. Incorrect keys cause bugs. This demo shows the difference.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction ItemWithInput({ item }) {\n  return (\n    <div style={{display:'flex',alignItems:'center',gap:'8px',padding:'8px 12px',background:'#f8fafc',borderRadius:'6px',marginBottom:'4px'}}>\n      <span style={{fontSize:'1.2em'}}>{item.emoji}</span>\n      <strong style={{flex:1}}>{item.name}</strong>\n      <input defaultValue={item.name} style={{padding:'6px',border:'1px solid #e2e8f0',borderRadius:'4px',width:'100px'}} />\n    </div>\n  );\n}\n\nfunction App() {\n  const initialItems = [\n    { id: 'a', name: 'Apple', emoji: '🍎' },\n    { id: 'b', name: 'Banana', emoji: '🍌' },\n    { id: 'c', name: 'Cherry', emoji: '🍒' },\n    { id: 'd', name: 'Dragon Fruit', emoji: '🐉' },\n  ];\n  const [items, setItems] = useState(initialItems);\n\n  const shuffle = () => setItems([...items].sort(() => Math.random() - 0.5));\n  const addFirst = () => setItems([{ id: Date.now().toString(), name: 'New Item', emoji: '✨' }, ...items]);\n  const removeFirst = () => setItems(items.slice(1));\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>Keys & Reconciliation</h2>\n      <p style={{color:'#64748b',fontSize:'0.85em',marginBottom:'12px'}}>Edit the inputs, then shuffle. With proper keys (id), inputs follow their items. With index keys, they stay in place — a bug!</p>\n\n      <div style={{display:'flex',gap:'6px',marginBottom:'16px',flexWrap:'wrap'}}>\n        <button onClick={shuffle} style={{padding:'8px 16px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>🔀 Shuffle</button>\n        <button onClick={addFirst} style={{padding:'8px 16px',background:'#10b981',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>➕ Add First</button>\n        <button onClick={removeFirst} style={{padding:'8px 16px',background:'#ef4444',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>🗑 Remove First</button>\n      </div>\n\n      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>\n        <div>\n          <h3 style={{color:'#10b981',fontSize:'0.9em'}}>✅ key={'{item.id}'}</h3>\n          {items.map(item => <ItemWithInput key={item.id} item={item} />)}\n        </div>\n        <div>\n          <h3 style={{color:'#ef4444',fontSize:'0.9em'}}>❌ key={'{index}'}</h3>\n          {items.map((item, i) => <ItemWithInput key={i} item={item} />)}\n        </div>\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+
+  // ── PROJECTS ────────────────────────────────────────────────────────────
+  {
+    "cat": "Mini Projects",
+    "name": "Emoji Picker",
+    "desc": "A searchable emoji picker built entirely with React hooks and inline styles.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nconst EMOJIS = [\n  { emoji: '😀', name: 'grinning' }, { emoji: '😂', name: 'joy' }, { emoji: '🥰', name: 'love' },\n  { emoji: '😎', name: 'cool' }, { emoji: '🤔', name: 'thinking' }, { emoji: '🎉', name: 'party' },\n  { emoji: '🔥', name: 'fire' }, { emoji: '💡', name: 'idea' }, { emoji: '❤️', name: 'heart' },\n  { emoji: '⭐', name: 'star' }, { emoji: '🚀', name: 'rocket' }, { emoji: '🎯', name: 'target' },\n  { emoji: '💎', name: 'gem' }, { emoji: '🌈', name: 'rainbow' }, { emoji: '🎸', name: 'guitar' },\n  { emoji: '🍕', name: 'pizza' }, { emoji: '☕', name: 'coffee' }, { emoji: '🌍', name: 'earth' },\n  { emoji: '🐱', name: 'cat' }, { emoji: '🦊', name: 'fox' }, { emoji: '🐼', name: 'panda' },\n  { emoji: '✨', name: 'sparkles' }, { emoji: '🏆', name: 'trophy' }, { emoji: '🎨', name: 'art' },\n];\n\nfunction App() {\n  const [query, setQuery] = useState('');\n  const [copied, setCopied] = useState('');\n\n  const filtered = EMOJIS.filter(e => e.name.includes(query.toLowerCase()));\n\n  const copy = (emoji) => {\n    navigator.clipboard?.writeText(emoji).catch(() => {});\n    setCopied(emoji);\n    setTimeout(() => setCopied(''), 1000);\n  };\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'400px',margin:'0 auto'}}>\n      <h2>Emoji Picker ⚛️</h2>\n      <input value={query} onChange={e => setQuery(e.target.value)} placeholder=\"Search emojis...\" style={{width:'100%',padding:'12px',border:'2px solid #e2e8f0',borderRadius:'10px',fontSize:'1em',boxSizing:'border-box',marginBottom:'16px'}} />\n      <div style={{display:'grid',gridTemplateColumns:'repeat(6, 1fr)',gap:'6px'}}>\n        {filtered.map(e => (\n          <button key={e.name} onClick={() => copy(e.emoji)} title={e.name} style={{fontSize:'1.8em',padding:'8px',background: copied===e.emoji ? '#dcfce7' : '#f8fafc',border:'1px solid #e2e8f0',borderRadius:'10px',cursor:'pointer',transition:'all 0.15s',transform: copied===e.emoji ? 'scale(1.2)' : 'scale(1)'}}>\n            {e.emoji}\n          </button>\n        ))}\n      </div>\n      {filtered.length === 0 && <p style={{textAlign:'center',color:'#94a3b8',marginTop:'20px'}}>No emojis found 😢</p>}\n      {copied && <div style={{position:'fixed',bottom:'20px',left:'50%',transform:'translateX(-50%)',background:'#0f172a',color:'#fff',padding:'10px 20px',borderRadius:'8px',fontSize:'0.9em'}}>Copied {copied}!</div>}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Mini Projects",
+    "name": "Markdown Previewer",
+    "desc": "A simple markdown editor with live preview, using basic regex-based parsing.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction parseMarkdown(md) {\n  return md\n    .replace(/^### (.+)$/gm, '<h3>$1</h3>')\n    .replace(/^## (.+)$/gm, '<h2>$1</h2>')\n    .replace(/^# (.+)$/gm, '<h1>$1</h1>')\n    .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')\n    .replace(/\\*(.+?)\\*/g, '<em>$1</em>')\n    .replace(/`(.+?)`/g, '<code style=\"background:#f1f5f9;padding:2px 6px;border-radius:4px;color:#e11d48\">$1</code>')\n    .replace(/^- (.+)$/gm, '<li>$1</li>')\n    .replace(/(<li>.*<\\/li>)/s, '<ul>$1</ul>')\n    .replace(/\\n/g, '<br/>');\n}\n\nfunction App() {\n  const [md, setMd] = useState(`# React Markdown Previewer\\n\\n## Features\\n\\n- **Bold** text support\\n- *Italic* text support\\n- Inline \\`code\\` blocks\\n- Headings (h1, h2, h3)\\n- Bullet lists\\n\\n### Try editing!\\n\\nType markdown on the left and see it rendered live.`);\n\n  return (\n    <div style={{padding:'20px',fontFamily:'sans-serif',height:'100vh',boxSizing:'border-box',display:'flex',flexDirection:'column'}}>\n      <h2 style={{margin:'0 0 12px'}}>📝 Markdown Previewer</h2>\n      <div style={{flex:1,display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px',minHeight:0}}>\n        <textarea value={md} onChange={e => setMd(e.target.value)} style={{padding:'16px',border:'2px solid #e2e8f0',borderRadius:'10px',fontFamily:'monospace',fontSize:'0.9em',resize:'none',outline:'none'}} />\n        <div style={{padding:'16px',border:'2px solid #e2e8f0',borderRadius:'10px',overflow:'auto',lineHeight:1.7}} dangerouslySetInnerHTML={{ __html: parseMarkdown(md) }} />\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Mini Projects",
+    "name": "Color Palette Generator",
+    "desc": "Generate harmonious color palettes with HSL manipulation and copy-to-clipboard.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nfunction hslToHex(h, s, l) {\n  s /= 100; l /= 100;\n  const a = s * Math.min(l, 1 - l);\n  const f = n => { const k = (n + h / 30) % 12; return Math.round(255 * (l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1))); };\n  return `#${[f(0),f(8),f(4)].map(x => x.toString(16).padStart(2,'0')).join('')}`;\n}\n\nfunction generatePalette(baseHue, harmony) {\n  const offsets = {\n    analogous: [0, 30, 60, -30, -60],\n    complementary: [0, 180, 30, 210, 60],\n    triadic: [0, 120, 240, 60, 300],\n    monochromatic: [0, 0, 0, 0, 0],\n  };\n  return (offsets[harmony] || offsets.analogous).map((off, i) => {\n    const h = (baseHue + off) % 360;\n    const s = harmony === 'monochromatic' ? 70 - i * 10 : 70;\n    const l = harmony === 'monochromatic' ? 30 + i * 12 : 50 + (i % 2) * 15;\n    return { hsl: `hsl(${h}, ${s}%, ${l}%)`, hex: hslToHex(h, s, l) };\n  });\n}\n\nfunction App() {\n  const [hue, setHue] = useState(220);\n  const [harmony, setHarmony] = useState('analogous');\n  const [copied, setCopied] = useState('');\n  const palette = generatePalette(hue, harmony);\n\n  const copy = (hex) => { navigator.clipboard?.writeText(hex).catch(()=>{}); setCopied(hex); setTimeout(() => setCopied(''), 800); };\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>🎨 Color Palette Generator</h2>\n      <div style={{marginBottom:'12px'}}>\n        <label>Base Hue: <strong>{hue}°</strong></label>\n        <input type=\"range\" min=\"0\" max=\"360\" value={hue} onChange={e => setHue(+e.target.value)} style={{width:'100%'}} />\n      </div>\n      <div style={{display:'flex',gap:'6px',marginBottom:'16px'}}>\n        {['analogous','complementary','triadic','monochromatic'].map(h => (\n          <button key={h} onClick={() => setHarmony(h)} style={{padding:'6px 12px',background: harmony===h ? '#0f172a' : '#e2e8f0',color: harmony===h ? '#fff' : '#333',border:'none',borderRadius:'6px',cursor:'pointer',fontSize:'0.8em',textTransform:'capitalize'}}>{h}</button>\n        ))}\n      </div>\n      <div style={{display:'flex',borderRadius:'12px',overflow:'hidden',height:'120px',marginBottom:'12px'}}>\n        {palette.map((c, i) => (\n          <div key={i} onClick={() => copy(c.hex)} style={{flex:1,background:c.hsl,cursor:'pointer',display:'flex',alignItems:'flex-end',justifyContent:'center',paddingBottom:'8px',transition:'flex 0.2s'}} title={`Click to copy ${c.hex}`}>\n            <span style={{background:'rgba(0,0,0,0.4)',color:'#fff',padding:'2px 8px',borderRadius:'4px',fontSize:'0.75em',fontFamily:'monospace'}}>{c.hex}</span>\n          </div>\n        ))}\n      </div>\n      {copied && <div style={{textAlign:'center',color:'#10b981',fontSize:'0.9em'}}>✅ Copied {copied}</div>}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Mini Projects",
+    "name": "Quiz App",
+    "desc": "Interactive quiz with score tracking, feedback, and progress bar — all in React.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState } = React;\n\nconst QUESTIONS = [\n  { q: 'What hook adds state to function components?', options: ['useEffect', 'useState', 'useRef', 'useMemo'], answer: 1 },\n  { q: 'What does JSX stand for?', options: ['JavaScript XML', 'Java Syntax Extension', 'JSON Exchange', 'JavaScript XHR'], answer: 0 },\n  { q: 'Which creates a context?', options: ['useContext()', 'React.createContext()', 'new Context()', 'React.context()'], answer: 1 },\n  { q: 'What renders into a different DOM subtree?', options: ['Fragment', 'Suspense', 'Portal', 'Memo'], answer: 2 },\n  { q: 'Which hook memoizes a value?', options: ['useCallback', 'useState', 'useMemo', 'useRef'], answer: 2 },\n];\n\nfunction App() {\n  const [current, setCurrent] = useState(0);\n  const [score, setScore] = useState(0);\n  const [selected, setSelected] = useState(null);\n  const [finished, setFinished] = useState(false);\n\n  const handleAnswer = (i) => {\n    if (selected !== null) return;\n    setSelected(i);\n    if (i === QUESTIONS[current].answer) setScore(s => s + 1);\n    setTimeout(() => {\n      if (current + 1 < QUESTIONS.length) {\n        setCurrent(c => c + 1);\n        setSelected(null);\n      } else {\n        setFinished(true);\n      }\n    }, 1000);\n  };\n\n  const restart = () => { setCurrent(0); setScore(0); setSelected(null); setFinished(false); };\n  const progress = ((current + (finished ? 1 : 0)) / QUESTIONS.length) * 100;\n\n  if (finished) {\n    const pct = Math.round((score / QUESTIONS.length) * 100);\n    return (\n      <div style={{padding:'40px',fontFamily:'sans-serif',textAlign:'center',maxWidth:'400px',margin:'0 auto'}}>\n        <div style={{fontSize:'4em'}}>{pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚'}</div>\n        <h2>Quiz Complete!</h2>\n        <p style={{fontSize:'1.5em',color:'#3b82f6'}}>Score: {score}/{QUESTIONS.length} ({pct}%)</p>\n        <button onClick={restart} style={{padding:'12px 28px',background:'#3b82f6',color:'#fff',border:'none',borderRadius:'10px',cursor:'pointer',fontSize:'1em',marginTop:'12px'}}>Retry</button>\n      </div>\n    );\n  }\n\n  const q = QUESTIONS[current];\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'450px',margin:'0 auto'}}>\n      <div style={{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'0.85em',color:'#64748b'}}>\n        <span>Question {current + 1}/{QUESTIONS.length}</span>\n        <span>Score: {score}</span>\n      </div>\n      <div style={{height:'6px',background:'#e2e8f0',borderRadius:'3px',marginBottom:'20px'}}>\n        <div style={{height:'100%',width:`${progress}%`,background:'linear-gradient(90deg,#3b82f6,#8b5cf6)',borderRadius:'3px',transition:'width 0.3s'}} />\n      </div>\n      <h2 style={{fontSize:'1.1em',marginBottom:'16px'}}>{q.q}</h2>\n      {q.options.map((opt, i) => {\n        let bg = '#f8fafc', border = '#e2e8f0', color = '#1e293b';\n        if (selected !== null) {\n          if (i === q.answer) { bg = '#dcfce7'; border = '#10b981'; color = '#166534'; }\n          else if (i === selected) { bg = '#fef2f2'; border = '#ef4444'; color = '#991b1b'; }\n        }\n        return (\n          <button key={i} onClick={() => handleAnswer(i)} style={{display:'block',width:'100%',padding:'14px',marginBottom:'8px',background:bg,border:`2px solid ${border}`,borderRadius:'10px',cursor: selected!==null?'default':'pointer',fontSize:'1em',color,textAlign:'left',transition:'all 0.2s'}}>\n            {opt} {selected !== null && i === q.answer && ' ✅'}{selected !== null && i === selected && i !== q.answer && ' ❌'}\n          </button>\n        );\n      })}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Mini Projects",
+    "name": "Expense Tracker",
+    "desc": "Full CRUD expense tracker with useReducer, categories, and animated totals.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useReducer } = React;\n\nconst cats = { food: '🍔', transport: '🚗', entertainment: '🎮', shopping: '🛍️', bills: '📄' };\n\nfunction reducer(state, action) {\n  switch (action.type) {\n    case 'ADD': return [...state, { id: Date.now(), ...action.expense }];\n    case 'DELETE': return state.filter(e => e.id !== action.id);\n    default: return state;\n  }\n}\n\nfunction App() {\n  const [expenses, dispatch] = useReducer(reducer, [\n    { id: 1, desc: 'Groceries', amount: 52.30, category: 'food' },\n    { id: 2, desc: 'Netflix', amount: 15.99, category: 'entertainment' },\n    { id: 3, desc: 'Gas', amount: 45.00, category: 'transport' },\n  ]);\n  const [form, setForm] = useState({ desc: '', amount: '', category: 'food' });\n\n  const total = expenses.reduce((s, e) => s + e.amount, 0);\n\n  const handleAdd = (e) => {\n    e.preventDefault();\n    if (!form.desc || !form.amount) return;\n    dispatch({ type: 'ADD', expense: { desc: form.desc, amount: parseFloat(form.amount), category: form.category } });\n    setForm({ desc: '', amount: '', category: 'food' });\n  };\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'440px',margin:'0 auto'}}>\n      <h2>💰 Expense Tracker</h2>\n      <div style={{background:'linear-gradient(135deg,#3b82f6,#8b5cf6)',borderRadius:'12px',padding:'20px',color:'#fff',textAlign:'center',marginBottom:'16px'}}>\n        <div style={{fontSize:'0.85em',opacity:0.8}}>Total Expenses</div>\n        <div style={{fontSize:'2.5em',fontWeight:800}}>${total.toFixed(2)}</div>\n      </div>\n\n      <form onSubmit={handleAdd} style={{display:'flex',gap:'6px',marginBottom:'16px',flexWrap:'wrap'}}>\n        <input value={form.desc} onChange={e => setForm({...form, desc: e.target.value})} placeholder=\"Description\" style={{flex:2,minWidth:'120px',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'8px'}} />\n        <input type=\"number\" step=\"0.01\" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} placeholder=\"$\" style={{flex:1,minWidth:'70px',padding:'10px',border:'2px solid #e2e8f0',borderRadius:'8px'}} />\n        <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} style={{padding:'10px',border:'2px solid #e2e8f0',borderRadius:'8px'}}>\n          {Object.keys(cats).map(c => <option key={c} value={c}>{cats[c]} {c}</option>)}\n        </select>\n        <button type=\"submit\" style={{padding:'10px 16px',background:'#10b981',color:'#fff',border:'none',borderRadius:'8px',cursor:'pointer'}}>Add</button>\n      </form>\n\n      {expenses.length === 0 ? <p style={{textAlign:'center',color:'#94a3b8'}}>No expenses yet</p> : expenses.map(exp => (\n        <div key={exp.id} style={{display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',background:'#f8fafc',borderRadius:'8px',marginBottom:'6px',border:'1px solid #e2e8f0'}}>\n          <span style={{fontSize:'1.3em'}}>{cats[exp.category]}</span>\n          <div style={{flex:1}}>\n            <strong>{exp.desc}</strong>\n            <div style={{fontSize:'0.8em',color:'#64748b',textTransform:'capitalize'}}>{exp.category}</div>\n          </div>\n          <strong style={{color:'#ef4444'}}>-${exp.amount.toFixed(2)}</strong>\n          <button onClick={() => dispatch({ type: 'DELETE', id: exp.id })} style={{background:'none',border:'none',color:'#94a3b8',cursor:'pointer',fontSize:'1.2em'}}>×</button>\n        </div>\n      ))}\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  },
+  {
+    "cat": "Mini Projects",
+    "name": "Animated Counter",
+    "desc": "A smooth animated number counter using requestAnimationFrame inside useEffect.",
+    "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<script src=\"https://unpkg.com/react@18/umd/react.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/react-dom@18/umd/react-dom.development.js\" crossorigin><\/script>\n<script src=\"https://unpkg.com/@babel/standalone/babel.min.js\"><\/script>\n</head>\n<body>\n<div id=\"root\"></div>\n<script type=\"text/babel\">\nconst { useState, useEffect, useRef } = React;\n\nfunction AnimatedNumber({ value, duration = 1000, prefix = '', suffix = '' }) {\n  const [display, setDisplay] = useState(0);\n  const prevValue = useRef(0);\n\n  useEffect(() => {\n    const start = prevValue.current;\n    const end = value;\n    const startTime = performance.now();\n\n    function animate(now) {\n      const elapsed = now - startTime;\n      const progress = Math.min(elapsed / duration, 1);\n      // Ease out cubic\n      const eased = 1 - Math.pow(1 - progress, 3);\n      setDisplay(Math.round(start + (end - start) * eased));\n      if (progress < 1) requestAnimationFrame(animate);\n    }\n    requestAnimationFrame(animate);\n    prevValue.current = end;\n  }, [value, duration]);\n\n  return <span>{prefix}{display.toLocaleString()}{suffix}</span>;\n}\n\nfunction StatCard({ icon, label, value, color, prefix, suffix }) {\n  return (\n    <div style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:'12px',padding:'20px',textAlign:'center',borderTop:`4px solid ${color}`}}>\n      <div style={{fontSize:'2em',marginBottom:'8px'}}>{icon}</div>\n      <div style={{fontSize:'2em',fontWeight:800,color}}>\n        <AnimatedNumber value={value} prefix={prefix} suffix={suffix} />\n      </div>\n      <div style={{color:'#64748b',fontSize:'0.9em',marginTop:'4px'}}>{label}</div>\n    </div>\n  );\n}\n\nfunction App() {\n  const [multiplier, setMultiplier] = useState(1);\n\n  return (\n    <div style={{padding:'30px',fontFamily:'sans-serif',maxWidth:'500px',margin:'0 auto'}}>\n      <h2>Animated Counter</h2>\n      <p style={{color:'#64748b',marginBottom:'16px'}}>Click to change values and watch them animate smoothly.</p>\n\n      <div style={{display:'grid',gridTemplateColumns:'repeat(2, 1fr)',gap:'12px',marginBottom:'16px'}}>\n        <StatCard icon=\"👥\" label=\"Users\" value={1234 * multiplier} color=\"#3b82f6\" />\n        <StatCard icon=\"💰\" label=\"Revenue\" value={56789 * multiplier} color=\"#10b981\" prefix=\"$\" />\n        <StatCard icon=\"📦\" label=\"Orders\" value={892 * multiplier} color=\"#f59e0b\" />\n        <StatCard icon=\"⭐\" label=\"Reviews\" value={4567 * multiplier} color=\"#8b5cf6\" />\n      </div>\n\n      <div style={{display:'flex',gap:'8px',justifyContent:'center'}}>\n        {[1, 2, 5, 10].map(m => (\n          <button key={m} onClick={() => setMultiplier(m)} style={{padding:'8px 16px',background: multiplier===m ? '#3b82f6' : '#e2e8f0',color: multiplier===m ? '#fff' : '#333',border:'none',borderRadius:'8px',cursor:'pointer'}}>×{m}</button>\n        ))}\n      </div>\n    </div>\n  );\n}\nReactDOM.createRoot(document.getElementById('root')).render(<App />);\n<\/script>\n</body>\n</html>",
+    "css": "",
+    "code": ""
+  }
+];
+
+    // ========================================================================
+    //  DATA: ALL NODE.JS CONCEPTS — Complete Reference (11 examples)
+    // ========================================================================
+    const NODE_EXAMPLES = [
+      // --- Core Globals ---
+      {
+        cat: "Core Globals",
+        name: "Process & Environment",
+        desc: "Access process details, environment variables, command line arguments, and directories.",
+        html: "",
+        css: "",
+        code: `// The 'process' object is a global providing info about the current Node.js process
+console.log('--- Process Info ---');
+console.log('Node Version:', process.version);
+console.log('Platform:', process.platform);
+console.log('Current Working Directory:', process.cwd());
+console.log('Process ID (PID):', process.pid);
+
+// Environment variables (process.env)
+console.log('\\n--- Environment Variables ---');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('PORT:', process.env.PORT);
+
+// Command line arguments (process.argv)
+console.log('\\n--- Command Line Arguments ---');
+process.argv.forEach((val, index) => {
+  console.log(\`argv[\${index}]: \${val}\`);
+});`
+      },
+      {
+        cat: "Core Globals",
+        name: "Buffers",
+        desc: "Buffers handle raw binary data. Crucial for streams, files, and network communication.",
+        html: "",
+        css: "",
+        code: `// Create a buffer from a string
+const buf1 = Buffer.from('Hello Node.js');
+console.log('Buffer 1 (Raw hex):', buf1);
+console.log('Buffer 1 (String):', buf1.toString());
+console.log('Buffer 1 Length:', buf1.length);
+
+// Create an empty buffer of a specific size
+const buf2 = Buffer.alloc(10);
+buf2.write('Hi');
+console.log('\\nBuffer 2 (Allocated):', buf2);
+console.log('Buffer 2 (String):', buf2.toString());
+
+// Check if buffer
+console.log('\\nIs Buffer?', Buffer.isBuffer(buf1));`
+      },
+      {
+        cat: "Core Globals",
+        name: "Timers & NextTick",
+        desc: "Node.js event loop scheduling: setTimeout, setInterval, setImmediate, and process.nextTick.",
+        html: "",
+        css: "",
+        code: `console.log('1. Start of script');
+
+setTimeout(() => {
+  console.log('4. setTimeout (MacroTask) - executed after 0ms');
+}, 0);
+
+setImmediate(() => {
+  console.log('5. setImmediate (MacroTask) - executed in check phase');
+});
+
+process.nextTick(() => {
+  console.log('3. process.nextTick (MicroTask) - runs before any other event loop tasks');
+});
+
+console.log('2. End of script');`
+      },
+
+      // --- Core Modules ---
+      {
+        cat: "Core Modules",
+        name: "File System (fs)",
+        desc: "Read, write, and check file existence asynchronously or synchronously using the fs module.",
+        html: "",
+        css: "",
+        code: `const fs = require('fs');
+
+console.log('--- Virtual File System Demo ---');
+
+// 1. Write a file
+const content = 'This is content written dynamically using fs.writeFileSync!';
+fs.writeFileSync('./hello.txt', content);
+
+// 2. Read the file
+const fileData = fs.readFileSync('./hello.txt', 'utf8');
+console.log('Content of hello.txt:', fileData);
+
+// 3. Directory listing
+console.log('\\nFiles in directory:');
+const files = fs.readdirSync('.');
+files.forEach(file => console.log(' - ' + file));
+
+// 4. Checking file existence
+console.log('\\nDoes hello.txt exist?', fs.existsSync('./hello.txt'));`
+      },
+      {
+        cat: "Core Modules",
+        name: "Path Module",
+        desc: "Normalize, resolve, and parse file and directory paths utility functions.",
+        html: "",
+        css: "",
+        code: `const path = require('path');
+
+console.log('--- Path Utilities ---');
+
+const filepath = '/home/node/projects/index.js';
+
+console.log('Basename:', path.basename(filepath));
+console.log('Dirname:', path.dirname(filepath));
+console.log('Extname:', path.extname(filepath));
+
+// Joining paths
+const baseDir = '/usr/local';
+const relativePath = 'bin/node';
+const fullPath = path.join(baseDir, relativePath);
+console.log('\\nJoined Path:', fullPath);
+
+// Resolving paths
+console.log('Resolved Absolute Path:', path.resolve('temp', 'config.json'));`
+      },
+      {
+        cat: "Core Modules",
+        name: "OS Module",
+        desc: "Get information about the system architecture, memory usage, CPU speed, and platform.",
+        html: "",
+        css: "",
+        code: `const os = require('os');
+
+console.log('--- System/OS Information ---');
+console.log('OS Platform:', os.platform());
+console.log('OS Architecture:', os.arch());
+console.log('OS Type:', os.type());
+console.log('System Release:', os.release());
+console.log('Home Directory:', os.homedir());
+
+console.log('\\n--- Memory Usage ---');
+const totalGB = (os.totalmem() / 1024 / 1024 / 1024).toFixed(2);
+const freeGB = (os.freemem() / 1024 / 1024 / 1024).toFixed(2);
+console.log(\`Total Memory: \${totalGB} GB\`);
+console.log(\`Free Memory: \${freeGB} GB\`);
+
+console.log('\\n--- CPU Info ---');
+const cpus = os.cpus();
+console.log(\`CPUs: \${cpus.length} cores (\${cpus[0].model})\`);`
+      },
+      {
+        cat: "Core Modules",
+        name: "Event Emitter",
+        desc: "Build custom pub/sub patterns using the EventEmitter class from the events module.",
+        html: "",
+        css: "",
+        code: `const { EventEmitter } = require('events');
+
+// Create custom emitter
+const myEmitter = new EventEmitter();
+
+// Listen to 'userLoggedIn' event
+myEmitter.on('userLoggedIn', (user) => {
+  console.log(\`🔔 Event received: User "\${user.username}" logged in with role "\${user.role}".\`);
+});
+
+// Listen to 'error' event
+myEmitter.on('error', (err) => {
+  console.log('⚠️ System Error:', err);
+});
+
+// Emit/Trigger events
+console.log('Simulating system events...');
+myEmitter.emit('userLoggedIn', { username: 'Alice', role: 'Developer' });
+myEmitter.emit('userLoggedIn', { username: 'Bob', role: 'Moderator' });
+myEmitter.emit('error', 'Database connection refused');`
+      },
+      {
+        cat: "Core Modules",
+        name: "HTTP Server",
+        desc: "Create a simple web server using the HTTP module and handle simulated requests.",
+        html: "",
+        css: "",
+        code: `const http = require('http');
+
+// Create server instance
+const server = http.createServer((req, res) => {
+  console.log(\`\\n📥 Request Received: \${req.method} \${req.url}\`);
+  console.log('Client User-Agent:', req.headers['user-agent']);
+  
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello from virtual Node.js HTTP server!');
+});
+
+// Start listening
+server.listen(3000, () => {
+  console.log('Server is running and waiting for requests...');
+});`
+      },
+
+      // --- NPM & Express ---
+      {
+        cat: "Express Framework",
+        name: "Express Basics",
+        desc: "Create an Express app, configure basic route parameters, and respond to clients.",
+        html: "",
+        css: "",
+        code: `const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Express Homepage!');
+});
+
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'online',
+    uptime: process.uptime(),
+    env: process.env.NODE_ENV
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Express application running...');
+});`
+      },
+      {
+        cat: "Express Framework",
+        name: "REST API & Routes",
+        desc: "Implement multiple HTTP routing endpoints and simulated request parameters.",
+        html: "",
+        css: "",
+        code: `const express = require('express');
+const app = express();
+
+const fs = require('fs');
+
+app.get('/users', (req, res) => {
+  // Read database from virtual fs
+  const db = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+  res.json({ count: db.length, data: db });
+});
+
+app.post('/users', (req, res) => {
+  // Simulating adding user
+  console.log('Creating user in DB...');
+  res.status(201).json({ success: true, message: 'User Alice/Bob validated.' });
+});
+
+app.listen(8080, () => {
+  console.log('REST API started on port 8080.');
+});`
+      },
+
+      // --- Async Patterns ---
+      {
+        cat: "Async Patterns",
+        name: "Promises & Await",
+        desc: "Manage asynchronous flows cleanly using Promises, resolve/reject handlers, and Async/Await.",
+        html: "",
+        css: "",
+        code: `// Simulated async function
+function fetchUser(id) {
+  return new Promise((resolve, reject) => {
+    console.log(\`Fetching user \${id} from database...\`);
+    setTimeout(() => {
+      if (id > 0) {
+        resolve({ id, name: 'Alice', active: true });
+      } else {
+        reject(new Error('Invalid user ID'));
+      }
+    }, 400);
+  });
+}
+
+// Using Async/Await
+async function run() {
+  try {
+    const user = await fetchUser(1);
+    console.log('✅ Fetch Success:', user);
+    
+    // Trigger error state
+    await fetchUser(0);
+  } catch (error) {
+    console.log('❌ Error caught:', error.message);
+  }
+}
+
+run();`
+      }
+    ];
+
+    // ========================================================================
     //  APP STATE & LOGIC
     // ========================================================================
     const CONFIG = { debounceDelay: 350, autoRun: true, fontSize: 14, theme: 'dark', activeTab: 'html', activeOutput: 'preview' };
@@ -1599,6 +2218,8 @@
       HTML_EXAMPLES.forEach(e => allExamples.push({ type: 'html', ...e }));
       CSS_EXAMPLES.forEach(e => allExamples.push({ type: 'css', cat: e.cat, name: e.name, desc: e.desc, html: e.html || '', css: e.css || '', js: '' }));
       JS_EXAMPLES.forEach(e => allExamples.push({ type: 'js', cat: e.cat, name: e.name, desc: e.desc, html: e.html || '', css: e.css || '', js: e.code || '' }));
+      REACT_EXAMPLES.forEach(e => allExamples.push({ type: 'react', cat: e.cat, name: e.name, desc: e.desc, html: e.html || '', css: e.css || '', js: e.code || '' }));
+      NODE_EXAMPLES.forEach(e => allExamples.push({ type: 'node', cat: e.cat, name: e.name, desc: e.desc, html: e.html || '', css: e.css || '', js: e.code || '' }));
       document.getElementById('exampleCount').textContent = allExamples.length;
     }
 
@@ -1608,6 +2229,8 @@
         { title: 'HTML Tags', icon: '📄', type: 'html', data: HTML_EXAMPLES },
         { title: 'CSS Properties', icon: '🎨', type: 'css', data: CSS_EXAMPLES },
         { title: 'JavaScript', icon: '⚡', type: 'js', data: JS_EXAMPLES },
+        { title: 'React.js', icon: '⚛️', type: 'react', data: REACT_EXAMPLES },
+        { title: 'Node.js', icon: '🟢', type: 'node', data: NODE_EXAMPLES },
       ];
       let html = '';
       sections.forEach((sec, si) => {
@@ -1649,11 +2272,16 @@
       editors.css.setValue(formatCSS(ex.css || ''), -1);
       editors.js.setValue(formatJS(ex.js || ''), -1);
       const info = document.getElementById('exampleInfo');
-      const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
+      const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript', react: 'React.js', node: 'Node.js' };
       info.innerHTML = `<span class="example-title">${labels[ex.type]}: ${ex.name}</span> ${ex.desc}`;
       info.classList.add('visible');
       if (ex.type === 'css') switchEditorTab('css');
       else if (ex.type === 'js') switchEditorTab('javascript');
+      else if (ex.type === 'react') switchEditorTab('html');
+      else if (ex.type === 'node') {
+        switchEditorTab('javascript');
+        switchOutputTab('console');
+      }
       else switchEditorTab('html');
       clearConsole(); updatePreview();
       document.getElementById('statusText').textContent = 'Loaded: ' + ex.name;
@@ -1728,7 +2356,188 @@
       const css = editors.css ? editors.css.getValue() : '';
       const js = editors.js ? editors.js.getValue() : '';
 
-      const consoleScript = `<script>
+      const isNodeMode = (currentExample && currentExample.type === 'node') || js.includes('require(') || js.includes('module.exports') || js.includes('process.');
+
+      if (isNodeMode) {
+        // Render terminal mock in previewFrame
+        const terminalHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{background:#0f141c;color:#b3b1ad;font-family:Consolas,monospace;padding:20px;margin:0;font-size:13px;line-height:1.6}.header{color:#5c6773;margin-bottom:20px;font-size:12px;border-bottom:1px solid #1a2333;padding-bottom:10px}.command{color:#ffcc66;margin-bottom:12px;font-weight:500}.command::before{content:"$ ";color:#95e6cb}.output-line{white-space:pre-wrap;word-break:break-all;margin-bottom:6px;animation:fadeIn .15s ease}.error{color:#ff3333}.warn{color:#ffcc66}.info{color:#3b82f6}@keyframes fadeIn{from{opacity:0;transform:translateY(2px)}to{opacity:1}}</style></head><body><div class="header">🟢 Node.js Sandbox (v20.11.0 Virtual Environment)</div><div class="command">node index.js</div><div id="terminal"></div><' + 'script>' + `
+    (function() {
+      const term = document.getElementById('terminal');
+      function add(text, type) {
+        const d = document.createElement('div');
+        d.className = 'output-line' + (type ? ' ' + type : '');
+        d.textContent = text;
+        term.appendChild(d);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      var methods = ['log', 'warn', 'error', 'info'];
+      methods.forEach(function(m) {
+        console[m] = function() {
+          var args = Array.prototype.slice.call(arguments);
+          var str = args.map(function(x) {
+            if (x === null) return 'null';
+            if (x === undefined) return 'undefined';
+            if (typeof x === 'object') {
+              try { return JSON.stringify(x, null, 2); } catch(e) { return String(x); }
+            }
+            return String(x);
+          }).join(' ');
+          parent.postMessage({ type: 'console', method: m, args: [str] }, '*');
+          add(str, m);
+        };
+      });
+
+      window.onerror = function(msg, url, line) {
+        const err = 'Error: ' + msg + ' (line ' + line + ')';
+        parent.postMessage({ type: 'console', method: 'error', args: [err] }, '*');
+        add(err, 'error');
+        return true;
+      };
+
+      window.addEventListener('unhandledrejection', function(e) {
+        const err = 'Unhandled: ' + (e.reason ? e.reason.message || e.reason : 'Unknown');
+        parent.postMessage({ type: 'console', method: 'error', args: [err] }, '*');
+        add(err, 'error');
+      });
+
+      // Mock require and global Node modules
+      const vfs = {
+        'index.js': ${JSON.stringify(js)},
+        'package.json': JSON.stringify({ name: "virtual-node-app", version: "1.0.0", main: "index.js", dependencies: { express: "^4.18.2" } }, null, 2),
+        'data.json': JSON.stringify([ { id: 1, name: "Alice", role: "Admin" }, { id: 2, name: "Bob", role: "User" } ], null, 2),
+        'hello.txt': 'Hello, World from Node.js VFS!'
+      };
+
+      class EventEmitter {
+        constructor() { this.events = {}; }
+        on(event, listener) {
+          if (!this.events[event]) this.events[event] = [];
+          this.events[event].push(listener);
+        }
+        emit(event, ...args) {
+          if (this.events[event]) this.events[event].forEach(l => l(...args));
+        }
+      }
+
+      const fs = {
+        readFileSync: function(path, encoding) {
+          const clean = path.replace(/^\\.\\//, '');
+          if (vfs[clean] !== undefined) return vfs[clean];
+          throw new Error("ENOENT: no such file or directory, open '" + path + "'");
+        },
+        writeFileSync: function(path, data) {
+          const clean = path.replace(/^\\.\\//, '');
+          vfs[clean] = String(data);
+          console.log("📝 [fs] Wrote to: " + path);
+        },
+        readdirSync: function(path) { return Object.keys(vfs); },
+        existsSync: function(path) {
+          const clean = path.replace(/^\\.\\//, '');
+          return vfs[clean] !== undefined;
+        }
+      };
+
+      const path = {
+        join: (...args) => args.join('/').replace(/\\/\\//g, '/'),
+        resolve: (...args) => '/' + args.join('/').replace(/\\/\\//g, '/'),
+        extname: (p) => { const parts = p.split('.'); return parts.length > 1 ? '.' + parts.pop() : ''; },
+        basename: (p) => p.split('/').pop()
+      };
+
+      const os = {
+        platform: () => 'linux',
+        release: () => '5.15.0',
+        type: () => 'Linux',
+        arch: () => 'x64',
+        totalmem: () => 8589934592,
+        freemem: () => 4294967296,
+        cpus: () => Array(4).fill({ model: 'Virtual CPU', speed: 2500 }),
+        homedir: () => '/home/node'
+      };
+
+      const http = {
+        createServer: function(handler) {
+          console.log("🌐 Server initialized via http.createServer()");
+          return {
+            listen: function(port, callback) {
+              console.log("🚀 Server listening on http://localhost:" + port);
+              if (callback) callback();
+              setTimeout(() => {
+                console.log("🔌 [Simulated HTTP] GET http://localhost:" + port + "/");
+                const req = { url: '/', method: 'GET', headers: { 'user-agent': 'node-client' } };
+                const res = {
+                  writeHead: (status) => console.log("📥 [HTTP Status] " + status),
+                  end: (body) => console.log("📄 [HTTP Response] " + (typeof body === 'object' ? JSON.stringify(body) : body))
+                };
+                if (handler) handler(req, res);
+              }, 500);
+            }
+          };
+        }
+      };
+
+      function express() {
+        const routes = [];
+        const app = {
+          get: (path, handler) => routes.push({ method: 'GET', path, handler }),
+          post: (path, handler) => routes.push({ method: 'POST', path, handler }),
+          use: (middleware) => console.log("🛡️ [Express] Mounted middleware"),
+          listen: (port, callback) => {
+            console.log("🚀 Express App listening on http://localhost:" + port);
+            if (callback) callback();
+            setTimeout(() => {
+              routes.forEach(route => {
+                console.log("🔌 [Simulated Express] " + route.method + " " + route.path);
+                const req = { params: {}, query: {}, body: {} };
+                const res = {
+                  send: (body) => console.log("📄 Response (send): " + (typeof body === 'object' ? JSON.stringify(body) : body)),
+                  json: (body) => console.log("📄 Response (json): " + JSON.stringify(body, null, 2)),
+                  status: (code) => { console.log("📥 Status: " + code); return res; }
+                };
+                route.handler(req, res);
+              });
+            }, 600);
+          }
+        };
+        return app;
+      }
+
+      function require(mod) {
+        if (mod === 'fs') return fs;
+        if (mod === 'path') return path;
+        if (mod === 'os') return os;
+        if (mod === 'http') return http;
+        if (mod === 'events') return { EventEmitter };
+        if (mod === 'express') return express;
+        throw new Error("Cannot find module '" + mod + "'");
+      }
+
+      const module = { exports: {} };
+      const exports = module.exports;
+      const __filename = '/home/node/index.js';
+      const __dirname = '/home/node';
+      const process = {
+        env: { NODE_ENV: 'development', PORT: 3000 },
+        argv: ['node', '/home/node/index.js'],
+        cwd: () => '/home/node',
+        version: 'v20.11.0',
+        nextTick: (fn) => setTimeout(fn, 0)
+      };
+
+      try {
+        const fn = new Function('exports', 'require', 'module', '__filename', '__dirname', 'process', ${JSON.stringify(js)});
+        fn(exports, require, module, __filename, __dirname, process);
+      } catch(e) {
+        console.error(e.name + ': ' + e.message);
+      }
+    })();
+` + '<' + '/script></body></html>';
+        document.getElementById('previewFrame').srcdoc = terminalHtml;
+        return;
+      }
+
+      const consoleScript = '<script>' + `
       (function() {
         var m = ['log', 'warn', 'error', 'info'];
         m.forEach(function(method) {
@@ -1763,7 +2572,7 @@
       } catch(e) {
         console.error(e.message || e);
       }
-    <\/script>`;
+    ` + '<' + '/script>';
 
       let finalDoc = '';
       if (html.includes('<!DOCTYPE html>') || html.includes('<html') || html.includes('<body')) {
